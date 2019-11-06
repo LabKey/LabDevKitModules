@@ -84,7 +84,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     protected APIContainerHelper _apiContainerHelper = new APIContainerHelper(this);
 
     protected String PROJECT_NAME = "LaboratoryVerifyProject" + TRICKY_CHARACTERS_FOR_PROJECT_NAMES;
-    private String VIRAL_LOAD_ASSAYNAME = "Viral Load Test";
+    private String GENOTYPING_ASSAYNAME = "Genotyping Assay Test";
 
     private final String DATA_SOURCE = "Source_" + replaceNonVisibleChars(getProjectName());
     private final String SUBJECT_LIST = "Subject List_" + replaceNonVisibleChars(getProjectName());
@@ -273,10 +273,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         assays.add(Pair.of("Immunophenotyping", "TruCount Test"));
         assays.add(Pair.of("ICS", "ICS Test"));
         assays.add(Pair.of("SSP Typing", "SSP Test"));
-        assays.add(Pair.of("Viral Loads", VIRAL_LOAD_ASSAYNAME));
         assays.add(Pair.of("ELISPOT_Assay", "ELISPOT Test"));
-        assays.add(Pair.of("Hormone Assay", "Hormone Assay Test"));
-        assays.add(Pair.of("Genotype Assay", "Genotyping Assay Test"));
+        assays.add(Pair.of("Genotype Assay", GENOTYPING_ASSAYNAME));
         assays.add(Pair.of("SNP Assay", "SNP Assay Test"));
 
         return assays;
@@ -922,8 +920,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         assertElementNotPresent(LabModuleHelper.getNavPanelItem("Users:", IMPORT_DATA_TEXT));
 
         //verify that the demographics source has been added
-        _helper.clickNavPanelItem(VIRAL_LOAD_ASSAYNAME + ":", "Browse All");
-        waitForText(VIRAL_LOAD_ASSAYNAME + " Results");
+        _helper.clickNavPanelItem(GENOTYPING_ASSAYNAME + ":", "Browse All");
+        waitForText(GENOTYPING_ASSAYNAME + " Results");
         _customizeViewsHelper.openCustomizeViewPanel();
         _customizeViewsHelper.addColumn(fieldKey + "/gender");
         _customizeViewsHelper.applyCustomView();
@@ -1180,7 +1178,6 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         assertElementPresent(Locator.linkContainingText("SSP Test: SSP Summary"));
         assertElementPresent(Locator.linkContainingText("SSP Test: Results By Run"));
         assertElementPresent(Locator.linkContainingText("ICS Test: Results By Run"));
-        assertElementPresent(Locator.linkContainingText(VIRAL_LOAD_ASSAYNAME + ": Viral Load Summary"));
 
         assertElementPresent(Locator.linkContainingText("View All DNA Oligos"));
         assertElementPresent(Locator.linkContainingText("View All Peptides"));
@@ -1761,12 +1758,10 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     protected List<String> getEnabledModules()
     {
         List<String> modules = new ArrayList<>();
-        modules.add("HormoneAssay");
         modules.add("ELISPOT_Assay");
         modules.add("FlowAssays");
         modules.add("GenotypeAssays");
         modules.add("SequenceAnalysis");
-        modules.add("Viral_Load_Assay");
         return modules;
     }
 
@@ -1794,14 +1789,14 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitForText("Set Assay Defaults");
         waitAndClickAndWait(Locator.linkContainingText("Set Assay Defaults"));
         String defaultVal = "LC480";
-        _helper.waitForField(VIRAL_LOAD_ASSAYNAME);
-        Ext4FieldRef.getForLabel(this, VIRAL_LOAD_ASSAYNAME).setValue(defaultVal);
+        _helper.waitForField(GENOTYPING_ASSAYNAME);
+        Ext4FieldRef.getForLabel(this, GENOTYPING_ASSAYNAME).setValue(defaultVal);
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
 
         waitForElement(Ext4Helper.Locators.window("Success"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitForText("Types of Data");
-        _helper.goToAssayResultImport(VIRAL_LOAD_ASSAYNAME);
+        _helper.goToAssayResultImport(GENOTYPING_ASSAYNAME);
         _helper.waitForField("Source Material");
         Ext4FieldRef.getForLabel(this, "Source Material").setValue("PBMC");  //ensure form will be dirty to trigger alert
         Boolean state = (Boolean) Ext4FieldRef.getForBoxLabel(this, defaultVal).getValue();
