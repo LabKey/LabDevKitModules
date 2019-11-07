@@ -39,7 +39,6 @@ import org.labkey.test.SortDirection;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.External;
 import org.labkey.test.categories.LabModule;
-import org.labkey.test.categories.ONPRC;
 import org.labkey.test.components.CustomizeView;
 import org.labkey.test.components.ext4.RadioButton;
 import org.labkey.test.util.APIContainerHelper;
@@ -77,7 +76,7 @@ import static org.junit.Assert.assertTrue;
  * Contains a series of tests designed to test the UI in the laboratory module.
  * Also contains considerable coverage of Ext4 components and the client API
  */
-@Category({External.class, ONPRC.class, LabModule.class})
+@Category({External.class, LabModule.class})
 public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 {
     protected LabModuleHelper _helper = new LabModuleHelper(this);
