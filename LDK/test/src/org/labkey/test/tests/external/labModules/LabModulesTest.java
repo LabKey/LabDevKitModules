@@ -1138,9 +1138,6 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         assertElementPresent(LabModuleHelper.getNavPanelRow("Instruments:"));
         assertElementPresent(LabModuleHelper.getNavPanelRow("Peptide Pools:"));
 
-        assertElementPresent(LabModuleHelper.getNavPanelRow("Diluents:"));
-        assertElementPresent(LabModuleHelper.getNavPanelRow("Roche E411 Tests:"));
-
         assertElementPresent(LabModuleHelper.getNavPanelRow("Cell Populations:"));
         assertElementPresent(LabModuleHelper.getNavPanelRow("Units:"));
 
@@ -1154,10 +1151,6 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         assertElementPresent(LabModuleHelper.getNavPanelRow("Allowable Barcodes:"));
         assertElementPresent(LabModuleHelper.getNavPanelRow("DNA Loci:"));
         assertElementPresent(LabModuleHelper.getNavPanelRow("Haplotype Definitions:"));
-
-        assertElementPresent(LabModuleHelper.getNavPanelRow("ABI7500 Detectors:"));
-        assertElementPresent(LabModuleHelper.getNavPanelRow("Fluors:"));
-        assertElementPresent(LabModuleHelper.getNavPanelRow("Techniques:"));
     }
 
     private void reportsTest()
