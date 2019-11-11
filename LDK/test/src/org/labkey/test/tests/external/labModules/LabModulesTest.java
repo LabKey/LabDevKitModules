@@ -1788,7 +1788,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitForElement(Ext4Helper.Locators.window("Success"));
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitForText("Types of Data");
-        _helper.goToAssayResultImport(GENOTYPING_ASSAYNAME);
+        _helper.goToAssayResultImport(GENOTYPING_ASSAYNAME, false);
         _helper.waitForField("Source Material");
         Ext4FieldRef.getForLabel(this, "Source Material").setValue("PBMC");  //ensure form will be dirty to trigger alert
         Boolean state = (Boolean) Ext4FieldRef.getForBoxLabel(this, defaultVal).getValue();
