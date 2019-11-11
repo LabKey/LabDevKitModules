@@ -1780,7 +1780,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClickAndWait(_helper.toolIcon("Settings"));
         waitForText("Set Assay Defaults");
         waitAndClickAndWait(Locator.linkContainingText("Set Assay Defaults"));
-        String defaultVal = "LC480";
+        String defaultVal = "UC Davis STR";
         _helper.waitForField(GENOTYPING_ASSAYNAME);
         Ext4FieldRef.getForLabel(this, GENOTYPING_ASSAYNAME).setValue(defaultVal);
         waitAndClick(Ext4Helper.Locators.ext4Button("Submit"));
@@ -1789,8 +1789,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("OK"));
         waitForText("Types of Data");
         _helper.goToAssayResultImport(GENOTYPING_ASSAYNAME, false);
-        _helper.waitForField("Source Material");
-        Ext4FieldRef.getForLabel(this, "Source Material").setValue("PBMC");  //ensure form will be dirty to trigger alert
+        _helper.waitForField("Purpose");
+        Ext4FieldRef.getForLabel(this, "Purpose").setValue("Testing");  //ensure form will be dirty to trigger alert
         Boolean state = (Boolean) Ext4FieldRef.getForBoxLabel(this, defaultVal).getValue();
         assertTrue("Default method not correct", state);
 
