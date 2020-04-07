@@ -55,6 +55,7 @@ import org.labkey.laboratory.query.DefaultAssayCustomizer;
 import org.labkey.laboratory.query.LaboratoryTableCustomizer;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -96,16 +97,19 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return _instance;
     }
 
+    @Override
     public void registerModule(Module module)
     {
         _registeredModules.add(module);
     }
 
+    @Override
     public Set<Module> getRegisteredModules()
     {
         return _registeredModules;
     }
 
+    @Override
     public void registerDataProvider(DataProvider dp)
     {
         if (_dataProviders.containsKey(dp.getKey())){
@@ -115,10 +119,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _dataProviders.put(dp.getKey(), dp);
     }
 
+    @Override
     public synchronized Set<DataProvider> getDataProviders()
     {
-        Set<DataProvider> providers = new HashSet<>();
-        providers.addAll(_dataProviders.values());
+        Set<DataProvider> providers = new HashSet<>(_dataProviders.values());
 
         Set<AssayProvider> registeredProviders = new HashSet<>();
         for (DataProvider dp : _dataProviders.values())
@@ -147,6 +151,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return providers;
     }
 
+    @Override
     public Set<AssayDataProvider> getRegisteredAssayProviders()
     {
         Set<AssayDataProvider> providers = new HashSet<>();
@@ -160,6 +165,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return providers;
     }
 
+    @Override
     public AssayDataProvider getDataProviderForAssay(int protocolId)
     {
         ExpProtocol protocol = ExperimentService.get().getExpProtocol(protocolId);
@@ -170,6 +176,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return getDataProviderForAssay(ap);
     }
 
+    @Override
     public AssayDataProvider getDataProviderForAssay(AssayProvider ap)
     {
         for (AssayDataProvider dp : getRegisteredAssayProviders())
@@ -180,16 +187,16 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return new SimpleAssayDataProvider(ap.getName());
     }
 
+    @Override
     public Pair<ExpExperiment, ExpRun> saveAssayBatch(List<Map<String, Object>> results, JSONObject json, String basename, ViewContext ctx, AssayProvider provider, ExpProtocol protocol) throws ValidationException
     {
         if (!PipelineService.get().hasValidPipelineRoot(protocol.getContainer()))
             throw new ValidationException("Pipeline root must be configured before uploading assay files");
 
-        AssayFileWriter writer = new AssayFileWriter();
         try
         {
-            File targetDirectory = writer.ensureUploadDirectory(ctx.getContainer());
-            File file = writer.findUniqueFileName(basename, targetDirectory);
+            File targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
+            File file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
 
             return this.saveAssayBatch(results, json, file, ctx, provider, protocol);
         }
@@ -200,6 +207,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         }
     }
 
+    @Override
     public Pair<ExpExperiment, ExpRun> saveAssayBatch(List<Map<String, Object>> results, JSONObject json, File file, ViewContext ctx, AssayProvider provider, ExpProtocol protocol) throws ValidationException
     {
         try
@@ -213,6 +221,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         }
     }
 
+    @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
         List<NavItem> items = new ArrayList<>();
@@ -224,6 +233,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(items);
     }
 
+    @Override
     public List<NavItem> getSampleItems(Container c, User u)
     {
         List<NavItem> navItems = new ArrayList<>();
@@ -234,6 +244,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(navItems);
     }
 
+    @Override
     public List<NavItem> getMiscItems(Container c, User u)
     {
         List<NavItem> navItems = new ArrayList<>();
@@ -244,6 +255,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(navItems);
     }
 
+    @Override
     public List<NavItem> getReportItems(Container c, User u)
     {
         List<NavItem> navItems = new ArrayList<>();
@@ -255,6 +267,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(navItems);
     }
 
+    @Override
     public List<NavItem> getDataItems(Container c, User u)
     {
         List<NavItem> navItems = new ArrayList<>();
@@ -267,16 +280,19 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(navItems);
     }
 
+    @Override
     public DataProvider getDataProvider(String name)
     {
         return _dataProviders.get(name);
     }
 
+    @Override
     public void ensureAssayColumns(User u, String providerName) throws ChangePropertyDescriptorException
     {
         AssayHelper.ensureAssayFields(u, providerName);
     }
 
+    @Override
     public void sortNavItems(List<? extends NavItem> navItems)
     {
         navItems.sort((Comparator<NavItem>) (o1, o2) ->
@@ -298,6 +314,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         });
     }
 
+    @Override
     public void registerClientDependency(Supplier<ClientDependency> cd, Module owner)
     {
         List<Supplier<ClientDependency>> list = _clientDependencies.get(owner);
@@ -309,20 +326,22 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _clientDependencies.put(owner, list);
     }
 
-    public Set<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
+    @Override
+    public List<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
     {
-        Set<Supplier<ClientDependency>> set = new HashSet<>();
+        List<Supplier<ClientDependency>> list = new ArrayList<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))
             {
-                set.addAll(_clientDependencies.get(m));
+                list.addAll(_clientDependencies.get(m));
             }
         }
 
-        return Collections.unmodifiableSet(set);
+        return Collections.unmodifiableList(list);
     }
 
+    @Override
     public String getDefaultWorkbookFolderType(Container c)
     {
         Module labModule = ModuleLoader.getInstance().getModule(LaboratoryModule.class);
@@ -330,6 +349,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return mp.getEffectiveValue(c);
     }
 
+    @Override
     public void registerAssayButton(ButtonConfigFactory btn, String providerName, String domain)
     {
         Map<String, List<ButtonConfigFactory>> schemaMap = _assayButtons.get(providerName);
@@ -346,6 +366,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _assayButtons.put(providerName, schemaMap);
     }
 
+    @Override
     public List<ButtonConfigFactory> getAssayButtons(TableInfo ti, String providerName, String domain)
     {
         List<ButtonConfigFactory> buttons = new ArrayList<>();
@@ -367,11 +388,13 @@ public class LaboratoryServiceImpl extends LaboratoryService
         return Collections.unmodifiableList(buttons);
     }
 
+    @Override
     public TableCustomizer getLaboratoryTableCustomizer()
     {
         return new LaboratoryTableCustomizer();
     }
 
+    @Override
     public TableCustomizer getAssayTableCustomizer()
     {
         return new DefaultAssayCustomizer();
@@ -545,6 +568,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         props.save();
     }
 
+    @Override
     public List<TabbedReportItem> getTabbedReportItems(Container c, User u)
     {
         List<TabbedReportItem> items = new ArrayList<>();
@@ -559,6 +583,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private Map<String, List<List<String>>> _assayResultIndexes = new HashMap<>();
     private Map<String, Map<String, List<List<String>>>> _tableIndexes = new HashMap<>();
 
+    @Override
     public void registerAssayResultsIndex(String providerName, List<String> columnsToIndex)
     {
         List<List<String>> indexes = _assayResultIndexes.get(providerName);
@@ -570,6 +595,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _assayResultIndexes.put(providerName, indexes);
     }
 
+    @Override
     public void registerTableIndex(String schemaName, String queryName, List<String> columnsToIndex)
     {
         Map<String, List<List<String>>> indexesForSchema = _tableIndexes.get(schemaName);
@@ -649,9 +675,9 @@ public class LaboratoryServiceImpl extends LaboratoryService
     {
         try
         {
-            return customizerClass.newInstance();
+            return customizerClass.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e)
+        catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
         {
             _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
         }
