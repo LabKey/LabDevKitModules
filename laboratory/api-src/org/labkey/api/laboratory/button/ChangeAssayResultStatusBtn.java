@@ -20,7 +20,6 @@ import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.clientLibrary.xml.ModeTypeEnum;
 
 import java.util.Arrays;
 
