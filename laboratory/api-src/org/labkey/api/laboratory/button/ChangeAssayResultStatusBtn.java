@@ -39,7 +39,7 @@ public class ChangeAssayResultStatusBtn extends SimpleButtonConfigFactory
     public ChangeAssayResultStatusBtn(Module owner, String label)
     {
         super(owner, label, "Laboratory.window.ChangeAssayResultStatusWindow.buttonHandler(dataRegionName);");
-        setClientDependencies(Arrays.asList(ClientDependency.supplierFromModuleName("laboratory"), ClientDependency.supplierFromPath("laboratory/window/ChangeAssayResultStatusWindow.js", ModeTypeEnum.BOTH)));
+        setClientDependencies(Arrays.asList(ClientDependency.supplierFromModuleName("laboratory"), ClientDependency.supplierFromPath("laboratory/window/ChangeAssayResultStatusWindow.js")));
     }
 
     public boolean isAvailable(TableInfo ti)
