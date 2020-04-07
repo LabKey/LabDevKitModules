@@ -64,6 +64,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * User: bimber
@@ -76,7 +77,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private static final Logger _log = Logger.getLogger(LaboratoryServiceImpl.class);
 
     private Set<Module> _registeredModules = new HashSet<>();
-    private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
+    private Map<Module, List<Supplier<ClientDependency>>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<ButtonConfigFactory>>> _assayButtons = new CaseInsensitiveHashMap<>();
     private Map<String, DataProvider> _dataProviders = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
@@ -297,9 +298,9 @@ public class LaboratoryServiceImpl extends LaboratoryService
         });
     }
 
-    public void registerClientDependency(ClientDependency cd, Module owner)
+    public void registerClientDependency(Supplier<ClientDependency> cd, Module owner)
     {
-        List<ClientDependency> list = _clientDependencies.get(owner);
+        List<Supplier<ClientDependency>> list = _clientDependencies.get(owner);
         if (list == null)
             list = new ArrayList<>();
 
@@ -308,9 +309,9 @@ public class LaboratoryServiceImpl extends LaboratoryService
         _clientDependencies.put(owner, list);
     }
 
-    public Set<ClientDependency> getRegisteredClientDependencies(Container c)
+    public Set<Supplier<ClientDependency>> getRegisteredClientDependencies(Container c)
     {
-        Set<ClientDependency> set = new HashSet<>();
+        Set<Supplier<ClientDependency>> set = new HashSet<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))

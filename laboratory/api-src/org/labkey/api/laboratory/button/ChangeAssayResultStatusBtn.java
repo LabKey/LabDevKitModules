@@ -20,6 +20,9 @@ import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.clientLibrary.xml.ModeTypeEnum;
+
+import java.util.Arrays;
 
 /**
  * User: bimber
@@ -36,7 +39,7 @@ public class ChangeAssayResultStatusBtn extends SimpleButtonConfigFactory
     public ChangeAssayResultStatusBtn(Module owner, String label)
     {
         super(owner, label, "Laboratory.window.ChangeAssayResultStatusWindow.buttonHandler(dataRegionName);");
-        setClientDependencies(ClientDependency.fromModuleName("laboratory"), ClientDependency.fromPath("laboratory/window/ChangeAssayResultStatusWindow.js"));
+        setClientDependencies(Arrays.asList(ClientDependency.supplierFromModuleName("laboratory"), ClientDependency.supplierFromPath("laboratory/window/ChangeAssayResultStatusWindow.js", ModeTypeEnum.BOTH)));
     }
 
     public boolean isAvailable(TableInfo ti)

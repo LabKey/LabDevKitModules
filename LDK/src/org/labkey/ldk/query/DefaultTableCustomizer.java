@@ -54,6 +54,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 
 /**
@@ -419,9 +420,9 @@ public class DefaultTableCustomizer implements TableCustomizer
                 btnNameMap.put(newButton.getText(), newButton);
                 menuItems.add(newButton);
 
-                for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+                for (Supplier<ClientDependency> cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
                 {
-                    scripts.add(cd.getScriptString());
+                    scripts.add(cd.get().getScriptString());
                 }
             }
         }
