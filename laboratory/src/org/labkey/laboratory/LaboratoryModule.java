@@ -53,7 +53,8 @@ import org.labkey.laboratory.security.LaboratoryAdminRole;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -213,11 +214,11 @@ public class LaboratoryModule extends ExtendedSimpleModule
 
     @NotNull
     @Override
-    public LinkedHashSet<Supplier<ClientDependency>> getClientDependencies(Container c)
+    public List<Supplier<ClientDependency>> getClientDependencies(Container c)
     {
         // allow other modules to register with EHR service, and include their dependencies automatically
         // whenever laboratory context is requested
-        LinkedHashSet<Supplier<ClientDependency>> ret = new LinkedHashSet<>();
+        List<Supplier<ClientDependency>> ret = new LinkedList<>();
         ret.addAll(super.getClientDependencies(c));
         ret.addAll(LaboratoryService.get().getRegisteredClientDependencies(c));
 
