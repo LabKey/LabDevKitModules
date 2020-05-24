@@ -144,9 +144,9 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Prepare Assay Run");
+            root.addChild("Prepare Assay Run");
         }
     }
 
@@ -2339,9 +2339,9 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Data Browser");
+            root.addChild("Data Browser");
         }
     }
 }

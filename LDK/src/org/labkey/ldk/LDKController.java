@@ -393,9 +393,9 @@ public class LDKController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild(_title == null ? "Notification" : _title);
+            root.addChild(_title == null ? "Notification" : _title);
         }
     }
 
@@ -447,9 +447,9 @@ public class LDKController extends SpringActionController
             return new HtmlView(sb.toString());
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Validate Container Scoped Tables");
+            root.addChild("Validate Container Scoped Tables");
         }
     }
 
@@ -861,7 +861,7 @@ public class LDKController extends SpringActionController
             return qwp;
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
             TableInfo ti = null;
             try
@@ -874,7 +874,6 @@ public class LDKController extends SpringActionController
             }
 
             root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
-            return root;
         }
 
         protected void ensureQueryExists(QueryForm form)
@@ -1078,9 +1077,9 @@ public class LDKController extends SpringActionController
             }
         }
 
-        public NavTree appendNavTrail(NavTree root)
+        public void addNavTrail(NavTree root)
         {
-            return root.addChild("Home");
+            root.addChild("Home");
         }
     }
 
