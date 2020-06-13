@@ -23,6 +23,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.api.ExpSampleSet;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.exp.api.SampleSetService;
 import org.labkey.api.laboratory.AbstractDataProvider;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.QueryCountNavItem;
@@ -77,10 +78,10 @@ public class SampleSetDataProvider extends AbstractDataProvider
     @Override
     public List<NavItem> getSampleNavItems(Container c, User u)
     {
-        //also append all sample sets in this container
+        //also append all sample types in this container
         List<NavItem> navItems = new ArrayList<NavItem>();
 
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleSet ss : SampleSetService.get().getSampleSets(c, u, true))
         {
             navItems.add(new SampleSetNavItem(this, LaboratoryService.NavItemCategory.samples, ss));
         }
@@ -116,7 +117,7 @@ public class SampleSetDataProvider extends AbstractDataProvider
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleSet ss : SampleSetService.get().getSampleSets(c, u, true))
         {
             SampleSetNavItem nav = new SampleSetNavItem(this, LaboratoryService.NavItemCategory.samples, ss);
             if (nav.isVisible(c, u))
@@ -132,7 +133,7 @@ public class SampleSetDataProvider extends AbstractDataProvider
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<NavItem>();
-        for (ExpSampleSet ss : ExperimentService.get().getSampleSets(c, u, true))
+        for (ExpSampleSet ss : SampleSetService.get().getSampleSets(c, u, true))
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "Samples");
             if (us != null)
