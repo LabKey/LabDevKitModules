@@ -115,12 +115,12 @@ public class SampleTypeDataProvider extends AbstractDataProvider
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
-        for (ExpSampleType ss : SampleTypeService.get().getSampleTypes(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
         {
-            SampleTypeNavItem nav = new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, ss);
+            SampleTypeNavItem nav = new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, st);
             if (nav.isVisible(c, u))
             {
-                items.add(new QueryCountNavItem(this, "Samples", ss.getName(), LaboratoryService.NavItemCategory.samples, "Samples", ss.getName()));
+                items.add(new QueryCountNavItem(this, "Samples", st.getName(), LaboratoryService.NavItemCategory.samples, "Samples", st.getName()));
             }
         }
 
@@ -131,18 +131,18 @@ public class SampleTypeDataProvider extends AbstractDataProvider
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<NavItem>();
-        for (ExpSampleType ss : SampleTypeService.get().getSampleTypes(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "Samples");
             if (us != null)
             {
-                TableInfo ti = us.getTable(ss.getName());
+                TableInfo ti = us.getTable(st.getName());
                 if (ti != null)
                 {
                     ColumnInfo ci = getSubjectColumn(ti);
                     if (ci != null)
                     {
-                        QueryCountNavItem qc = new QueryCountNavItem(this, "Samples", ss.getName(), LaboratoryService.NavItemCategory.samples, "Samples", ss.getName());
+                        QueryCountNavItem qc = new QueryCountNavItem(this, "Samples", st.getName(), LaboratoryService.NavItemCategory.samples, "Samples", st.getName());
                         qc.setFilter(new SimpleFilter(FieldKey.fromString(ci.getName()), subjectId));
                         items.add(qc);
                     }
