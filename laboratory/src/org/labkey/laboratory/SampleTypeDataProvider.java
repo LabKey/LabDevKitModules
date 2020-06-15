@@ -49,7 +49,7 @@ import java.util.Set;
  */
 public class SampleTypeDataProvider extends AbstractDataProvider
 {
-    public static final String NAME = "SampleSetDataProvider";
+    public static final String NAME = "SampleTypeDataProvider";
 
     public SampleTypeDataProvider()
     {
