@@ -16,6 +16,8 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.view.HttpView;
 import org.labkey.laboratory.query.LaboratoryWorkbooksTable;
 import org.labkey.laboratory.query.WorkbookModel;
 
@@ -127,6 +129,46 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
                             Table.update(ce.user, ti, w, ce.container.getId());
                         }
                         catch (NumberFormatException ignored) {}
+                    }
+                }
+            }
+        }
+        else if (evt.getPropertyName().equals(ContainerManager.Property.Modules.name()))
+        {
+            if (evt instanceof ContainerManager.ContainerPropertyChangeEvent)
+            {
+                ContainerManager.ContainerPropertyChangeEvent ce = (ContainerManager.ContainerPropertyChangeEvent)evt;
+
+                User u = ce.user;
+                if (u == null && HttpView.hasCurrentView())
+                    u = HttpView.currentView().getViewContext().getUser();
+
+                if (u == null || !ce.container.hasPermission(u, InsertPermission.class))
+                    return;
+
+                if (ce.container.getActiveModules().contains(ModuleLoader.getInstance().getModule(LaboratoryModule.class)))
+                {
+                    try
+                    {
+                        LaboratoryManager.get().initWorkbooksForContainer(u, ce.container);
+                    }
+                    catch (Exception e)
+                    {
+                        _log.error("Unable to update laboratory workbooks table", e);
+                    }
+
+                    //attempt to populate default values on load
+                    try
+                    {
+                        LaboratoryManager.get().populateDefaultData(u, ce.container, null);
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        _log.error("Unable to populate defaults in laboratory module tables", e);
+                    }
+                    catch (BatchValidationException e)
+                    {
+                        //ignore, since this may just indicate the table already has these values
                     }
                 }
             }
