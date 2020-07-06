@@ -197,6 +197,17 @@ Ext4.define('Laboratory.panel.AbstractAssayPanel', {
             }
         }
 
+        if (fieldObj.getInitialValue){
+            try {
+                if (!Ext4.isFunction(fieldObj.getInitialValue))
+                    fieldObj.getInitialValue = eval('(' + fieldObj.getInitialValue + ')');
+            }
+            catch (error) {
+                LDK.Utils.logToServer({message: "unable to parse getInitialValue() for field: " + fieldObj.name});
+                console.error(error);
+            }
+        }
+
         return fieldObj;
     },
 
@@ -584,7 +595,7 @@ Ext4.define('Laboratory.panel.AbstractAssayPanel', {
                                 importMethodToggle: importMethod
                             });
 
-                            imf.fireEvent('change', this, imf.getValues, current);
+                            imf.fireEvent('change', this, imf.getValue(), current);
                         }
 
                         var target = this.down('#templatePreviewPanel');

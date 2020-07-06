@@ -1218,17 +1218,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             return;
         }
 
-        //if there is only one category, simplify the output
-        if (this.getDistinctCategories().length == 1){
-            if (tabPanel.rendered){
-                tabPanel.down('tabbar').setVisible(false);
-            }
-            else {
-                tabPanel.tabBar = tabPanel.tabBar || {};
-                tabPanel.tabBar.hidden = true;
-            }
-        }
-
         var items = [];
         Ext4.each(this.reports, function(report){
             if (!report || !report.category)

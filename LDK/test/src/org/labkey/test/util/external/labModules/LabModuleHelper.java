@@ -30,6 +30,7 @@ import org.labkey.test.util.ext4cmp.Ext4GridRef;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -50,9 +51,21 @@ public class LabModuleHelper
     public static final String NEG_COLOR = "rgb(255, 255, 0)";
     public static final String STD_COLOR = "rgb(0, 128, 0)";
 
+    public static final int VIRAL_BATCH_FIELDS = 0;
+    public static final int VIRAL_RUN_FIELDS = 1;
+    public static final int VIRAL_RESULT_FIELDS = 2;
+
     public LabModuleHelper(BaseWebDriverTest test)
     {
         _test = test;
+
+        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
+        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        l.findElement(_test.getDriver()).sendKeys(label + "\t");
+        _test.setFormElement(l, label);
+        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
+        _test.setFormElement(desc, "This is an assay");
+        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
     }
 
     public void defineAssay(String provider, String label)
@@ -425,5 +438,51 @@ public class LabModuleHelper
         }
 
         _test._fileBrowserHelper.selectImportDataAction(importAction);
+    }
+
+    public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, String> batchFields, Map<String, String> runFields, Map<String, String> resultFields)
+    {
+        _test.log("Defining a test assay at the project level");
+        //define a new assay at the project level
+        //the pipeline must already be setup
+        _test.goToProjectHome();
+
+        //copied from old test
+        _test.goToManageAssays();
+        _test.clickButton("New Assay Design");
+        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", provider));
+        _test.clickButton("Next");
+
+        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
+        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        _test.setFormElement(l, label);
+        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
+        _test.setFormElement(desc, "This is an assay");
+        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
+
+        _test.waitForText("Result Fields");
+
+        addViralAssayFields(batchFields, VIRAL_BATCH_FIELDS);
+        addViralAssayFields(runFields, VIRAL_RUN_FIELDS);
+        addViralAssayFields(resultFields, VIRAL_RESULT_FIELDS);
+
+        _test.sleep(1000);
+        _test.clickButton("Save", 0);
+        _test.waitForText(20000, "Save successful.");
+        _test.assertTextNotPresent("Unknown");
+    }
+
+    private void addViralAssayFields(Map<String, String> fields, int section)
+    {
+        if (fields != null)
+        {
+            for (Map.Entry<String, String> entry : fields.entrySet())
+            {
+                _test.clickButtonByIndex("Add Field", section, 0);
+                String name = entry.getKey();
+                String type = entry.getValue();
+                _test.getDriver().switchTo().activeElement().sendKeys(name + "\t" + name + "\t" + type);
+            }
+        }
     }
 }
