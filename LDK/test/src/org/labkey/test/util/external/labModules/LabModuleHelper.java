@@ -21,7 +21,6 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -58,14 +57,6 @@ public class LabModuleHelper
     public LabModuleHelper(BaseWebDriverTest test)
     {
         _test = test;
-
-        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
-        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
-        l.findElement(_test.getDriver()).sendKeys(label + "\t");
-        _test.setFormElement(l, label);
-        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
-        _test.setFormElement(desc, "This is an assay");
-        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
     }
 
     public void defineAssay(String provider, String label)
@@ -75,8 +66,25 @@ public class LabModuleHelper
         //the pipeline must already be setup
         _test.goToProjectHome();
 
+        //copied from old test
         _test.goToManageAssays();
-        new UIAssayHelper(_test).createAssayDesignWithDefaults(provider, label);
+        _test.clickButton("New Assay Design");
+        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", provider));
+        _test.clickButton("Next");
+
+        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
+        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        _test.setFormElement(l, label);
+        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
+        _test.setFormElement(desc, "This is an assay");
+        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
+
+        _test.waitForText("Result Fields");
+
+        _test.sleep(1000);
+        _test.clickButton("Save", 0);
+        _test.waitForText(20000, "Save successful.");
+        _test.assertTextNotPresent("Unknown");
     }
 
     public static Locator getNavPanelItem(String label, @Nullable String itemText)
@@ -203,7 +211,6 @@ public class LabModuleHelper
         }
 
         _test.waitForText("Sample Information");
-        _test._ext4Helper.waitForMaskToDisappear();
         _test.waitAndClick(Ext4Helper.Locators.ext4Button("Add From Spreadsheet"));
         _test.waitForElement(Ext4Helper.Locators.window("Spreadsheet Import"));
 
