@@ -19,8 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
+import org.labkey.test.components.domain.DomainFormPanel;
+import org.labkey.test.pages.ReactAssayDesignerPage;
+import org.labkey.test.params.FieldDefinition;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -68,23 +72,7 @@ public class LabModuleHelper
 
         //copied from old test
         _test.goToManageAssays();
-        _test.clickButton("New Assay Design");
-        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", provider));
-        _test.clickButton("Next");
-
-        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
-        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
-        _test.setFormElement(l, label);
-        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
-        _test.setFormElement(desc, "This is an assay");
-        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
-
-        _test.waitForText("Result Fields");
-
-        _test.sleep(1000);
-        _test.clickButton("Save", 0);
-        _test.waitForText(20000, "Save successful.");
-        _test.assertTextNotPresent("Unknown");
+        new UIAssayHelper(_test).createAssayDesignWithDefaults(provider, label);
     }
 
     public static Locator getNavPanelItem(String label, @Nullable String itemText)
@@ -447,7 +435,7 @@ public class LabModuleHelper
         _test._fileBrowserHelper.selectImportDataAction(importAction);
     }
 
-    public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, String> batchFields, Map<String, String> runFields, Map<String, String> resultFields)
+    public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
     {
         _test.log("Defining a test assay at the project level");
         //define a new assay at the project level
@@ -456,39 +444,23 @@ public class LabModuleHelper
 
         //copied from old test
         _test.goToManageAssays();
-        _test.clickButton("New Assay Design");
-        _test.checkCheckbox(Locator.radioButtonByNameAndValue("providerName", provider));
-        _test.clickButton("Next");
+        ReactAssayDesignerPage designerPage = new UIAssayHelper(_test).createAssayDesign(provider, label);
 
-        Locator l = Locator.xpath("//input[@id='AssayDesignerName']");
-        _test.waitForElement(l, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
-        _test.setFormElement(l, label);
-        Locator desc = Locator.xpath("//textarea[@id='AssayDesignerDescription']");
-        _test.setFormElement(desc, "This is an assay");
-        _test.log(l.findElement(_test.getDriver()).getAttribute("value"));
+        addViralAssayFields(batchFields, designerPage.goToBatchFields());
+        addViralAssayFields(runFields, designerPage.goToRunFields());
+        // This assay uses "Result" instead of "Results" for its domain name
+        addViralAssayFields(resultFields, designerPage.expandFieldsPanel("Result"));
 
-        _test.waitForText("Result Fields");
-
-        addViralAssayFields(batchFields, VIRAL_BATCH_FIELDS);
-        addViralAssayFields(runFields, VIRAL_RUN_FIELDS);
-        addViralAssayFields(resultFields, VIRAL_RESULT_FIELDS);
-
-        _test.sleep(1000);
-        _test.clickButton("Save", 0);
-        _test.waitForText(20000, "Save successful.");
-        _test.assertTextNotPresent("Unknown");
+        designerPage.clickFinish();
     }
 
-    private void addViralAssayFields(Map<String, String> fields, int section)
+    private void addViralAssayFields(Map<String, FieldDefinition.ColumnType> fields, DomainFormPanel section)
     {
         if (fields != null)
         {
-            for (Map.Entry<String, String> entry : fields.entrySet())
+            for (Map.Entry<String, FieldDefinition.ColumnType> entry : fields.entrySet())
             {
-                _test.clickButtonByIndex("Add Field", section, 0);
-                String name = entry.getKey();
-                String type = entry.getValue();
-                _test.getDriver().switchTo().activeElement().sendKeys(name + "\t" + name + "\t" + type);
+                section.addField(new FieldDefinition(entry.getKey(), entry.getValue()));
             }
         }
     }
