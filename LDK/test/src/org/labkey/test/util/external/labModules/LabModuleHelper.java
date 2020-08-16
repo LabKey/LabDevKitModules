@@ -54,10 +54,6 @@ public class LabModuleHelper
     public static final String NEG_COLOR = "rgb(255, 255, 0)";
     public static final String STD_COLOR = "rgb(0, 128, 0)";
 
-    public static final int VIRAL_BATCH_FIELDS = 0;
-    public static final int VIRAL_RUN_FIELDS = 1;
-    public static final int VIRAL_RESULT_FIELDS = 2;
-
     public LabModuleHelper(BaseWebDriverTest test)
     {
         _test = test;
@@ -70,7 +66,6 @@ public class LabModuleHelper
         //the pipeline must already be setup
         _test.goToProjectHome();
 
-        //copied from old test
         _test.goToManageAssays();
         new UIAssayHelper(_test).createAssayDesignWithDefaults(provider, label);
     }
