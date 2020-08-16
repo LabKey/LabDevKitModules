@@ -787,7 +787,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             "title",                  "titleHref",            "updateURL",              "viewName"                       //    });
         ];                                                                                                               //
 
-        Ext.each(configOptions, function(option, index, list) {
+        Ext4.each(configOptions, function(option, index, list) {
             if (option in tab.report) {
                 queryConfig[option] = tab.report[option];
             }
