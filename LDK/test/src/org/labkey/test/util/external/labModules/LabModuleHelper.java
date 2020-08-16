@@ -434,34 +434,4 @@ public class LabModuleHelper
 
         _test._fileBrowserHelper.selectImportDataAction(importAction);
     }
-
-    public void defineViralAssayWithAdditionalFields(String provider, String label, Map<String, FieldDefinition.ColumnType> batchFields, Map<String, FieldDefinition.ColumnType> runFields, Map<String, FieldDefinition.ColumnType> resultFields)
-    {
-        _test.log("Defining a test assay at the project level");
-        //define a new assay at the project level
-        //the pipeline must already be setup
-        _test.goToProjectHome();
-
-        //copied from old test
-        _test.goToManageAssays();
-        ReactAssayDesignerPage designerPage = new UIAssayHelper(_test).createAssayDesign(provider, label);
-
-        addViralAssayFields(batchFields, designerPage.goToBatchFields());
-        addViralAssayFields(runFields, designerPage.goToRunFields());
-        // This assay uses "Result" instead of "Results" for its domain name
-        addViralAssayFields(resultFields, designerPage.expandFieldsPanel("Result"));
-
-        designerPage.clickFinish();
-    }
-
-    private void addViralAssayFields(Map<String, FieldDefinition.ColumnType> fields, DomainFormPanel section)
-    {
-        if (fields != null)
-        {
-            for (Map.Entry<String, FieldDefinition.ColumnType> entry : fields.entrySet())
-            {
-                section.addField(new FieldDefinition(entry.getKey(), entry.getValue()));
-            }
-        }
-    }
 }
