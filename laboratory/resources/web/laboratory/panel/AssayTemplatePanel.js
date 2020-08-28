@@ -79,13 +79,13 @@ Ext4.define('Laboratory.panel.AssayTemplatePanel', {
         }, this);
     },
 
-    appendDownloadMenuItems: function(){
+    appendDownloadMenuItems: function() {
         var btn = this.down('#downloadBtn');
         if(!this.templateMetadata.hideDownloadBtn)
             btn.setVisible(true);
     },
 
-    validateForm: function(){
+    validateForm: function() {
         var title = this.down('#templateTitle').getValue();
         if (!title){
             Ext4.Msg.alert('Error', 'Must choose a name for this run');
@@ -269,8 +269,7 @@ Ext4.define('Laboratory.panel.AssayTemplatePanel', {
             success: function(results){
                 if (results.rows.length) {
                     var row = results.rows[0];
-                    if (row.importMethod)
-                    {
+                    if (row.importMethod) {
                         this.selectedMethod = this.getImportMethodByName(row.importMethod);
                         var field = this.down('#templateImportMethod');
                         if (field) {
