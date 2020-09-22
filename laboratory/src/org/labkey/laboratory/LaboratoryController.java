@@ -72,6 +72,9 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.assay.AssayFileWriter;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
+import org.labkey.api.util.ErrorRenderer;
+import org.labkey.api.util.ErrorView;
+import org.labkey.api.util.ErrorView;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
@@ -1029,7 +1032,10 @@ public class LaboratoryController extends SpringActionController
             {
                 if (errors.hasErrors())
                 {
-                    HttpView errorView = ExceptionUtil.getErrorView(HttpServletResponse.SC_BAD_REQUEST, "Failed to create template - invalid input", null, getViewContext().getRequest(), false);
+                    ErrorRenderer renderer = ExceptionUtil.getErrorRenderer(HttpServletResponse.SC_BAD_REQUEST, "Failed to create template - invalid input", null, getViewContext().getRequest(), false, false);
+                    renderer.setErrorType(ErrorRenderer.ErrorType.notFound);
+                    HttpView<?> errorView = getPageConfig().getTemplate().getTemplate(getViewContext(), new ErrorView(renderer), getPageConfig());
+                    getPageConfig().addClientDependencies(errorView.getClientDependencies());
                     errorView.render(getViewContext().getRequest(), getViewContext().getResponse());
                     return;
                 }
