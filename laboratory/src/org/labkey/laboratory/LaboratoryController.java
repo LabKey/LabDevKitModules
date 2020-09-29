@@ -1032,11 +1032,7 @@ public class LaboratoryController extends SpringActionController
             {
                 if (errors.hasErrors())
                 {
-                    ErrorRenderer renderer = ExceptionUtil.getErrorRenderer(HttpServletResponse.SC_BAD_REQUEST, "Failed to create template - invalid input", null, getViewContext().getRequest(), false, false);
-                    renderer.setErrorType(ErrorRenderer.ErrorType.notFound);
-                    HttpView<?> errorView = getPageConfig().getTemplate().getTemplate(getViewContext(), new ErrorView(renderer), getPageConfig());
-                    getPageConfig().addClientDependencies(errorView.getClientDependencies());
-                    errorView.render(getViewContext().getRequest(), getViewContext().getResponse());
+                    ExceptionUtil.renderErrorView(getViewContext(), getPageConfig(), ErrorRenderer.ErrorType.notFound, HttpServletResponse.SC_BAD_REQUEST, "Failed to create template - invalid input", null, false, false);
                     return;
                 }
 
