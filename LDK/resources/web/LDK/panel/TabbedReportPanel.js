@@ -1067,6 +1067,10 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
             for (var i=0;i<token.length;i++){
                 var t = token[i].split(':');
+                t[0] = decodeURIComponent(t[0]);
+                if (t.length > 1) {
+                    t[1] = decodeURIComponent(t[1]);
+                }
                 switch(t[0]){
                     case 'inputType':
                         context.inputType = t[1];
