@@ -1084,7 +1084,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         this.isReportTabSelected = (t[1] === '1');
                         break;
                     case 'activeReport':
-                        var report = decodeURI(t[1]);
+                        var report = t[1];
                         var tab = this.reportMap[report];
                         if (tab){
                             this.activeReport = tab;
@@ -1095,7 +1095,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
                         }
                         break;
                     default:
-                        context[t[0]] = decodeURI(t[1]);
+                        context[t[0]] = t[1];
                 }
             }
         }
