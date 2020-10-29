@@ -44,10 +44,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     showFilterOptionsTitle: false,
     showReportsOption: false,
 
-    // Has at least one report been shown, meaning that we will always try to render the report whenever the user clicks
-    // a report tab
-    reportShown: false,
-
     initComponent: function(){
         Ext4.apply(this, {
             tabsReady: false,
@@ -637,7 +633,6 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
 
     //updates the provided tab, unless already up-to-date
     possiblyUpdateActiveReport: function (filters, forceRefresh) {
-        this.reportShown = true;
         var tab = this.activeReport;
         var reload = false;
 
@@ -646,6 +641,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         var reportTab = tab.items[0];
         if (reportTab.filters){
             for (var i in filters){
+                // The intent of this code is to test the filter conditions of this report (i.e. IDs, groups).
+                // showReport has nothing to do with this
+                if (i === 'showReport') {
+                    continue;
+                }
                 if (JSON.stringify(filters[i]) !== JSON.stringify(reportTab.filters[i])){
                     reload = true;
                     break;
@@ -1395,7 +1395,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         if (tab && tab.items && tab.items.length > 0) {
             Ext4.apply(filters, {
                 inputType: this.down('#inputType').getValue().selector,
-                showReport: this.isReportTabSelected || this.reportShown ? '1' : '0',
+                showReport: this.isReportTabSelected ? '1' : '0',
                 activeReport: tab.items[0].report.id
             });
         }
