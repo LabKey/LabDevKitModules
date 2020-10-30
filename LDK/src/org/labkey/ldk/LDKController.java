@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * Update 2020-05-21 added mapping to IM field for use in pulling employee ID
- * Build by Josh
  */
 
 package org.labkey.ldk;
