@@ -81,9 +81,11 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
             },
 
             setValue: function(val){
-                this.addValueIfNeeded(val);
+                if (val) {
+                    this.addValueIfNeeded(val);
 
-                this.callOverridden(arguments);
+                    this.callOverridden(arguments);
+                }
             }
         });
 
