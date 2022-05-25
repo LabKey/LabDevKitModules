@@ -387,7 +387,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
             }
             catch (IllegalArgumentException e)
             {
-                _log.error("Invalid stored demographics source from container: " + c.getPath(), e);
+                _log.debug("Invalid stored demographics source from container: " + c.getPath(), e);
             }
         }
 
