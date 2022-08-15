@@ -69,10 +69,10 @@ abstract public class AbstractNotification implements Notification
         ActionURL url = _queryUrls.urlExecuteQuery(c, schemaName, queryName);
 
         if (viewName != null)
-            url.addParameter("query.viewName=", viewName);
+            url.addParameter("query.viewName", viewName);
 
        if (filter != null)
-            filter.applyToURL(url,"query");
+            filter.applyToURL(url, "query");
 
         return url.getURIString(); // Return an absolute URL since links are sent via email
     }
