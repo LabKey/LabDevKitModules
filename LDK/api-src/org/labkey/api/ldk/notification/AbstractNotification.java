@@ -46,6 +46,7 @@ abstract public class AbstractNotification implements Notification
     {
         _owner = owner;
         _queryUrls = PageFlowUtil.urlProvider(QueryUrls.class);
+        assert _queryUrls != null; // Track down test failure where this is null
     }
 
     @Override
