@@ -39,7 +39,7 @@ abstract public class AbstractNotification implements Notification
     private final Module _owner;
     protected final QueryUrls _queryUrls;
 
-    protected final static Logger log = LogHelper.getLogger(AbstractNotification.class, "EHR notification errors");
+    protected final static Logger log = LogHelper.getLogger(AbstractNotification.class, "LDK notification errors");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 
     public AbstractNotification(Module owner)
