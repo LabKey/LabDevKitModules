@@ -37,16 +37,18 @@ import java.text.SimpleDateFormat;
 abstract public class AbstractNotification implements Notification
 {
     private final Module _owner;
-    protected final QueryUrls _queryUrls;
 
     protected final static Logger log = LogHelper.getLogger(AbstractNotification.class, "LDK notification errors");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
+    protected final static QueryUrls _queryUrls = PageFlowUtil.urlProvider(QueryUrls.class);
 
     public AbstractNotification(Module owner)
     {
         _owner = owner;
-        _queryUrls = PageFlowUtil.urlProvider(QueryUrls.class);
-        assert _queryUrls != null; // Track down test failure where this is null
+
+        // AbstractNotifications must be constructed after QueryUrls has been registered, typically in startup() or
+        // doStartupAfterSpringConfig()
+        assert _queryUrls != null;
     }
 
     @Override
