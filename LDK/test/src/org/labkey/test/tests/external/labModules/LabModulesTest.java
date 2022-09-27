@@ -18,8 +18,8 @@ package org.labkey.test.tests.external.labModules;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -479,11 +479,10 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                 assertTrue("Row " + i + " is missing value for column: " + col, row.containsKey(col));
 
                 Object serverVal = row.get(col);
-                //NOTE: the java api uses org.json.simple.JSONArray, which implements List
-                if (serverVal instanceof List)
+                //NOTE: the java api uses org.json.JSONArray, which implements Iterable
+                if (serverVal instanceof JSONArray arr)
                 {
-                    List arr = ((List)serverVal);
-                    String value = arr.size() == 0 ? null : StringUtils.trimToNull(StringUtils.join(arr, "\n"));
+                    String value = arr.isEmpty() ? null : StringUtils.trimToNull(StringUtils.join(arr, "\n"));
                     assertEquals("Incorrect value for: " + col + " on row: " + i, expectations[idx], value);
                 }
                 else if (serverVal instanceof Date)
@@ -491,9 +490,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                     Date d = dateFormat.parse(expectations[idx]);
                     assertEquals("Incorrect value for: " + col + " on row " + i, d, serverVal);
                 }
-                else if (serverVal != null && (serverVal instanceof Integer || serverVal instanceof Double))
+                else if ((serverVal instanceof Integer || serverVal instanceof Double))
                 {
-                    Double d = Double.parseDouble(expectations[idx]);
+                    double d = Double.parseDouble(expectations[idx]);
                     assertEquals("Incorrect value for: " + col + " on row " + i, d, Double.parseDouble(serverVal.toString()), DELTA);
                 }
                 else
@@ -1511,7 +1510,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    private String getColumnLabel(SelectRowsResponse srr, String name) throws org.json.simple.parser.ParseException
+    private String getColumnLabel(SelectRowsResponse srr, String name)
     {
         JSONArray columnModel = (JSONArray) srr.getMetaData().get("fields");
         for (Object o : columnModel)
