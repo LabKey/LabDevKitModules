@@ -479,10 +479,11 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                 assertTrue("Row " + i + " is missing value for column: " + col, row.containsKey(col));
 
                 Object serverVal = row.get(col);
-                //NOTE: the java api uses org.json.JSONArray, which implements Iterable
-                if (serverVal instanceof JSONArray arr)
+
+                //NOTE: the response value can be a List
+                if (serverVal instanceof List<?> list)
                 {
-                    String value = arr.isEmpty() ? null : StringUtils.trimToNull(StringUtils.join(arr, "\n"));
+                    String value = list.isEmpty() ? null : StringUtils.trimToNull(StringUtils.join(list, "\n"));
                     assertEquals("Incorrect value for: " + col + " on row: " + i, expectations[idx], value);
                 }
                 else if (serverVal instanceof Date)
