@@ -1015,6 +1015,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             var cfg = Ext4.apply({}, filterType);
             cfg.tabbedReportPanel = this;
             cfg.filterContext = this.getFilterContext();
+            cfg.caseInsensitive = this.caseInsensitive;
 
             if (this.activeFilterType){
                 this.activeFilterType.prepareRemove();
