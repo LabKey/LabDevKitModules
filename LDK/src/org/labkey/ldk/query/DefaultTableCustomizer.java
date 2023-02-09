@@ -59,7 +59,6 @@ import java.util.Set;
 
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/27/12
  * Time: 3:09 PM
@@ -69,7 +68,7 @@ public class DefaultTableCustomizer implements TableCustomizer
     private static final String MORE_ACTIONS = "More Actions";
 
     private static final Logger _log = LogManager.getLogger(TableCustomizer.class);
-    private Settings _settings;
+    private final Settings _settings;
 
     public DefaultTableCustomizer()
     {
