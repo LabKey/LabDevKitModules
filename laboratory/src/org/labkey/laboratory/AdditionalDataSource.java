@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONException;
-import org.json.old.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.laboratory.LaboratoryService;
@@ -63,13 +63,13 @@ public class AdditionalDataSource extends AbstractDataSource
             String sampleDateFieldKey = json.optString("sampleDateFieldKey");
 
             //for legacy data:
-            if (json.containsKey("category") && !json.containsKey("reportCategory"))
+            if (json.has("category") && !json.has("reportCategory"))
             {
                 json.put("reportCategory", json.getString("category"));
             }
 
             String reportCategory = json.getString("reportCategory");
-            Boolean importIntoWorkbooks = json.containsKey("importIntoWorkbooks") ? json.getBoolean("importIntoWorkbooks") : false;
+            Boolean importIntoWorkbooks = json.has("importIntoWorkbooks") ? json.getBoolean("importIntoWorkbooks") : false;
 
             validateKey(c, u, containerId, schemaName, queryName, label, itemType, reportCategory, importIntoWorkbooks);
             LaboratoryService.NavItemCategory cat = LaboratoryService.NavItemCategory.valueOf(itemType);

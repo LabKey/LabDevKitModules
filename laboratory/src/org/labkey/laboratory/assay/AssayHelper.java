@@ -18,7 +18,7 @@ package org.labkey.laboratory.assay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.assay.AssayBatchDomainKind;
 import org.labkey.api.assay.AssayDataCollector;
 import org.labkey.api.assay.AssayProvider;
@@ -186,7 +186,7 @@ public class AssayHelper
     public Pair<ExpExperiment, ExpRun> saveAssayBatch(List<Map<String, Object>> results, JSONObject json, File file, ViewContext ctx, AssayProvider provider, ExpProtocol protocol) throws ValidationException, ExperimentException
     {
         AssayRunCreator creator = provider.getRunCreator();
-        Map<String, String> runProperties = new CaseInsensitiveHashMap(json.optJSONObject("Run"));
+        Map<String, String> runProperties = new CaseInsensitiveHashMap(json.optJSONObject("Run").toMap());
         String name = runProperties.get(ExperimentJSONConverter.NAME);
         String comments = runProperties.get("comments");
 

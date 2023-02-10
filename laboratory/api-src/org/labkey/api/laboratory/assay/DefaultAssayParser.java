@@ -23,8 +23,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
@@ -53,6 +53,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
 import org.labkey.api.util.FileType;
+import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.NotFoundException;
 import org.labkey.api.view.ViewContext;
@@ -71,6 +72,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * User: bimber
@@ -400,7 +403,7 @@ public class DefaultAssayParser implements AssayParser
         JSONArray resultRows = context.getResultRowsFromJson();
         if (resultRows != null)
         {
-            rows = resultRows.toMapList();
+            rows = JsonUtil.toJSONObjectList(resultRows).stream().map(JSONObject::toMap).toList();
             rows = processRowsFromJson(rows, context);
         }
         else
@@ -595,10 +598,10 @@ public class DefaultAssayParser implements AssayParser
         Map<String, Object> map = maps[0];
         JSONObject templateJson = new JSONObject((String)map.get("json"));
         JSONArray rows = templateJson.getJSONArray("ResultRows");
-        for (JSONObject row : rows.toJSONObjectArray())
+        for (JSONObject row : JsonUtil.toJSONObjectList(rows))
         {
             String key = row.getString(keyProperty);
-            ret.put(key, row);
+            ret.put(key, row.toMap());
         }
 
         return ret;
@@ -635,18 +638,18 @@ public class DefaultAssayParser implements AssayParser
         {
             try
             {
-                JSONArray arr = ExcelFactory.convertExcelToJSON(file, true);
+                org.json.old.JSONArray arr = ExcelFactory.convertExcelToJSON(file, true);
                 List<List<String>> ret = new ArrayList<>();
                 if (arr.length() == 0)
                     return ret;
 
-                JSONObject sheet = arr.getJSONObject(0);
+                org.json.old.JSONObject sheet = arr.getJSONObject(0);
                 for (Object cells : sheet.getJSONArray("data").toArray())
                 {
                     List<String> line = new ArrayList<>();
-                    for (JSONObject o : ((JSONArray) cells).toJSONObjectArray())
+                    for (org.json.old.JSONObject o : ((org.json.old.JSONArray) cells).toJSONObjectArray())
                     {
-                        Object val = o.containsKey("formattedValue") ? o.getString("formattedValue") : o.get("value");
+                        Object val = o.has("formattedValue") ? o.getString("formattedValue") : o.get("value");
                         line.add(ConvertHelper.convert(val, String.class));
                     }
                     ret.add(line);

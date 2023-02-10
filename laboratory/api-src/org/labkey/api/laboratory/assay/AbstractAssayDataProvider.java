@@ -18,7 +18,7 @@ package org.labkey.api.laboratory.assay;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
-import org.json.old.JSONObject;
+import org.json.JSONObject;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
@@ -334,7 +334,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
 
     public JSONObject getJsonObject(JSONObject parent, String key)
     {
-        return parent.containsKey(key) ? parent.getJSONObject(key): new JSONObject();
+        return parent.has(key) ? parent.getJSONObject(key): new JSONObject();
     }
 
     @Override

@@ -16,8 +16,8 @@
 package org.labkey.api.laboratory.assay;
 
 import org.apache.logging.log4j.Level;
-import org.json.old.JSONArray;
-import org.json.old.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.view.ViewContext;
 
 import java.io.File;
@@ -43,7 +43,7 @@ public class ImportContext
         _ctx = ctx;
 
         Level level = Level.ALL;
-        if (json != null && json.containsKey("errorLevel"))
+        if (json != null && json.has("errorLevel"))
         {
             level = Level.toLevel((String)json.get("errorLevel"));
         }
