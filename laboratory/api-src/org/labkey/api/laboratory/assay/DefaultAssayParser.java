@@ -627,7 +627,7 @@ public class DefaultAssayParser implements AssayParser
             return rowIdx;
     }
 
-    private static FileType EXCEL_TYPE = new FileType(Arrays.asList(".xlsx", ".xls"), ".xlsx", false);
+    private static final FileType EXCEL_TYPE = new FileType(Arrays.asList(".xlsx", ".xls"), ".xlsx", false);
 
     /**
      * Parses either an excel or text file
@@ -638,16 +638,16 @@ public class DefaultAssayParser implements AssayParser
         {
             try
             {
-                org.json.old.JSONArray arr = ExcelFactory.convertExcelToJSON(file, true);
+                JSONArray arr = ExcelFactory.convertExcelToJSON(file, true);
                 List<List<String>> ret = new ArrayList<>();
                 if (arr.length() == 0)
                     return ret;
 
-                org.json.old.JSONObject sheet = arr.getJSONObject(0);
-                for (Object cells : sheet.getJSONArray("data").toArray())
+                JSONObject sheet = arr.getJSONObject(0);
+                for (Object cells : sheet.getJSONArray("data").toList())
                 {
                     List<String> line = new ArrayList<>();
-                    for (org.json.old.JSONObject o : ((org.json.old.JSONArray) cells).toJSONObjectArray())
+                    for (JSONObject o : JsonUtil.toJSONObjectList((JSONArray) cells))
                     {
                         Object val = o.has("formattedValue") ? o.getString("formattedValue") : o.get("value");
                         line.add(ConvertHelper.convert(val, String.class));
