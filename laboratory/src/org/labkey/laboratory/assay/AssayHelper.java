@@ -190,19 +190,15 @@ public class AssayHelper
         String name = runProperties.get(ExperimentJSONConverter.NAME);
         String comments = runProperties.get("comments");
 
-        Map<String, String> batchProperties = (Map)json.optJSONObject("Batch");
-        if (batchProperties == null)
-        {
-            batchProperties = new HashMap<>();
-        }
+        JSONObject batchProperties = json.optJSONObject("Batch", new JSONObject());
 
-        if (!batchProperties.containsKey("Name"))
+        if (!batchProperties.has("Name"))
             batchProperties.put("Name", name);
 
         Map<String, File> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
 
         //TODO: see AssayRunAsyncContext
-        AssayRunUploadContext uploadContext = new RunUploadContext(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
+        AssayRunUploadContext uploadContext = new RunUploadContext(protocol, provider, name, comments, runProperties, batchProperties.toMap(), ctx, uploadedFiles);
         Pair<ExpExperiment, ExpRun> resultRows = creator.saveExperimentRun(uploadContext, null);
         return resultRows;
     }
