@@ -289,16 +289,18 @@ public class DefaultAssayImportMethod implements AssayImportMethod
             sheet.put("name", "Data");
             sheet.put("data", rowsForExcel);
 
-            org.json.old.JSONArray sheetsArray = new org.json.old.JSONArray();
+            JSONArray sheetsArray = new JSONArray();
             sheetsArray.put(sheet);
-            Workbook workbook =  ExcelFactory.createFromArray(sheetsArray, docType);
 
-            response.setContentType(docType.getMimeType());
-            response.setHeader("Content-disposition", "attachment; filename=\"" + filename +"\"");
-            response.setHeader("Pragma", "private");
-            response.setHeader("Cache-Control", "private");
+            try (Workbook workbook =  ExcelFactory.createFromArray(sheetsArray, docType))
+            {
+                response.setContentType(docType.getMimeType());
+                response.setHeader("Content-disposition", "attachment; filename=\"" + filename + "\"");
+                response.setHeader("Pragma", "private");
+                response.setHeader("Cache-Control", "private");
 
-            workbook.write(response.getOutputStream());
+                workbook.write(response.getOutputStream());
+            }
         }
         catch (IOException e)
         {
