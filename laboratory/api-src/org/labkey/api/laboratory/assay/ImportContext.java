@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.labkey.api.view.ViewContext;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * User: bimber
@@ -80,11 +81,11 @@ public class ImportContext
         return null;
     }
 
-    public JSONObject getPromotedResultsFromJson()
+    public Map<String, Object> getPromotedResultsFromJson()
     {
         if (_json.has("Results"))
         {
-            return _json.getJSONObject("Results");
+            return _json.getJSONObject("Results").toMap();
         }
 
         return null;
@@ -100,8 +101,8 @@ public class ImportContext
         return _errors;
     }
 
-    public JSONObject getRunProperties()
+    public Map<String, Object> getRunProperties()
     {
-        return _json.getJSONObject("Run");
+        return _json.getJSONObject("Run").toMap();
     }
 }

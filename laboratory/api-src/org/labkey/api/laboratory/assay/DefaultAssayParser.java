@@ -294,13 +294,15 @@ public class DefaultAssayParser implements AssayParser
 
     protected void appendPromotedResultFields(Map<String, Object> row, ImportContext context)
     {
-        JSONObject resultData = context.getPromotedResultsFromJson();
+        Map<String, Object> resultData = context.getPromotedResultsFromJson();
         if (resultData != null)
         {
             for (String prop : resultData.keySet())
             {
-                if (row.get(prop) == null)
+                if (row.get(prop) == null && resultData.get(prop) != null)
+                {
                     row.put(prop, resultData.get(prop));
+                }
             }
         }
     }
