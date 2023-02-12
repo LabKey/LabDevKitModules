@@ -113,21 +113,21 @@ public class DemographicsSource extends AbstractDataSource
 
     private static boolean isValidSource(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String targetColumn, String label) throws IllegalArgumentException
     {
-        Container target;
-        if (containerId == null)
-        {
-            target = defaultContainer;
-        }
-        else
+        Container target = null;
+        if (containerId != null)
         {
             target = ContainerManager.getForId(containerId);
+            if (target == null)
+            {
+                _log.error("Invalid containerId in saved demographics source: " + containerId);
+            }
         }
 
         if (target == null)
         {
             target = defaultContainer;
         }
-        
+
         if (!target.hasPermission(u, ReadPermission.class))
         {
             return false;

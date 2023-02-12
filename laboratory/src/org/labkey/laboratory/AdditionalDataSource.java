@@ -132,17 +132,23 @@ public class AdditionalDataSource extends AbstractDataSource
 
     private static boolean validateKey(Container defaultContainer, User u, @Nullable String containerId, String schemaName, String queryName, String label, String navItemCategory, String reportCategory, boolean importIntoWorkbooks) throws IllegalArgumentException
     {
-        Container target;
-        if (containerId == null)
-            target = defaultContainer;
-        else
+        Container target = null;
+        if (containerId != null)
+        {
             target = ContainerManager.getForId(containerId);
+            if (target == null)
+            {
+                _log.error("Invalid containerId in saved data source: " + containerId);
+            }
+        }
 
         if (target == null)
+        {
             target = defaultContainer;
+        }
 
         UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
-        if (target == null)
+        if (us == null)
         {
             throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName + ", in container: " + target.getPath());
         }
