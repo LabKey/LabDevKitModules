@@ -59,11 +59,11 @@ public class DemographicsSource extends AbstractDataSource
         try
         {
             JSONObject json = new JSONObject(value);
-            String schemaName = json.getString("schemaName");
-            String queryName = json.getString("queryName");
-            String containerId = json.getString("containerId");
-            String label = json.getString("label");
-            String targetColumn = json.getString("targetColumn");
+            String schemaName = json.optString("schemaName");
+            String queryName = json.optString("queryName");
+            String containerId = json.optString("containerId");
+            String label = json.optString("label");
+            String targetColumn = json.optString("targetColumn");
 
             if (!isValidSource(c, u, containerId, schemaName, queryName, targetColumn, label))
             {
