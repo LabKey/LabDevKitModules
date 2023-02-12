@@ -180,6 +180,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
                     html += '</div>';
 
                     Ext4.each(responseJson.errors, function(error){
+                        LDK.Assert.assertNotEmpty('AssayImportPanel error object lacks match method: ' + typeof(error), error.match);
                         if (error.match(/^WARN/))
                             hasWarnings = true;
                     }, this);
