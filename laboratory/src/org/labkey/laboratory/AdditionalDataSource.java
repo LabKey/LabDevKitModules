@@ -54,13 +54,13 @@ public class AdditionalDataSource extends AbstractDataSource
         try
         {
             JSONObject json = new JSONObject(value);
-            String schemaName = json.optString("schemaName");
-            String queryName = json.optString("queryName");
-            String containerId = json.optString("containerId");
-            String label = json.optString("label");
-            String itemType = json.optString("itemType");
-            String subjectFieldKey = json.optString("subjectFieldKey");
-            String sampleDateFieldKey = json.optString("sampleDateFieldKey");
+            String schemaName = StringUtils.trimToNull(json.optString("schemaName"));
+            String queryName = StringUtils.trimToNull(json.optString("queryName"));
+            String containerId = StringUtils.trimToNull(json.optString("containerId"));
+            String label = StringUtils.trimToNull(json.optString("label"));
+            String itemType = StringUtils.trimToNull(json.optString("itemType"));
+            String subjectFieldKey = StringUtils.trimToNull(json.optString("subjectFieldKey"));
+            String sampleDateFieldKey = StringUtils.trimToNull(json.optString("sampleDateFieldKey"));
 
             //for legacy data:
             if (json.has("category") && !json.has("reportCategory"))
@@ -68,7 +68,7 @@ public class AdditionalDataSource extends AbstractDataSource
                 json.put("reportCategory", json.getString("category"));
             }
 
-            String reportCategory = json.optString("reportCategory");
+            String reportCategory = StringUtils.trimToNull(json.optString("reportCategory"));
             boolean importIntoWorkbooks = json.has("importIntoWorkbooks") && json.getBoolean("importIntoWorkbooks");
 
             validateKey(c, u, containerId, schemaName, queryName, label, itemType, reportCategory, importIntoWorkbooks);
