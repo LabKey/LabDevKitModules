@@ -185,20 +185,34 @@ public class AssayHelper
 
     public Pair<ExpExperiment, ExpRun> saveAssayBatch(List<Map<String, Object>> results, JSONObject json, File file, ViewContext ctx, AssayProvider provider, ExpProtocol protocol) throws ValidationException, ExperimentException
     {
-        AssayRunCreator creator = provider.getRunCreator();
-        Map<String, String> runProperties = new CaseInsensitiveHashMap(json.optJSONObject("Run").toMap());
+        AssayRunCreator<AssayProvider> creator = provider.getRunCreator();
+        Map<String, String> runProperties = new CaseInsensitiveHashMap<>();
+        JSONObject runJson = json.optJSONObject("Run");
+        if (runJson != null)
+        {
+            runJson.keySet().forEach(x -> {
+                runProperties.put(x, runJson.get(x) == null ? null : String.valueOf(runJson.get(x)));
+            });
+        }
         String name = runProperties.get(ExperimentJSONConverter.NAME);
         String comments = runProperties.get("comments");
 
-        JSONObject batchProperties = json.optJSONObject("Batch", new JSONObject());
+        Map<String, String> batchProperties = new CaseInsensitiveHashMap<>();
+        JSONObject batchJson = json.optJSONObject("Batch", new JSONObject());
+        if (batchJson != null)
+        {
+            if (!batchJson.has("Name"))
+                batchJson.put("Name", name);
 
-        if (!batchProperties.has("Name"))
-            batchProperties.put("Name", name);
+            batchJson.keySet().forEach(x -> {
+                batchProperties.put(x, batchJson.get(x) == null ? null : String.valueOf(batchJson.get(x)));
+            });
+        }
 
         Map<String, File> uploadedFiles = saveResultsFile(results, json, file, provider, protocol);
 
         //TODO: see AssayRunAsyncContext
-        AssayRunUploadContext uploadContext = new RunUploadContext(protocol, provider, name, comments, runProperties, batchProperties.toMap(), ctx, uploadedFiles);
+        AssayRunUploadContext uploadContext = new RunUploadContext<>(protocol, provider, name, comments, runProperties, batchProperties, ctx, uploadedFiles);
         Pair<ExpExperiment, ExpRun> resultRows = creator.saveExperimentRun(uploadContext, null);
         return resultRows;
     }
