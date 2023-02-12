@@ -1360,15 +1360,15 @@ public class LaboratoryController extends SpringActionController
             JSONArray json = new JSONArray(form.getTables());
             for (JSONObject obj : JsonUtil.toJSONObjectList(json))
             {
-                String containerId = obj.has("containerId") ? StringUtils.trimToNull(obj.getString("containerId")) : null;
-                String schemaName = StringUtils.trimToNull(obj.getString("schemaName"));
-                String queryName = StringUtils.trimToNull(obj.getString("queryName"));
-                String reportCategory = StringUtils.trimToNull(obj.getString("reportCategory"));
-                String itemType = StringUtils.trimToNull(obj.getString("itemType"));
-                String label = StringUtils.trimToNull(obj.getString("label"));
-                String subjectFieldKey = StringUtils.trimToNull(obj.getString("subjectFieldKey"));
-                String sampleDateFieldKey = StringUtils.trimToNull(obj.getString("sampleDateFieldKey"));
-                boolean importIntoWorkbooks = obj.has("importIntoWorkbooks") ? obj.getBoolean("importIntoWorkbooks") : false;
+                String containerId = StringUtils.trimToNull(obj.optString("containerId"));
+                String schemaName = StringUtils.trimToNull(obj.optString("schemaName"));
+                String queryName = StringUtils.trimToNull(obj.optString("queryName"));
+                String reportCategory = StringUtils.trimToNull(obj.optString("reportCategory"));
+                String itemType = StringUtils.trimToNull(obj.optString("itemType"));
+                String label = StringUtils.trimToNull(obj.optString("label"));
+                String subjectFieldKey = StringUtils.trimToNull(obj.optString("subjectFieldKey"));
+                String sampleDateFieldKey = StringUtils.trimToNull(obj.optString("sampleDateFieldKey"));
+                boolean importIntoWorkbooks = obj.has("importIntoWorkbooks") && obj.getBoolean("importIntoWorkbooks");
 
                 if (label == null || queryName == null || schemaName == null)
                 {
