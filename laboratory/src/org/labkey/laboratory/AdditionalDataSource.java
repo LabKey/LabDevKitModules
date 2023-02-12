@@ -54,11 +54,11 @@ public class AdditionalDataSource extends AbstractDataSource
         try
         {
             JSONObject json = new JSONObject(value);
-            String schemaName = json.getString("schemaName");
-            String queryName = json.getString("queryName");
-            String containerId = json.getString("containerId");
-            String label = json.getString("label");
-            String itemType = json.getString("itemType");
+            String schemaName = json.optString("schemaName");
+            String queryName = json.optString("queryName");
+            String containerId = json.optString("containerId");
+            String label = json.optString("label");
+            String itemType = json.optString("itemType");
             String subjectFieldKey = json.optString("subjectFieldKey");
             String sampleDateFieldKey = json.optString("sampleDateFieldKey");
 
@@ -68,8 +68,8 @@ public class AdditionalDataSource extends AbstractDataSource
                 json.put("reportCategory", json.getString("category"));
             }
 
-            String reportCategory = json.getString("reportCategory");
-            Boolean importIntoWorkbooks = json.has("importIntoWorkbooks") ? json.getBoolean("importIntoWorkbooks") : false;
+            String reportCategory = json.optString("reportCategory");
+            boolean importIntoWorkbooks = json.has("importIntoWorkbooks") && json.getBoolean("importIntoWorkbooks");
 
             validateKey(c, u, containerId, schemaName, queryName, label, itemType, reportCategory, importIntoWorkbooks);
             LaboratoryService.NavItemCategory cat = LaboratoryService.NavItemCategory.valueOf(itemType);
