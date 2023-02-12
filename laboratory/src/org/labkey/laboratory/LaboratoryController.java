@@ -1536,7 +1536,7 @@ public class LaboratoryController extends SpringActionController
 
             JSONObject json = new JSONObject(form.getJsonData());
             Set<Module> activeModules = getContainer().getActiveModules();
-            Set<Module> toActivate = new HashSet<Module>();
+            Set<Module> toActivate = new HashSet<>();
             for (String key : json.keySet())
             {
                 String providerName = AbstractNavItem.inferDataProviderNameFromKey(key);
@@ -1547,13 +1547,15 @@ public class LaboratoryController extends SpringActionController
                 if (provider != null && provider.getOwningModule() != null)
                 {
                     if (!activeModules.contains(provider.getOwningModule()))
+                    {
                         toActivate.add(provider.getOwningModule());
+                    }
                 }
 
-                map.put(key, json.getString(key));
+                map.put(key, json.get(key) == null ? null : String.valueOf(json.get(key)));
             }
 
-            if(toActivate.size() > 0)
+            if (toActivate.size() > 0)
             {
                 toActivate.addAll(activeModules);
                 getContainer().setActiveModules(toActivate);
