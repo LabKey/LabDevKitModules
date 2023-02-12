@@ -144,7 +144,7 @@ public class AdditionalDataSource extends AbstractDataSource
         UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
         if (target == null)
         {
-            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName);
+            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName + ", in container: " + target.getPath());
         }
 
         QueryDefinition qd = us.getQueryDefForTable(queryName);

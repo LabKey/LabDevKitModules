@@ -136,7 +136,7 @@ public class DemographicsSource extends AbstractDataSource
         UserSchema us = QueryService.get().getUserSchema(u, target, schemaName);
         if (us == null)
         {
-            throw new IllegalArgumentException("Unknown schema in saved data source: " + schemaName);
+            throw new IllegalArgumentException("Unknown schema in saved demographics source: " + schemaName + ", in container: " + target.getPath());
         }
 
         if (!us.canReadSchema())
