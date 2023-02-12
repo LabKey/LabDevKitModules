@@ -644,16 +644,16 @@ public class DefaultAssayParser implements AssayParser
                     return ret;
 
                 JSONObject sheet = arr.getJSONObject(0);
-                for (Object cells : sheet.getJSONArray("data").toList())
-                {
+                JSONArray jsonArr = sheet.getJSONArray("data");
+                IntStream.range(0,jsonArr.length()).forEach(i -> {
                     List<String> line = new ArrayList<>();
-                    for (JSONObject o : JsonUtil.toJSONObjectList((JSONArray) cells))
-                    {
+                    JsonUtil.toJSONObjectList(jsonArr.getJSONArray(i)).forEach(o -> {
                         Object val = o.has("formattedValue") ? o.getString("formattedValue") : o.get("value");
                         line.add(ConvertHelper.convert(val, String.class));
-                    }
+                    });
+
                     ret.add(line);
-                }
+                });
 
                 return ret;
             }
