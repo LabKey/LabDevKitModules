@@ -18,6 +18,7 @@ package org.labkey.test.tests.external.labModules;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -83,7 +84,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     protected APIContainerHelper _apiContainerHelper = new APIContainerHelper(this);
 
     protected String PROJECT_NAME = "LaboratoryVerifyProject" + TRICKY_CHARACTERS_FOR_PROJECT_NAMES;
-    private String GENOTYPING_ASSAYNAME = "Genotyping Assay Test";
+    private final String GENOTYPING_ASSAYNAME = "Genotyping Assay Test";
 
     private final String DATA_SOURCE = "Source_" + replaceNonVisibleChars(getProjectName());
     private final String SUBJECT_LIST = "Subject List_" + replaceNonVisibleChars(getProjectName());
@@ -1432,14 +1433,17 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             rows.add(target);
         }
 
-        Sheet sheet = ExcelHelper.create(downloaded).getSheetAt(0);
-        List<List<String>> lines = ExcelHelper.getFirstNRows(sheet, 5);
+        try (Workbook w = ExcelHelper.create(downloaded))
+        {
+            Sheet sheet = w.getSheetAt(0);
+            List<List<String>> lines = ExcelHelper.getFirstNRows(sheet, 5);
 
-        Assert.assertEquals(columnLabels, lines.get(0));
-        Assert.assertEquals(rows.get(0), lines.get(1));
-        Assert.assertEquals(rows.get(0), lines.get(2));
-        Assert.assertEquals(rows.get(1), lines.get(3));
-        Assert.assertEquals(rows.get(1), lines.get(4));
+            Assert.assertEquals(columnLabels, lines.get(0));
+            Assert.assertEquals(rows.get(0), lines.get(1));
+            Assert.assertEquals(rows.get(0), lines.get(2));
+            Assert.assertEquals(rows.get(1), lines.get(3));
+            Assert.assertEquals(rows.get(1), lines.get(4));
+        }
 
         refresh();
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();
