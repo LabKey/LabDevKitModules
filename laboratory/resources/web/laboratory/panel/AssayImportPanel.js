@@ -180,11 +180,11 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
                     html += '</div>';
 
                     Ext4.each(responseJson.errors, function(error){
-                        LDK.Assert.assertNotEmpty('AssayImportPanel error object lacks match method: ' + typeof(error) + ", was: " + error, error.match);
+                        LDK.Assert.assertNotEmpty('AssayImportPanel error object lacks match method: ' + typeof(error) + ", was: " + JSON.stringify(error), error.match);
                         if (!error || !error.match) {
-                            console.error('Error message is not a string in AssayImportPanel')
-                            console.error(responseJson.errors);
-                            console.error(error);
+                            LDK.Utils.logToServer({message: 'Error message is not a string in AssayImportPanel', level: 'ERROR', includeContext: true});
+                            LDK.Utils.logToServer({message: JSON.stringify(responseJson.errors), level: 'ERROR', includeContext: false});
+                            LDK.Utils.logToServer({message: JSON.stringify(error), level: 'ERROR', includeContext: false});
                         }
 
                         if (error.match(/^WARN/))
