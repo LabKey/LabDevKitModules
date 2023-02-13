@@ -145,7 +145,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         runDate.put("extFormat", "Y-m-d");
         runMeta.put("performedBy", new JSONObject().put("defaultValue", ctx.getUser().getDisplayName(ctx.getUser())));
         runMeta.put("runDate", runDate);
-        runMeta.put("Comments", new JSONObject().put("height", 100));
+        runMeta.put("comments", new JSONObject().put("height", 100));
         meta.put("Run", runMeta);
 
         JSONObject resultsMeta = new JSONObject();

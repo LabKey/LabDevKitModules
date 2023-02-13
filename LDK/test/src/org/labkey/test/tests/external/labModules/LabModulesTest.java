@@ -1385,7 +1385,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         _helper.clickNavPanelItem("Samples:", "Browse All");
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();
         dr.uncheckAllOnPage();
-        assertEquals("incorrect number of rows selected", 0, dr.getCheckedCount(this));
+        assertEquals("incorrect number of rows selected", 0, dr.getCheckedCount());
 
         dr.checkCheckbox(1);
         dr.checkCheckbox(2);
