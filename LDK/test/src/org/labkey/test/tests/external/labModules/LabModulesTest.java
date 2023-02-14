@@ -55,6 +55,7 @@ import org.labkey.test.util.external.labModules.LabModuleHelper;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1448,7 +1449,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         refresh();
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();
         dr.uncheckAllOnPage();
-        assertEquals("incorrect number of rows selected", 0, dr.getCheckedCount(this));
+        assertEquals("incorrect number of rows selected", 0, dr.getCheckedCount());
         dr.checkCheckbox(1);
         dr.checkCheckbox(2);
         dr.clickHeaderMenu("More Actions", false, "Append Comment");
@@ -1598,24 +1599,24 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             log("using container relative URLs: " + WebTestHelper.isUseContainerRelativeUrl());
 
             //details link
-            String url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("query", containerPath, "recordDetails"), "UTF-8").replaceAll(" ", "+");
-            String href = URLDecoder.decode(dr.detailsLink(rowNum).getAttribute("href"), "UTF-8");
+            String url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("query", containerPath, "recordDetails"), StandardCharsets.UTF_8).replaceAll(" ", "+");
+            String href = URLDecoder.decode(dr.detailsLink(rowNum).getAttribute("href"), StandardCharsets.UTF_8);
             assertTrue("Expected [details] link to go to the container: " + url + ", href was: " + href, href.contains(url));
 
             //update link
-            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("ldk", containerPath, "manageRecord"), "UTF-8").replaceAll(" ", "+");
-            href = URLDecoder.decode(dr.getUpdateHref(rowNum), "UTF-8");
+            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("ldk", containerPath, "manageRecord"), StandardCharsets.UTF_8).replaceAll(" ", "+");
+            href = URLDecoder.decode(dr.getUpdateHref(rowNum), StandardCharsets.UTF_8);
             assertTrue("Expected [edit] link to go to the container: " + url + ", href was: " + href, href.contains(url));
 
             //sample type
-            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("query", getProjectName(), "recordDetails"), "UTF-8").replaceAll(" ", "+");
-            href = URLDecoder.decode(getAttribute(Locator.linkWithText("DNA").index(rowNum), "href"), "UTF-8");
+            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("query", getProjectName(), "recordDetails"), StandardCharsets.UTF_8).replaceAll(" ", "+");
+            href = URLDecoder.decode(getAttribute(Locator.linkWithText("DNA").index(rowNum), "href"), StandardCharsets.UTF_8);
             assertTrue("Expected sample type column URL to go to the container: " + url + ", href was: " + href, href.contains(url));
             assertTrue("Incorrect params in sample type URL: " + href, href.contains("schemaName=laboratory&query.queryName=sample_type&keyField=type&key=DNA"));
 
             //container column
-            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("project", containerPath, "begin"), "UTF-8").replaceAll(" ", "+");
-            href = URLDecoder.decode(getAttribute(Locator.linkWithText("Workbook" + i), "href"), "UTF-8");
+            url = URLDecoder.decode(WebTestHelper.buildRelativeUrl("project", containerPath, "begin"), StandardCharsets.UTF_8).replaceAll(" ", "+");
+            href = URLDecoder.decode(getAttribute(Locator.linkWithText("Workbook" + i), "href"), StandardCharsets.UTF_8);
             assertTrue("Expected container column to go to the container: " + url + ", href was:" + href, href.contains(url));
         }
 
