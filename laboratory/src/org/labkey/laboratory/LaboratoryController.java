@@ -679,7 +679,7 @@ public class LaboratoryController extends SpringActionController
             catch (BatchValidationException e)
             {
                 resp.put("success", false);
-                resp.put("errors", e.getRowErrors());
+                resp.put("errors", e.getRowErrors().stream().map(ValidationException::getMessage).toList());
                 resp.put("exception", e.getMessage());// "There was an error during upload");
             }
             catch (Exception e)
