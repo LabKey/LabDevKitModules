@@ -475,4 +475,11 @@ public class LabModuleHelper
 
         _test._fileBrowserHelper.selectImportDataAction(importAction);
     }
+
+    public void waitForLabHomeToLoad()
+    {
+        // wait for full page to load
+        _test.waitForElement(Locator.tagWithText("span", "Types of Data:"));
+        _test.waitForElement(Locator.tagWithText("a", "Data Browser"));
+    }
 }
