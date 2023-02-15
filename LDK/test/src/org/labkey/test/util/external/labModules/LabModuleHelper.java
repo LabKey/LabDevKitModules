@@ -479,7 +479,12 @@ public class LabModuleHelper
     public void waitForLabHomeToLoad()
     {
         // wait for full page to load
-        _test.waitForElement(Locator.tagWithText("span", "Types of Data:"));
         _test.waitForElement(Locator.tagWithText("a", "Data Browser"));
+        waitForLabToolsToLoad();
+    }
+
+    public void waitForLabToolsToLoad()
+    {
+        _test.waitForElement(Locator.tagWithText("span", "Types of Data:"));
     }
 }
