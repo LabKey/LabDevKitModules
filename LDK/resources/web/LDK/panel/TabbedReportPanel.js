@@ -32,7 +32,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
     caseInsensitiveSubjects: false,
 
     // Passed to filters implementing reportQCStates filter
-    reportQCStates: false,
+    reportQCStates: [],
 
     btnPanelPrefix: 'btnPanel',
     totalPanelPrefix: 'totalPanel',
@@ -1022,7 +1022,7 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             cfg.tabbedReportPanel = this;
             cfg.filterContext = this.getFilterContext();
             cfg.caseInsensitive = this.caseInsensitiveSubjects;
-            cfg.reportQCStates = this.reportQCStates || [];
+            cfg.reportQCStates = this.reportQCStates;
 
             if (this.activeFilterType){
                 this.activeFilterType.prepareRemove();
