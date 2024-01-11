@@ -34,7 +34,7 @@ Ext4.define('LDK.panel.AbstractFilterType', {
     },
 
     getFilterArray: function(tab, subject){
-        filterArray = {
+        let filterArray = {
             removable: [],
             nonRemovable: []
         };
