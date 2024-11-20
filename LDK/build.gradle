@@ -1,8 +1,8 @@
 import org.labkey.gradle.util.BuildUtils
 
 dependencies {
-   apiImplementation "com.sun.mail:jakarta.mail:${javaMailVersion}"
-   implementation "com.sun.mail:jakarta.mail:${javaMailVersion}"
+   apiImplementation "org.eclipse.angus:angus-mail:${angusMailVersion}"
+   implementation "org.eclipse.angus:angus-mail:${angusMailVersion}"
 
    BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "assay"), depProjectConfig: "apiJarFile")
    BuildUtils.addLabKeyDependency(project: project, config: "implementation", depProjectPath: BuildUtils.getPlatformModuleProjectPath(project.gradle, "core"), depProjectConfig: 'apiJarFile')
