@@ -63,7 +63,7 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
         {
             try
             {
-                LaboratoryManager.get().populateDefaultData(user, c, null);
+                LaboratoryManager.get().populateDefaultData(user, c);
             }
             catch (IllegalArgumentException e)
             {
@@ -208,7 +208,7 @@ public class LaboratoryContainerListener extends SimpleModuleContainerListener
 
             try
             {
-                LaboratoryManager.get().populateDefaultData(u, ce.container, null);
+                LaboratoryManager.get().populateDefaultData(u, ce.container);
             }
             catch (Exception e)
             {

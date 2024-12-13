@@ -49,6 +49,8 @@ public class LaboratoryUserSchema extends SimpleUserSchema
             return getSubjectsTable(name, sourceTable, cf);
         else if (LaboratorySchema.TABLE_FREEZERS.equalsIgnoreCase(name))
             return getContainerScopedTable(name, sourceTable, cf, "name");
+        else if (LaboratorySchema.TABLE_SPECIES.equalsIgnoreCase(name))
+            return getContainerScopedTable(name, sourceTable, cf, "common_name");
         else if (LaboratorySchema.TABLE_SAMPLE_TYPE.equalsIgnoreCase(name))
             return getContainerScopedTable(name, sourceTable, cf, "type");
         else if (LaboratorySchema.TABLE_DNA_OLIGOS.equalsIgnoreCase(name))
