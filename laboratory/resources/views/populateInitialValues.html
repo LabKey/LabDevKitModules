@@ -13,7 +13,7 @@
                     LABKEY.Ajax.request({
                         url : LABKEY.ActionURL.buildURL('laboratory', 'populateDefaults'),
                         params: {
-                            tableNames: ['sample_type']
+                            tableNames: ['sample_type', 'species']
                         },
                         method : 'POST',
                         scope: this,

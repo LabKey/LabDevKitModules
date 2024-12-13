@@ -76,7 +76,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 12.305;
+        return 12.306;
     }
 
     @Override

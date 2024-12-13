@@ -841,6 +841,9 @@
         <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
         <auditLogging>DETAILED</auditLogging>
         <columns>
+            <column columnName="rowid">
+                <isHidden>true</isHidden>
+            </column>
             <column columnName="common_name">
             </column>
             <column columnName="scientific_name">
@@ -849,6 +852,29 @@
             <column columnName="mhc_prefix">
                 <nullable>true</nullable>
                 <columnTitle>MHC Prefix</columnTitle>
+            </column>
+            <column columnName="container">
+                <isHidden>false</isHidden>
+            </column>
+            <column columnName="createdby">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="created">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modifiedby">
+                <isHidden>true</isHidden>
+            </column>
+            <column columnName="modified">
+                <isUserEditable>false</isUserEditable>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <nullable>true</nullable>
+                <isHidden>true</isHidden>
             </column>
         </columns>
     </table>

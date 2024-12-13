@@ -18,6 +18,7 @@ package org.labkey.laboratory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
@@ -336,25 +337,32 @@ public class LaboratoryManager
         }
     }
 
+    public void populateDefaultData(User u, Container c)
+    {
+        populateDefaultData(u, c, Arrays.asList(LaboratorySchema.TABLE_SAMPLE_TYPE, LaboratorySchema.TABLE_SPECIES));
+    }
+
     //pass null to populate all supported tables
-    public void populateDefaultData(User u, Container c, @Nullable List<String> tableNames)
+    public void populateDefaultData(User u, Container c, @NotNull List<String> tableNames)
     {
         if (c.isWorkbook())
         {
             return;
         }
 
-        if (tableNames == null)
-        {
-            tableNames = new ArrayList<>();
-            tableNames.add(LaboratorySchema.TABLE_SAMPLE_TYPE);
-        }
-
         for (String name : tableNames)
         {
-            if (LaboratorySchema.TABLE_SAMPLE_TYPE.equalsIgnoreCase(name))
+            if (LaboratorySchema.TABLE_SAMPLE_TYPE.equalsIgnoreCase(name) )
             {
                 populateDefaultDataForTable(u, c, "laboratory", LaboratorySchema.TABLE_SAMPLE_TYPE, PageFlowUtil.set("type"), "type");
+            }
+            else if (LaboratorySchema.TABLE_SPECIES.equalsIgnoreCase(name) )
+            {
+                populateDefaultDataForTable(u, c, "laboratory", LaboratorySchema.TABLE_SPECIES, PageFlowUtil.set("common_name", "scientific_name", "mhc_prefix"), "common_name");
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unknown table: " + name);
             }
         }
     }
