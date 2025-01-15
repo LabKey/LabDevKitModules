@@ -1,7 +1,7 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Manage Data Sources">
-    <permissionClasses>
+    <requiresPermissions>
         <permissionClass name="org.labkey.api.laboratory.security.LaboratoryAdminPermission"/>
-    </permissionClasses>
+    </requiresPermissions>
     <dependencies>
         <dependency path="laboratory.context"/>
         <dependency path="laboratory/panel/QueryPickerPanel.js"/>

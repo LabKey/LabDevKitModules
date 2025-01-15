@@ -1,7 +1,7 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Assay Defaults">
-    <permissionClasses>
+    <requiresPermissions>
         <permissionClass name="org.labkey.api.laboratory.security.LaboratoryAdminPermission"/>
-    </permissionClasses>
+    </requiresPermissions>
     <dependencies>
         <dependency path="laboratory.context"/>
         <dependency path="laboratory/panel/AssayDefaultsPanel.js"/>
