@@ -122,7 +122,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
 
     protected class UpdateService extends SimpleQueryUpdateService
     {
-        private KeyManager _keyManager = new KeyManager();
+        private final KeyManager _keyManager = new KeyManager();
 
         public UpdateService(SimpleUserSchema.SimpleTable<?> ti)
         {
@@ -307,7 +307,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
 
     private class KeyManager
     {
-        private Set<Object> _encounteredKeys = new HashSet<>();
+        private final Set<Object> _encounteredKeys = new HashSet<>();
 
         public KeyManager()
         {
@@ -337,7 +337,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
 
             Container target = c.getContainerFor(ContainerType.DataType.sharedSchemaOwner);
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_pseudoPk), key, CompareType.EQUAL);
-            filter.addClause(ContainerFilter.current(target).createFilterClause(_rootTable.getSchema(), getContainerFieldKey()));
+            filter.addClause(ContainerFilter.current(target, getUserSchema().getUser()).createFilterClause(_rootTable.getSchema(), getContainerFieldKey()));
             TableSelector ts = new TableSelector(_rootTable, Collections.singleton(_pseudoPk), filter, null);
 
             return ts.getRowCount() > 0;
