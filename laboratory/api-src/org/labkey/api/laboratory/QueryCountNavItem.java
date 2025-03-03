@@ -47,17 +47,17 @@ public class QueryCountNavItem extends AbstractQueryNavItem implements SummaryNa
         if (ti == null)
             return Long.valueOf(0);
 
-        SimpleFilter filter = getFilter(c, ti);
+        SimpleFilter filter = getFilter(c, u, ti);
         TableSelector ts = new TableSelector(ti, ti.getPkColumns(), filter, null);
         return ts.getRowCount();
     }
 
-    protected SimpleFilter getFilter(Container c, TableInfo ti)
+    protected SimpleFilter getFilter(Container c, User u, TableInfo ti)
     {
         SimpleFilter filter = new SimpleFilter();
 
-        if (ti.getColumn("container") != null && !(ti.supportsContainerFilter() && ContainerFilter.current(c).equals(ti.getContainerFilter())))
-            filter.addClause(ContainerFilter.current(c).createFilterClause(ti.getSchema(), FieldKey.fromString("container")));
+        if (ti.getColumn("container") != null && !(ti.supportsContainerFilter() && ContainerFilter.current(c, u).equals(ti.getContainerFilter())))
+            filter.addClause(ContainerFilter.current(c, u).createFilterClause(ti.getSchema(), FieldKey.fromString("container")));
 
         if (_filter != null)
         {

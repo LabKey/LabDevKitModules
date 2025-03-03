@@ -8,6 +8,7 @@ import org.labkey.api.laboratory.DataProvider;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.QueryCountNavItem;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.security.User;
 
 /**
  * User: bimber
@@ -22,9 +23,9 @@ public class SamplesCountNavItem extends QueryCountNavItem
     }
 
     @Override
-    protected SimpleFilter getFilter(Container c, TableInfo ti)
+    protected SimpleFilter getFilter(Container c, User u, TableInfo ti)
     {
-        SimpleFilter filter = super.getFilter(c, ti);
+        SimpleFilter filter = super.getFilter(c, u, ti);
         filter.addCondition(FieldKey.fromString("dateremoved"), null, CompareType.ISBLANK);
         return filter;
     }
