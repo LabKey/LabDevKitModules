@@ -271,7 +271,7 @@ public class LaboratoryController extends SpringActionController
                     url.addParameter("renameConflicts", true);
                     url.addParameter("providerName", form.getProviderName());
                     if (form.getReturnActionURL() != null)
-                        url.addReturnURL(form.getReturnActionURL());
+                        url.addReturnUrl(form.getReturnActionURL());
                     form.setReturnUrl(url.getLocalURIString());
                 }
 

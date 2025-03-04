@@ -365,16 +365,16 @@ LDK.Utils = new function(){
         },
 
         /**
-         * Returns the current URL, encoded, minus the origin, which is suitable to use as a srcURL param.
+         * Returns the current URL, encoded, minus the origin, which is suitable to use as a returnUrl param.
          */
-        getSrcURL: function(){
+        getReturnUrl: function(){
             var re = new RegExp('^' + window.location.origin);
             return encodeURIComponent(window.location.href.replace(re, ''));
         },
 
         /**
          * Create immutable object.  Usage:
-         * var sealedObj = new LABKEU.Utils.sealed(obj);
+         * var sealedObj = new LABKEY.Utils.sealed(obj);
          *
          * @param obj The object to seal
          * @returns The sealed object
