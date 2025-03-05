@@ -69,7 +69,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
                     text: 'Cancel',
                     itemId: 'cancelBtn',
                     scope: this,
-                    href: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('project', 'begin'),
+                    href: LABKEY.ActionURL.getParameter('returnUrl') || LABKEY.ActionURL.buildURL('project', 'begin'),
                     hrefTarget: '_self'
                 }]
             }],
@@ -404,7 +404,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
         Ext4.Msg.hide();
         Ext4.Msg.alert('Success', 'Your upload was successful!', function(){
             function doLoad(){
-                //NOTE: always return to the project root, ignoring srcURL
+                //NOTE: always return to the project root, ignoring returnUrl
                 window.location = LABKEY.ActionURL.buildURL('project', 'begin');
             }
 

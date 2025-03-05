@@ -250,7 +250,7 @@ Ext4.define('LDK.panel.NavPanel', {
                 if (!item.assayRunTemplateUrl || LABKEY.Utils.isEmptyObj(item.assayRunTemplateUrl)){
                     cfg.items.push(this.getImportItemCfg(item, {
                         urlConfig: {
-                            params: Ext4.apply({srcURL: LABKEY.ActionURL.buildURL('project', 'begin')}, item.importUrl.params),
+                            params: Ext4.apply({returnUrl: LABKEY.ActionURL.buildURL('project', 'begin')}, item.importUrl.params),
                             action: item.importUrl.action,
                             controller: item.importUrl.controller
                         },
@@ -336,7 +336,7 @@ Ext4.define('LDK.panel.NavPanel', {
                         urlConfig: {
                             action: 'importData',
                             controller: 'query',
-                            params: {schemaName: item.schemaName, queryName: item.queryName, srcURL: LABKEY.ActionURL.buildURL('project', 'begin')}
+                            params: {schemaName: item.schemaName, queryName: item.queryName, returnUrl: LABKEY.ActionURL.buildURL('project', 'begin')}
                         }
                     })
                 ]
