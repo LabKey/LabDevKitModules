@@ -49,14 +49,14 @@ public class EnterResultsDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
     {
         Object value = getValue(ctx);
         String url = renderURL(ctx);
 
         if (value != null && url != null)
         {
-            out.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget).toString());
+            oldWriter.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget).toString());
         }
     }
 
