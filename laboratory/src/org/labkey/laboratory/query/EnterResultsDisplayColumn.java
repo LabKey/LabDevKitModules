@@ -12,9 +12,6 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.writer.HtmlWriter;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import static org.labkey.api.util.DOM.TD;
 import static org.labkey.api.util.DOM.cl;
 
@@ -49,14 +46,14 @@ public class EnterResultsDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer oldWriter, HtmlWriter out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
     {
         Object value = getValue(ctx);
         String url = renderURL(ctx);
 
         if (value != null && url != null)
         {
-            oldWriter.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget).toString());
+            out.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget));
         }
     }
 
