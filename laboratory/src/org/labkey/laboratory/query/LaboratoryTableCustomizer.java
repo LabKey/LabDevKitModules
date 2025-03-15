@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.BaseColumnInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerFilter;
@@ -18,7 +19,7 @@ import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.data.WrappedColumn;
+import org.labkey.api.data.WrappedColumnInfo;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.ldk.LDKService;
@@ -183,13 +184,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             {
                 container.setHidden(true);
 
-                WrappedColumn wrappedContainer = new WrappedColumn(container, "workbook");
-                wrappedContainer.setLabel("Workbook");
+                BaseColumnInfo wrappedContainer = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString("workbook"), container, "Workbook", null);
+                wrappedContainer.setName("workbook");
+                wrappedContainer.setCalculated(true);
+                wrappedContainer.setShownInInsertView(false);
+                wrappedContainer.setShownInUpdateView(false);
                 wrappedContainer.setFk(QueryForeignKey
                         .from(ti.getUserSchema(), ti.getContainerFilter())
                         .schema(us)
                         .to("workbooks", LaboratoryWorkbooksTable.WORKBOOK_COL, "workbookId"));
-                wrappedContainer.setURL(DetailsURL.fromString("/project/start.view"));
+                wrappedContainer.setURL(DetailsURL.fromString("/project/begin.view"));
                 wrappedContainer.setShownInDetailsView(true);
                 wrappedContainer.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
                 wrappedContainer.setDisplayColumnFactory(new DisplayColumnFactory()
@@ -290,11 +294,15 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                     if (ti.getColumn(name) != null)
                         continue;
 
-                    WrappedColumn col = new WrappedColumn(subjectCol, name);
-                    col.setLabel(qd.getLabel());
+                    BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString(name), subjectCol, qd.getLabel(), null);
+                    col.setName(name);
+                    col.setCalculated(true);
+                    col.setShownInInsertView(false);
+                    col.setShownInUpdateView(false);
                     col.setReadOnly(true);
                     col.setIsUnselectable(true);
                     col.setUserEditable(false);
+                    col.setKeyField(false);
 
                     UserSchema targetSchema = qd.getTableInfo(targetContainer, us.getUser()).getUserSchema();
                     col.setFk(new QueryForeignKey(us, ti.getContainerFilter(), targetSchema, null, qd.getQueryName(), qd.getTargetColumn(), qd.getTargetColumn())
@@ -366,12 +374,16 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
-        MutableColumnInfo col = new WrappedColumn(pk, name);
-        col.setLabel("Major Events");
+        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Major Events", null);
         col.setDescription("This column shows all major events recorded in this subject's history and will calculate the time elapsed between the current sample and these dates.");
+        col.setName(name);
+        col.setCalculated(true);
+        col.setShownInInsertView(false);
+        col.setShownInUpdateView(false);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
 
         final String schemaName = ds.getUserSchema().getSchemaPath().toSQLString();
         final String subjectSelectName = ds.getSqlDialect().makeLegalIdentifier(subjectColName);
@@ -384,11 +396,10 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             @Override
             public TableInfo getLookupTableInfo()
             {
-                Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
+                Container parentContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
+                QueryDefinition qd = createQueryDef(us, colName);
 
-                qd.setSql(getMajorEventsSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
+                qd.setSql(getMajorEventsSql(parentContainer, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
@@ -444,21 +455,24 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String subjectSelectName = ds.getSqlDialect().makeLegalIdentifier(subjectColName);
         final String dateSelectName = dateColName == null ? null : ds.getSqlDialect().makeLegalIdentifier(dateColName);
 
-        WrappedColumn col = new WrappedColumn(pk, name);
-        col.setLabel("Overlapping Groups");
+        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Overlapping Groups", null);
         col.setDescription("This column shows all groups to which this subject belonged at the time of this sample.");
+        col.setName(name);
+        col.setCalculated(true);
+        col.setShownInInsertView(false);
+        col.setShownInUpdateView(false);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
         col.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
             {
-                Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
+                Container parentContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
+                QueryDefinition qd = createQueryDef(us, colName);
 
-                qd.setSql(getOverlapSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
+                qd.setSql(getOverlapSql(parentContainer, schemaName, querySelectName, pkColSelectName, subjectSelectName, dateSelectName));
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
@@ -490,20 +504,24 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
         //add pivot column
         String pivotColName = "overlappingProjectsPivot";
-        WrappedColumn col2 = new WrappedColumn(pk, pivotColName);
-        col2.setLabel("Overlapping Group List");
+        BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Overlapping Group List", null);
+        col2.setName(pivotColName);
+        col2.setCalculated(true);
+        col2.setShownInInsertView(false);
+        col2.setShownInUpdateView(false);
         col2.setDescription("Shows groups to which this subject belonged at the time of this sample.");
         col2.setHidden(true);
         col2.setReadOnly(true);
         col2.setIsUnselectable(true);
         col2.setUserEditable(false);
+        col2.setKeyField(false);
         final String lookupColName = ds.getName() + "_overlappingProjectsPivot";
         col2.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, us, lookupColName);
+                QueryDefinition qd = createQueryDef(us, lookupColName);
 
                 qd.setSql(getOverlapPivotSql(target, schemaName, querySelectName, pkColSelectName, subjectColName, dateColName));
                 qd.setIsTemporary(true);
@@ -555,21 +573,24 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String publicTableName = ds.getPublicName();
 
         final String colName = ds.getName() + "_allProjects";
-        WrappedColumn col = new WrappedColumn(pk, name);
-        col.setLabel("Groups");
+        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Groups", null);
+        col.setName(name);
+        col.setCalculated(true);
+        col.setShownInInsertView(false);
+        col.setShownInUpdateView(false);
         col.setDescription("This column shows all groups to which this subject has ever been a member, regardless of whether that assignment overlaps with the current data point");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
         col.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
             {
-                Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
+                Container parentContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
+                QueryDefinition qd = createQueryDef(us, colName);
 
-                qd.setSql(getOverlapSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, null));
+                qd.setSql(getOverlapSql(parentContainer, schemaName, querySelectName, pkColSelectName, subjectSelectName, null));
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
@@ -602,20 +623,23 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         //add pivot column
         String pivotColName = "allProjectsPivot";
         final String lookupName = ds.getName() + "_allProjectsPivot";
-        WrappedColumn col2 = new WrappedColumn(pk, pivotColName);
-        col2.setLabel("Group Summary List");
+        BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Group Summary List", null);
+        col2.setName(pivotColName);
+        col2.setCalculated(true);
+        col2.setShownInInsertView(false);
+        col2.setShownInUpdateView(false);
         col2.setDescription("Shows groups to which this subject belonged at any point in time.");
         col2.setHidden(true);
         col2.setReadOnly(true);
         col2.setIsUnselectable(true);
         col2.setUserEditable(false);
+        col2.setKeyField(false);
         col2.setFk(new LookupForeignKey(){
             @Override
             public TableInfo getLookupTableInfo()
             {
                 Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, lookupName);
+                QueryDefinition qd = createQueryDef(us, lookupName);
 
                 qd.setSql(getOverlapPivotSql(target, schemaName, querySelectName, pkColSelectName, subjectSelectName, null));
                 qd.setIsTemporary(true);
@@ -749,11 +773,15 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
-        WrappedColumn col = new WrappedColumn(pk, name);
-        col.setLabel("Relative Dates");
+        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Relative Dates", null);
+        col.setName(name);
+        col.setCalculated(true);
+        col.setShownInInsertView(false);
+        col.setShownInUpdateView(false);
         col.setReadOnly(true);
         col.setIsUnselectable(true);
         col.setUserEditable(false);
+        col.setKeyField(false);
 
         final String colName = ds.getName() + "_relativeDates";
         final String schemaName = ds.getUserSchema().getSchemaPath().toSQLString();
@@ -765,9 +793,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             @Override
             public TableInfo getLookupTableInfo()
             {
-                Container target = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                UserSchema effectiveUs = us.getContainer().isWorkbookOrTab() ? QueryService.get().getUserSchema(us.getUser(), target, us.getSchemaPath()) : us;
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), target, effectiveUs, colName);
+                Container parentContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
+                QueryDefinition qd = createQueryDef(us, colName);
 
                 qd.setSql("SELECT\n" +
                 "t." + pkColSelectName + ",\n" +
@@ -795,7 +822,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                 "ROUND(CONVERT(age_in_months(p.startdate, s." + dateSelectName + "), DOUBLE) / 12, 1) AS YearsPostStartDecimal,\n" +
                 "\n" +
                 "FROM " + schemaName + "." + publicTableName + " s\n" +
-                "JOIN \"" + target.getPath() + "\".laboratory.project_usage p\n" +
+                "JOIN \"" + parentContainer.getPath() + "\".laboratory.project_usage p\n" +
                 "ON (s." + subjectSelectName + " = p.subjectId AND CONVERT(p.startdate, DATE) <= CONVERT(s." + dateSelectName + ", DATE) AND CONVERT(s." + dateSelectName + ", DATE) <= CONVERT(COALESCE(p.enddate, {fn curdate()}), DATE))\n" +
                 "WHERE s." + dateSelectName + " IS NOT NULL and s." + subjectSelectName + " IS NOT NULL\n" +
                 "\n" +
@@ -828,6 +855,28 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         });
 
         ds.addColumn(col);
+    }
+
+    private QueryDefinition createQueryDef(UserSchema us, String queryName)
+    {
+        if (!us.getContainer().isWorkbook())
+        {
+            return QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, queryName);
+        }
+
+        // The rationale is that if we are querying from a workbook, preferentially translate to the parent US
+        // However, there are situations like workbook-scoped lists, where that query might not exist on the parent
+        UserSchema parentUserSchema = QueryService.get().getUserSchema(us.getUser(), us.getContainer().getParent(), us.getSchemaPath());
+        assert parentUserSchema != null;
+
+        if (parentUserSchema.getTableNames().contains(queryName))
+        {
+            return QueryService.get().createQueryDef(parentUserSchema.getUser(), parentUserSchema.getContainer(), parentUserSchema, queryName);
+        }
+        else
+        {
+            return QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, queryName);
+        }
     }
 
     public UserSchema getUserSchema(AbstractTableInfo ds, String name)
