@@ -277,8 +277,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         {
             for (final DemographicsSource qd : qds)
             {
-                Container targetContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
-                TableInfo target = qd.getTableInfo(targetContainer, us.getUser());
+                Container parentContainer = us.getContainer().isWorkbookOrTab() ? us.getContainer().getParent() : us.getContainer();
+                TableInfo target = qd.getTableInfo(parentContainer, us.getUser());
 
                 //TODO: push this into LaboratoryService and also cache them?
                 if (target != null)
@@ -290,11 +290,10 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                     }
 
                     String name = ColumnInfo.legalNameFromName(qd.getLabel());
-
                     if (ti.getColumn(name) != null)
                         continue;
 
-                    BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString(name), subjectCol, qd.getLabel(), null);
+                    ExprColumn col = new ExprColumn(ti, FieldKey.fromString(name), subjectCol.getValueSql(ExprColumn.STR_TABLE_ALIAS), JdbcType.INTEGER, subjectCol);
                     col.setName(name);
                     col.setCalculated(true);
                     col.setShownInInsertView(false);
@@ -304,7 +303,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
                     col.setUserEditable(false);
                     col.setKeyField(false);
 
-                    UserSchema targetSchema = qd.getTableInfo(targetContainer, us.getUser()).getUserSchema();
+                    final UserSchema targetSchema = target.getUserSchema();
                     col.setFk(new QueryForeignKey(us, ti.getContainerFilter(), targetSchema, null, qd.getQueryName(), qd.getTargetColumn(), qd.getTargetColumn())
                     {
                         @Override
