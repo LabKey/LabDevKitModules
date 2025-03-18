@@ -10,9 +10,10 @@ import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
+import org.labkey.api.writer.HtmlWriter;
 
-import java.io.IOException;
-import java.io.Writer;
+import static org.labkey.api.util.DOM.TD;
+import static org.labkey.api.util.DOM.cl;
 
 /**
  * User: bimber
@@ -45,20 +46,20 @@ public class EnterResultsDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
     {
         Object value = getValue(ctx);
         String url = renderURL(ctx);
 
         if (value != null && url != null)
         {
-            out.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget).toString());
+            out.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget));
         }
     }
 
     @Override
-    public void renderGridHeaderCell(RenderContext ctx, Writer out, String headerClass) throws IOException
+    public void renderGridHeaderCell(RenderContext ctx, HtmlWriter out, String headerClass)
     {
-        out.write("<td class=\"labkey-column-header\"></td>");
+        TD(cl("labkey-column-header")).appendTo(out);
     }
 }

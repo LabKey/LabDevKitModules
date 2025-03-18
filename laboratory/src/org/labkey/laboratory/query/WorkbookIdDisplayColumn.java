@@ -3,9 +3,7 @@ package org.labkey.laboratory.query;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
-
-import java.io.IOException;
-import java.io.Writer;
+import org.labkey.api.writer.HtmlWriter;
 
 /**
  * User: bimber
@@ -20,9 +18,9 @@ public class WorkbookIdDisplayColumn extends DataColumn
     }
 
     @Override
-    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+    public void renderGridCellContents(RenderContext ctx, HtmlWriter out)
     {
-        //if the lookup is broken, dont render a value
+        //if the lookup is broken, don't render a value
         Object dv = getDisplayValue(ctx);
         if (dv == null || "".equals(dv))
             return;
@@ -35,7 +33,7 @@ public class WorkbookIdDisplayColumn extends DataColumn
     {
         Object ret = super.getDisplayValue(ctx);
 
-        //if the lookup is broken, dont render a value.  note: return empty string so client API draws the distinction between deliberately empty and a genuine NULL value
+        //if the lookup is broken, don't render a value.  note: return empty string so client API draws the distinction between deliberately empty and a genuine NULL value
         return ret == null ? "" : ret;
     }
 }
