@@ -287,7 +287,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
                         Object pesudoPkVal = it.getInputColumnValue(inputColMap.get(_pseudoPk));
                         if (pesudoPkVal != null)
                         {
-                            // NOTE: this code is call for inserts and updates:
+                            // NOTE: this code is called for both inserts and updates:
                             if (_context.getInsertOption() == QueryUpdateService.InsertOption.INSERT && keyManager.rowExists(c, pesudoPkVal))
                             {
                                 _context.getErrors().addRowError(new ValidationException("A record is already present with value: " + pesudoPkVal));
