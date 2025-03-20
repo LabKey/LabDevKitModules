@@ -184,7 +184,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             {
                 container.setHidden(true);
 
-                BaseColumnInfo wrappedContainer = WrappedColumnInfo.wrapAsCopy(ti, FieldKey.fromString("workbook"), container, "Workbook", null);
+                ExprColumn wrappedContainer = new ExprColumn(ti, FieldKey.fromString("workbook"), container.getValueSql(ExprColumn.STR_TABLE_ALIAS), JdbcType.GUID, container);
                 wrappedContainer.setName("workbook");
                 wrappedContainer.setCalculated(true);
                 wrappedContainer.setShownInInsertView(false);

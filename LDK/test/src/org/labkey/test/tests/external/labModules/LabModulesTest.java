@@ -1415,6 +1415,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             columnLabels.add(getColumnLabel(srr, name));
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<List<String>> rows = new ArrayList<>();
         for (Map<String, Object> row : srr.getRows())
         {
@@ -1425,7 +1426,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                 String val = row.get(name) == null ? "" : String.valueOf(row.get(name));
                 if (name.toLowerCase().contains("date"))
                 {
-                    val = StringUtils.isEmpty(val) ? "" : ExcelHelper.getDateTimeFormat().format(new Date(val));
+                    val = StringUtils.isEmpty(val) ? "" : dateFormat.format(val);
                 }
 
                 target.add(val);
