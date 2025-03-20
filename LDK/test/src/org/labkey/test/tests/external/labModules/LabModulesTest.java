@@ -1429,7 +1429,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                 String val = row.get(name) == null ? "" : String.valueOf(row.get(name));
                 if (name.toLowerCase().contains("date"))
                 {
-                    val = StringUtils.isEmpty(val) ? "" : dateFormat.format(Date.parse(val));
+                    val = StringUtils.isEmpty(val) ? "" : ExcelHelper.getDateTimeFormat().format(Date.parse(val));
                 }
 
                 target.add(val);
