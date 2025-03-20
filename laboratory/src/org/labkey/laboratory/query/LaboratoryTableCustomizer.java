@@ -19,7 +19,6 @@ import org.labkey.api.data.MutableColumnInfo;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
-import org.labkey.api.data.WrappedColumnInfo;
 import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.ldk.LDKService;
@@ -184,7 +183,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
             {
                 container.setHidden(true);
 
-                ExprColumn wrappedContainer = new ExprColumn(ti, FieldKey.fromString("workbook"), container.getValueSql(ExprColumn.STR_TABLE_ALIAS), JdbcType.GUID, container);
+                ExprColumn wrappedContainer = new ExprColumn(ti, FieldKey.fromString("workbook"), container.getValueSql(ExprColumn.STR_TABLE_ALIAS), container.getJdbcType(), container);
+                wrappedContainer.setLabel("Workbook");
                 wrappedContainer.setName("workbook");
                 wrappedContainer.setCalculated(true);
                 wrappedContainer.setShownInInsertView(false);
@@ -373,7 +373,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
-        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Major Events", null);
+        BaseColumnInfo col = new ExprColumn(ds, FieldKey.fromString(name), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col.setLabel("Major Events");
         col.setDescription("This column shows all major events recorded in this subject's history and will calculate the time elapsed between the current sample and these dates.");
         col.setName(name);
         col.setCalculated(true);
@@ -454,7 +455,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String subjectSelectName = ds.getSqlDialect().makeLegalIdentifier(subjectColName);
         final String dateSelectName = dateColName == null ? null : ds.getSqlDialect().makeLegalIdentifier(dateColName);
 
-        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Overlapping Groups", null);
+        BaseColumnInfo col = new ExprColumn(ds, FieldKey.fromString(name), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col.setLabel("Overlapping Groups");
         col.setDescription("This column shows all groups to which this subject belonged at the time of this sample.");
         col.setName(name);
         col.setCalculated(true);
@@ -503,7 +505,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
 
         //add pivot column
         String pivotColName = "overlappingProjectsPivot";
-        BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Overlapping Group List", null);
+        BaseColumnInfo col2 = new ExprColumn(ds, FieldKey.fromString(pivotColName), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col2.setLabel("Overlapping Group List");
         col2.setName(pivotColName);
         col2.setCalculated(true);
         col2.setShownInInsertView(false);
@@ -572,7 +575,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String publicTableName = ds.getPublicName();
 
         final String colName = ds.getName() + "_allProjects";
-        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Groups", null);
+        BaseColumnInfo col = new ExprColumn(ds, FieldKey.fromString(name), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col.setLabel("Groups");
         col.setName(name);
         col.setCalculated(true);
         col.setShownInInsertView(false);
@@ -622,7 +626,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         //add pivot column
         String pivotColName = "allProjectsPivot";
         final String lookupName = ds.getName() + "_allProjectsPivot";
-        BaseColumnInfo col2 = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(pivotColName), pk, "Group Summary List", null);
+        BaseColumnInfo col2 = new ExprColumn(ds, FieldKey.fromString(pivotColName), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col2.setLabel("Group Summary List");
         col2.setName(pivotColName);
         col2.setCalculated(true);
         col2.setShownInInsertView(false);
@@ -772,7 +777,8 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         final String pkColSelectName = pk.getFieldKey().toSQLString();
         final String pkColRawName = pk.getName();
 
-        BaseColumnInfo col = WrappedColumnInfo.wrapAsCopy(ds, FieldKey.fromString(name), pk, "Relative Dates", null);
+        BaseColumnInfo col = new ExprColumn(ds, FieldKey.fromString(name), pk.getValueSql(ExprColumn.STR_TABLE_ALIAS), pk.getJdbcType(), pk);
+        col.setLabel("Relative Dates");
         col.setName(name);
         col.setCalculated(true);
         col.setShownInInsertView(false);
