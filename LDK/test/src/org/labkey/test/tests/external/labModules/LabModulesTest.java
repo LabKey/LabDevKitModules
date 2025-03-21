@@ -1444,8 +1444,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             List<List<String>> lines = ExcelHelper.getFirstNRows(sheet, 5);
 
             Assert.assertEquals(columnLabels, lines.get(0));
-            Assert.assertEquals(rows.get(0), lines.get(1));
-            Assert.assertEquals(rows.get(0), lines.get(2));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(0), lines.get(1));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(0), lines.get(2));
             Assert.assertEquals(rows.get(1), lines.get(3));
             Assert.assertEquals(rows.get(1), lines.get(4));
         }
