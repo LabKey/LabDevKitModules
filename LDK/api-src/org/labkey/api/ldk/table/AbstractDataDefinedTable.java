@@ -57,7 +57,7 @@ import java.util.concurrent.Callable;
  * Date: 4/2/13
  * Time: 2:54 PM
  */
-abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
+abstract public class AbstractDataDefinedTable<SchemaType extends UserSchema> extends CustomPermissionsTable<SchemaType>
 {
     protected String _pk;
 
@@ -65,7 +65,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
     protected String _filterValue;
     protected String _valueColumn;
 
-    public AbstractDataDefinedTable(UserSchema schema, SchemaTableInfo table, ContainerFilter cf, String filterColumn, String valueColumn, String tableName, String filterValue)
+    public AbstractDataDefinedTable(SchemaType schema, SchemaTableInfo table, ContainerFilter cf, String filterColumn, String valueColumn, String tableName, String filterValue)
     {
         super(schema, table, cf);
         _filterColumn = filterColumn;
@@ -77,7 +77,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
     }
 
     @Override
-    public CustomPermissionsTable init()
+    public CustomPermissionsTable<SchemaType> init()
     {
         super.init();
 
@@ -85,7 +85,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
         addCondition(col, _filterValue); //enforce only showing rows from this category
 
         List<String> pks = getRealTable().getPkColumnNames();
-        assert pks.size() > 0;
+        assert !pks.isEmpty();
         _pk = pks.get(0);
 
         var valueCol = getMutableColumn(_valueColumn);
@@ -93,7 +93,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
 
         valueCol.setKeyField(true);
         valueCol.setNullable(false);
-        getMutableColumn(_pk).setKeyField(false);
+        getMutableColumnOrThrow(_pk).setKeyField(false);
 
         ColumnInfo filterCol = getColumn(_filterColumn);
         assert filterCol != null;
@@ -135,7 +135,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
     {
         private final ValuesManager _vm;
 
-        public UpdateService(SimpleUserSchema.SimpleTable ti)
+        public UpdateService(SimpleUserSchema.SimpleTable<SchemaType> ti)
         {
             super(ti, ti.getRealTable());
 
@@ -217,8 +217,7 @@ abstract public class AbstractDataDefinedTable extends CustomPermissionsTable
         {
             boolean ret = _distinctValues.contains(value);
 
-            if (!_distinctValues.contains(value))
-                _distinctValues.add(value);
+            _distinctValues.add(value);
 
             return ret;
         }
