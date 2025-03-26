@@ -16,12 +16,15 @@
 package org.labkey.test.tests.external.labModules;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.labkey.api.util.DateUtil;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
@@ -1415,6 +1418,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             columnLabels.add(getColumnLabel(srr, name));
         }
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         List<List<String>> rows = new ArrayList<>();
         for (Map<String, Object> row : srr.getRows())
         {
@@ -1425,7 +1429,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                 String val = row.get(name) == null ? "" : String.valueOf(row.get(name));
                 if (name.toLowerCase().contains("date"))
                 {
-                    val = StringUtils.isEmpty(val) ? "" : ExcelHelper.getDateTimeFormat().format(new Date(val));
+                    val = StringUtils.isEmpty(val) ? "" : dateFormat.format(Date.parse(val));
                 }
 
                 target.add(val);
@@ -1440,10 +1444,10 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             List<List<String>> lines = ExcelHelper.getFirstNRows(sheet, 5);
 
             Assert.assertEquals(columnLabels, lines.get(0));
-            Assert.assertEquals(rows.get(0), lines.get(1));
-            Assert.assertEquals(rows.get(0), lines.get(2));
-            Assert.assertEquals(rows.get(1), lines.get(3));
-            Assert.assertEquals(rows.get(1), lines.get(4));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(0), lines.get(1));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(0), lines.get(2));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(1), lines.get(3));
+            Assert.assertEquals("Row did not match. ExcelHelper pattern: " + ExcelHelper.getDateTimeFormat().toPattern(), rows.get(1), lines.get(4));
         }
 
         refresh();
