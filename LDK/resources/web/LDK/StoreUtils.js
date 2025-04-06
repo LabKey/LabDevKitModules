@@ -115,15 +115,19 @@ LDK.StoreUtils = new function(){
 
             var fields = store.model.getFields();
             Ext4.each(fields, function(field){
+                var extType = field.extType || LABKEY.ext4.Util.EXT_TYPE_MAP[field.jsonType];
+
                 var val;
                 if (!Ext4.isEmpty(data[field.name])){
                     val = data[field.name];
-                    var type = Ext4.data.Types[field.extType];
+                    var type = Ext4.data.Types[extType];
                     if (type && type.convert){
-                        if (field.extType == LABKEY.ext4.Util.EXT_TYPE_MAP.date)
+                        if (extType === LABKEY.ext4.Util.EXT_TYPE_MAP.date) {
                             val = LDK.ConvertUtils.parseDate(val);
-                        else
+                        }
+                        else {
                             val = type.convert(val);
+                        }
                     }
 
                     model.set(field.name, val);
@@ -193,59 +197,6 @@ LDK.StoreUtils = new function(){
             return map;
         },
 
-        /**
-         * Parses a string into a date, normalizing for the current timezone.  Date.parse()
-         * will make different timezone assumptions, depending on date format.  For example,
-         * 2010-02-04 is assumed to be GMT, while 2/4/2010 is assume to match the local machine.
-         * This method tries to infer the date format, and if an ISO date is provided, it will convert the
-         * date object to the current timezone.
-         * @param val
-         */
-        normalizeDateString: function(val){
-            if (!val || Ext4.isDate(val)){
-                return val;
-            }
-            else if (Ext4.isNumber(val)){
-                return new Date(val);
-            }
-
-            else if (Ext4.isString(val)) {
-                //try to guess format:
-                var date;
-                //ISO dates are assumed to be GMT, so we convert to local time, letting Ext normalize timezone
-                if (Ext4.Date.parse(val, Date.patterns.ISO8601Long)){
-                    date = Ext4.Date.parse(val, Date.patterns.ISO8601Long);
-                }
-                else if (Ext4.Date.parse(val, Date.patterns.ISO8601Short)){
-                    date = Ext4.Date.parse(val, Date.patterns.ISO8601Short);
-                }
-                else if (val.indexOf('Z') != -1)
-                {
-                    var parsed = Date.parse(val);
-                    if (parsed)
-                        date = new Date(parsed);
-                }
-                else {
-                    //with non ISO dates, browsers seem to accept tacking the timezone to the end
-                    var parsed = Date.parse(val + ' ' + Ext4.Date.getTimezone(new Date()));
-                    if (parsed)
-                        date = new Date(parsed);
-                }
-
-                if (date){
-                    var mills = Date.parse(Ext4.Date.format(date, 'm/d/Y H:i'));
-                    if (!mills == date.getTime()){
-                        console.error('Date doesn\'t match: ' + val + '/' + date.toString());
-                        return null;
-                    }
-                    else {
-                        return date;
-                    }
-                }
-            }
-            return val;
-        },
-
         sortStoreByFieldNames: function(store, fieldNames){
             var fields = [];
             Ext4.each(fieldNames, function(fn){
@@ -262,7 +213,7 @@ LDK.StoreUtils = new function(){
         /**
          * A sorter function that can be used to sort an Ext store based on one or more fields.  The primary advantage is that this sorter uses the column
          * metadata to sort on the displayValue, instead of rawValue for lookup columns, which is usually what the user expects.
-         * @param {array} fieldList An ordered array of field metadata objects.
+         * @param {array} fields An ordered array of field metadata objects.
          * @returns {function} The sorter function that can be passed to the sort() method of an Ext.data.Store.
          */
         getStoreSortFn: function(fields){
@@ -298,12 +249,12 @@ LDK.StoreUtils = new function(){
                         var rec1;
                         var rec2;
                         rec1 = store.findExact(item.valueField, a.get(item.term));
-                        if(rec1 != -1){
+                        if(rec1 !== -1){
                             rec1 = store.getAt(rec1);
                             val1 = rec1.get(item.displayField) || '';
                         }
                         rec2 = store.findExact(item.valueField, b.get(item.term));
-                        if(rec2 != -1){
+                        if(rec2 !== -1){
                             rec2 = store.getAt(rec2);
                             val2 = rec2.get(item.displayField) || '';
                         }
