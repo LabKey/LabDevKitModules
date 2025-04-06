@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.json.JSONArray" %>
+<%@ page import="org.labkey.api.util.JavaScriptFragment" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
 <%@ page import="org.labkey.laboratory.query.WorkbookModel" %>
-<%@ page import="java.util.Arrays" %>
-<%@ page import="org.json.JSONArray" %>
-<%@ page import="org.labkey.api.util.JavaScriptFragment" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%!
     @Override
@@ -36,7 +34,7 @@
     }
 %>
 <%
-    JspView<?> me = (JspView<?>) HttpView.currentView();
+    JspView<?> me = HttpView.currentView();
     WorkbookModel model = (WorkbookModel)me.getModelBean();
     Integer workbookId = model.getWorkbookId();
     String wpId = "wp_" + me.getWebPartRowId();
