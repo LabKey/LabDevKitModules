@@ -28,7 +28,7 @@
     }
 %>
 <%
-    JspView me = (JspView) HttpView.currentView();
+    JspView<?> me = HttpView.currentView();
     String wpId = "wp_" + me.getWebPartRowId();
 %>
 
