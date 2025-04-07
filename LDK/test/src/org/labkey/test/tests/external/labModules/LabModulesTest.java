@@ -16,15 +16,12 @@
 package org.labkey.test.tests.external.labModules;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.labkey.api.util.DateUtil;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
@@ -1499,6 +1496,14 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         new Window.WindowFinder(getDriver()).withTitle("Mark Removed").waitFor();
         Ext4FieldRef.getForLabel(this, "Date Removed").setValue("2017-01-02");
         Ext4FieldRef.getForLabel(this, "Comment").setValue("I removed these samples");
+
+        // TODO: for debugging date. ultimately remove
+        checker().withScreenshot("LabModulesTestDate1");
+
+        // Debug date parsing
+        String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2017-01-02'), 'Y-m-d');");
+        assertEquals("Incorrect date parsing", clientFormattedString, "2017-01-02");
+
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Submit"));
 
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();

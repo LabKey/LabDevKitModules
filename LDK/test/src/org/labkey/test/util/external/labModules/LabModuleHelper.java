@@ -193,7 +193,7 @@ public class LabModuleHelper
         for (String[] row : data)
         {
             sb.append(StringUtils.join(row, '\t'));
-            sb.append(System.getProperty("line.separator"));
+            sb.append(System.lineSeparator());
         }
 
         _test.waitForText("Sample Information");
