@@ -4,6 +4,8 @@ Ext4.ns('LDK');
  * Static helpers designed to help with type conversion in JS.
  */
 LDK.ConvertUtils = new function(){
+    var verboseLogging = false;
+
     var DATEFORMATS = LABKEY.Utils.getDateAltFormats().split('|');
     DATEFORMATS.push('Y/m/d H:i:s');
     DATEFORMATS.push('n-j-Y');
@@ -40,6 +42,10 @@ LDK.ConvertUtils = new function(){
 
             // Therefore special case this format and append the browser's time zone:
             if (format === 'c' && value.length === 10) {
+                if (this.verboseLogging) {
+                    console.log('switching from c for Y-m-d format')
+                }
+
                 format = 'Y-m-d';
             }
 
@@ -47,6 +53,12 @@ LDK.ConvertUtils = new function(){
             if (parsedDate) {
                 result = Ext4.Date.clearTime(parsedDate);
             }
+        }
+
+        if (this.verboseLogging) {
+            console.log('Parsing, raw value: ' + value);
+            console.log('format: ' + format);
+            console.log(result);
         }
         return result;
     }
@@ -113,6 +125,10 @@ LDK.ConvertUtils = new function(){
                     }, this);
                 }
             }, this);
+        },
+
+        setVerboseLogging: function(val) {
+            this.verboseLogging = val;
         }
     }
 };

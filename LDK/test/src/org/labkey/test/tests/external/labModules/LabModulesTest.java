@@ -1498,7 +1498,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Ext4FieldRef.getForLabel(this, "Comment").setValue("I removed these samples");
 
         // TODO: for debugging date. ultimately remove
-        checker().withScreenshot("LabModulesTestDate1");
+        BaseWebDriverTest.getCurrentTest().getArtifactCollector().dumpPageSnapshot("LabModulesTestDate1");
 
         // Debug date parsing
         String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2017-01-02'), 'Y-m-d');");
@@ -1520,7 +1520,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         {
             Assert.assertEquals("I removed these samples", row.get("remove_comment"));
             Assert.assertEquals(getUserId(), row.get("removedby"));
-            Assert.assertEquals("2017-01-02", dateFormat.format(row.get("dateremoved")));
+            Assert.assertEquals("Incorrect date, raw value: " + row.get("dateremoved"), "2017-01-02", dateFormat.format(row.get("dateremoved")));
         }
     }
 
