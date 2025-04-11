@@ -18,7 +18,7 @@ LDK.ConvertUtils = new function(){
     //@private
 
     //adapted from Ext.field.Date.  will parse a date in the given format, returning null if it does not match
-    function safeParseDate(value, format, useStrict){
+    function safeParseDate(value, format, useStrict, verboseLogging){
         var result = null,
                 parsedDate;
 
@@ -54,7 +54,8 @@ LDK.ConvertUtils = new function(){
             }
         }
 
-        if (this.verboseLogging) {
+        // TODO: added for insight into TeamCity test failures. Ultimately remove this.
+        if (verboseLogging && result) {
             var msg = 'Parsing, raw value: ' + value + ', format: ' + format + ', result: ' + result;
             console.log(msg);
 
@@ -101,7 +102,7 @@ LDK.ConvertUtils = new function(){
 
             var val;
             for (var i=0; i < formats.length; ++i) {
-                val = safeParseDate(value, formats[i]);
+                val = safeParseDate(value, formats[i], true, verboseLogging);
                 if (val) {
                     break;
                 }
