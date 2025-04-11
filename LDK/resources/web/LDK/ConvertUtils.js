@@ -37,7 +37,7 @@ LDK.ConvertUtils = new function(){
         // Mon Jan 01 2024 00:00:00 GMT-0800 (Pacific Standard Time)
         // Therefore special case this format and append the browser's time zone:
         if (format === 'c' && value && value.length === 10) {
-            if (this.verboseLogging) {
+            if (verboseLogging) {
                 console.log('switching from c to Y-m-d format')
             }
 
@@ -132,7 +132,7 @@ LDK.ConvertUtils = new function(){
         },
 
         setVerboseLogging: function(val) {
-            this.verboseLogging = val;
+            verboseLogging = val;
         }
     }
 };
