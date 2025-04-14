@@ -8,7 +8,7 @@ import org.labkey.api.data.DataColumn;
 import org.labkey.api.data.RenderContext;
 import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.exp.api.ExperimentService;
-import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.LinkBuilder;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.writer.HtmlWriter;
 
@@ -53,7 +53,7 @@ public class EnterResultsDisplayColumn extends DataColumn
 
         if (value != null && url != null)
         {
-            out.write(PageFlowUtil.link(value.toString()).href(url).target(_linkTarget));
+            out.write(LinkBuilder.labkeyLink(value.toString(), url).target(_linkTarget));
         }
     }
 
