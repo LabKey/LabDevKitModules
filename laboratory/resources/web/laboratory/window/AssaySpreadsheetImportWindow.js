@@ -62,6 +62,9 @@ Ext4.define('Laboratory.ext.AssaySpreadsheetImportWindow', {
                         return;
                     }
 
+                    // TODO: debugging, ultimately remove this
+                    LDK.ConvertUtils.setVerboseLogging(true);
+
                     var models = LDK.StoreUtils.getModelsFromText({
                         store: win.targetGrid.store,
                         text: text
@@ -76,6 +79,9 @@ Ext4.define('Laboratory.ext.AssaySpreadsheetImportWindow', {
                     }, this);
 
                     win.targetGrid.store.add(toAdd);
+
+                    // TODO: debugging, ultimately remove this
+                    LDK.ConvertUtils.setVerboseLogging(false);
 
                     win.close();
                 }
