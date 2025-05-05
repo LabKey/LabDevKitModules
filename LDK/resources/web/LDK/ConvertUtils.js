@@ -4,6 +4,8 @@ Ext4.ns('LDK');
  * Static helpers designed to help with type conversion in JS.
  */
 LDK.ConvertUtils = new function(){
+    var verboseLogging = false;
+
     var DATEFORMATS = LABKEY.Utils.getDateAltFormats().split('|');
     DATEFORMATS.push('Y/m/d H:i:s');
     DATEFORMATS.push('n-j-Y');
@@ -16,7 +18,7 @@ LDK.ConvertUtils = new function(){
     //@private
 
     //adapted from Ext.field.Date.  will parse a date in the given format, returning null if it does not match
-    function safeParseDate(value, format, useStrict){
+    function safeParseDate(value, format, useStrict, verboseLogging){
         var result = null,
                 parsedDate;
 
@@ -26,27 +28,41 @@ LDK.ConvertUtils = new function(){
 
         useStrict = Ext4.isDefined(useStrict) ? useStrict : false;
 
+        // The core of the parsing problem comes from JS Date.parse() treating ISO 8601 short differently from other date formats:
+        // https://www.w3.org/TR/NOTE-datetime
+        // Example:
+        // new Date('2024-01-01')
+        // Sun Dec 31 2023 16:00:00 GMT-0800 (Pacific Standard Time)
+        // new Date('1/1/2024')
+        // Mon Jan 01 2024 00:00:00 GMT-0800 (Pacific Standard Time)
+        // Therefore special case this format and append the browser's time zone:
+        if (format === 'c' && value && value.length === 10) {
+            if (verboseLogging) {
+                console.log('switching from c to Y-m-d format')
+            }
+
+            format = 'Y-m-d';
+        }
+
         if (Ext4.Date.formatContainsHourInfo(format)) {
             // if parse format contains hour information, no DST adjustment is necessary
             result = Ext4.Date.parse(value, format, useStrict);
         } else {
-            // The core of the parsing problem comes from JS Date.parse() treating ISO 8601 short differently from other date formats:
-            // https://www.w3.org/TR/NOTE-datetime
-            // Example:
-            // new Date('2024-01-01')
-            // Sun Dec 31 2023 16:00:00 GMT-0800 (Pacific Standard Time)
-            // new Date('1/1/2024')
-            // Mon Jan 01 2024 00:00:00 GMT-0800 (Pacific Standard Time)
-
-            // Therefore special case this format and append the browser's time zone:
-            if (format === 'c' && value.length === 10) {
-                format = 'Y-m-d';
-            }
-
             parsedDate = Ext4.Date.parse(value, format, useStrict);
             if (parsedDate) {
                 result = Ext4.Date.clearTime(parsedDate);
             }
+        }
+
+        // TODO: added for insight into TeamCity test failures. Ultimately remove this.
+        if (verboseLogging && result) {
+            var msg = 'Parsing, raw value: ' + value + ', format: ' + format + ', result: ' + result;
+            console.log(msg);
+
+            LDK.Utils.logToServer({
+                level: 'INFO',
+                message: msg
+            })
         }
         return result;
     }
@@ -86,7 +102,7 @@ LDK.ConvertUtils = new function(){
 
             var val;
             for (var i=0; i < formats.length; ++i) {
-                val = safeParseDate(value, formats[i]);
+                val = safeParseDate(value, formats[i], true, verboseLogging);
                 if (val) {
                     break;
                 }
@@ -113,6 +129,10 @@ LDK.ConvertUtils = new function(){
                     }, this);
                 }
             }, this);
+        },
+
+        setVerboseLogging: function(val) {
+            verboseLogging = val;
         }
     }
 };
