@@ -12,6 +12,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
 
     alias: 'plugin.ldk-usereditablecombo',
     allowChooseOther: true,
+    useBracketsForUnknownValues: false,
 
     init: function(combo) {
         this.combo = combo;
@@ -109,7 +110,7 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                             return '';
                         }
 
-                        if (value.invalid) {
+                        if (this.field.userEditablePlugin.useBracketsForUnknownValues && value.invalid) {
                             return '[' + LABKEY.Utils.encodeHtml(val) + ']';
                         }
 
