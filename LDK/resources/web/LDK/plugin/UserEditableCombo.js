@@ -94,31 +94,36 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
                 this.addValueIfNeeded(val);
 
                 this.callOverridden(arguments);
-            },
-            tpl: Ext4.create('Ext.XTemplate',
-                '<ul class="x4-list-plain">',
-                    '<tpl for=".">',
-                        '<li role="option" class="x4-boundlist-item">',
-                            '{[this.formatLookup(values)]}',
-                        '</li>',
-                    '</tpl>',
-                '</ul>',
-                {
-                    formatLookup: function(value) {
-                        const val = value[this.field.displayField] || value[this.field.valueField] || '';
-                        if (Ext4.isEmpty(val)) {
-                            return '';
-                        }
-
-                        if (this.field.userEditablePlugin.useBracketsForUnknownValues && value.invalid) {
-                            return '[' + LABKEY.Utils.encodeHtml(val) + ']';
-                        }
-
-                        return LABKEY.Utils.encodeHtml(val);
-                    }
-                }
-            )
+            }
         });
+
+        if (this.useBracketsForUnknownValues) {
+            Ext4.override(combo, {
+                tpl: Ext4.create('Ext.XTemplate',
+                    '<ul class="x4-list-plain">',
+                        '<tpl for=".">',
+                            '<li role="option" class="x4-boundlist-item">',
+                                '{[this.formatLookup(values)]}',
+                            '</li>',
+                        '</tpl>',
+                    '</ul>',
+                    {
+                        formatLookup: function(value) {
+                            const val = value[this.field.displayField] || value[this.field.valueField] || '';
+                            if (Ext4.isEmpty(val)) {
+                                return '';
+                            }
+
+                            if (value.invalid) {
+                                return '[' + LABKEY.Utils.encodeHtml(val) + ']';
+                            }
+
+                            return LABKEY.Utils.encodeHtml(val);
+                        }
+                    }
+                )
+            });
+        }
 
         combo.store.on('add', this.onStoreAdd, this);
         combo.store.on('load', combo.ensureValueInStore, combo);
