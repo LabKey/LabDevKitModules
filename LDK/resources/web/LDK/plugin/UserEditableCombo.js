@@ -98,12 +98,25 @@ Ext4.define('LDK.plugin.UserEditableCombo', {
         });
 
         if (this.useBracketsForUnknownValues) {
+            let innerTpl = 'this.formatLookup(values)';
+
+            const innerTplWrap = this.combo?.listConfig?.getInnerTpl();
+            if (typeof innerTplWrap === 'string') {
+                innerTpl = innerTplWrap.replaceAll('values', innerTpl);
+            }
+            else if (Array.isArray(innerTplWrap)) {
+                innerTpl = innerTplWrap.map(t => t.replaceAll('values', innerTpl));
+            }
+            else {
+                innerTpl = '{[' + innerTpl + ']}';
+            }
+
             Ext4.override(combo, {
                 tpl: Ext4.create('Ext.XTemplate',
                     '<ul class="x4-list-plain">',
                         '<tpl for=".">',
                             '<li role="option" class="x4-boundlist-item">',
-                                '{[this.formatLookup(values)]}',
+                                '' + innerTpl,
                             '</li>',
                         '</tpl>',
                     '</ul>',
