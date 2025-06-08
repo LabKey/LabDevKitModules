@@ -60,7 +60,7 @@ public class LDKServiceImpl extends LDKService
     private final Set<NotificationSection> _summaryNotificationSections = new HashSet<>();
     private final List<List<String>> _containerScopedTables = new ArrayList<>();
     private Boolean _isNaturalizeInstalled = null;
-    private final Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<Map<String, List<ButtonConfigFactory>>>();
+    private final Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<>();
     private static final String BACKGROUND_USER_PROPNAME = "BackgroundAdminUser";
 
     public LDKServiceImpl()
@@ -113,7 +113,7 @@ public class LDKServiceImpl extends LDKService
         //append children
         if (includeAllRootTypes)
         {
-            Set<File> paths = new HashSet<File>();
+            Set<File> paths = new HashSet<>();
             for (FileContentService.ContentType type : FileContentService.ContentType.values())
             {
                 File fileRoot = svc.getFileRoot(c, type);
@@ -268,7 +268,7 @@ public class LDKServiceImpl extends LDKService
             if (ss.exists())
             {
                 messages.add("ERROR: duplicates found in: " + values.get(0) + "." + values.get(1));
-                ss.forEach(new Selector.ForEachBlock<ResultSet>()
+                ss.forEach(new Selector.ForEachBlock<>()
                 {
                     @Override
                     public void exec(ResultSet rs) throws SQLException
@@ -334,11 +334,11 @@ public class LDKServiceImpl extends LDKService
     {
         Map<String, List<ButtonConfigFactory>> schemaMap = _queryButtons.get(schema);
         if (schemaMap == null)
-            schemaMap = new CaseInsensitiveHashMap<List<ButtonConfigFactory>>();
+            schemaMap = new CaseInsensitiveHashMap<>();
 
         List<ButtonConfigFactory> list = schemaMap.get(query);
         if (list == null)
-            list = new ArrayList<ButtonConfigFactory>();
+            list = new ArrayList<>();
 
         list.add(btn);
 
@@ -349,7 +349,7 @@ public class LDKServiceImpl extends LDKService
     @Override
     public List<ButtonConfigFactory> getQueryButtons(TableInfo ti)
     {
-        List<ButtonConfigFactory> buttons = new ArrayList<ButtonConfigFactory>();
+        List<ButtonConfigFactory> buttons = new ArrayList<>();
 
         Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(ti.getPublicSchemaName());
         if (factories == null)

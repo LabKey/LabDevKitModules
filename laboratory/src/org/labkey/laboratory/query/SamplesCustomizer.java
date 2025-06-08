@@ -54,7 +54,7 @@ public class SamplesCustomizer implements TableCustomizer
             col.setDescription("This field takes the concentration multiplied by the quantity fields.  It is automatically calculated and does not take units or other information into account.");
 
             //inject amount column after quantity.
-            List<ColumnInfo> columns = new ArrayList<ColumnInfo>();
+            List<ColumnInfo> columns = new ArrayList<>();
             columns.addAll(ti.getColumns());
             for (ColumnInfo c : columns)
                 ti.removeColumn(c);

@@ -57,7 +57,7 @@ public class LaboratoryUpgradeCode implements UpgradeCode
             filter.addCondition(FieldKey.fromString("quantity"), null, CompareType.ISBLANK);
 
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set("rowid", "quantity_string"), filter, null);
-            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            ts.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
@@ -103,7 +103,7 @@ public class LaboratoryUpgradeCode implements UpgradeCode
         final TableInfo ti = LaboratorySchema.getInstance().getTable(LaboratorySchema.TABLE_WORKBOOKS);
         TableSelector ts = new TableSelector(ti);
         final Map<String, Integer> containerMap = new HashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException

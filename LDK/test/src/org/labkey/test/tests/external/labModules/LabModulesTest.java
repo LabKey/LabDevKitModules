@@ -303,7 +303,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         checkDate("3/5/99", dateFormat3);
 
         String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2024-01-01', 'c'), 'Y-m-d');");
-        assertEquals("Incorrect date parsing", clientFormattedString, "2024-01-01");
+        assertEquals("Incorrect date parsing", "2024-01-01", clientFormattedString);
     }
 
     private void checkDate(String dateStr, String javaFormatStr) throws ParseException
@@ -329,7 +329,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Connection cn = WebTestHelper.getRemoteApiConnection();
 
         //do cleanup in case test is started in the middle
-        Integer highestWorkbookId = deleteExistingWorkbooks();
+        int highestWorkbookId = deleteExistingWorkbooks();
 
         List<CreateContainerResponse> workbooks = new ArrayList<>();
         workbooks.add(_apiContainerHelper.createWorkbook(getProjectName(), "Workbook1", null));
@@ -1466,8 +1466,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         int colIdx = dr.getColumnIndex("comment");
         String comment1 = dr.getDataAsText(1, colIdx);
         String comment2 = dr.getDataAsText(2, colIdx);
-        Assert.assertEquals(comment1, comment);
-        Assert.assertEquals(comment2, comment);
+        Assert.assertEquals(comment, comment1);
+        Assert.assertEquals(comment, comment2);
 
         dr.uncheckAllOnPage();
         assertEquals("incorrect number of rows selected", 0, dr.getCheckedCount(this));
@@ -1480,8 +1480,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();
         String comment1b = dr.getDataAsText(1, colIdx);
         String comment2b = dr.getDataAsText(2, colIdx);
-        Assert.assertEquals(comment1b, comment + "\nThis should append to the end");
-        Assert.assertEquals(comment2b, comment);
+        Assert.assertEquals(comment + "\nThis should append to the end", comment1b);
+        Assert.assertEquals(comment, comment2b);
 
         refresh();
         dr = new DataRegionTable.DataRegionFinder(getDriver()).withName("query").find();
@@ -1502,7 +1502,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         // Debug date parsing
         String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2017-01-02'), 'Y-m-d');");
-        assertEquals("Incorrect date parsing", clientFormattedString, "2017-01-02");
+        assertEquals("Incorrect date parsing", "2017-01-02", clientFormattedString);
 
         waitAndClickAndWait(Ext4Helper.Locators.ext4Button("Submit"));
 
@@ -1572,13 +1572,13 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         //insert dummy data:
         String[] workbookIds = new String[3];
-        Integer i = 0;
+        int i = 0;
         int max = 3;
         while (i < max)
         {
             String id = _helper.createWorkbook(getProjectName(), "Workbook" + i, "Description");
             workbookIds[i] = id;
-            insertDummySampleRow(i.toString());
+            insertDummySampleRow(Integer.toString(i));
             i++;
         }
 

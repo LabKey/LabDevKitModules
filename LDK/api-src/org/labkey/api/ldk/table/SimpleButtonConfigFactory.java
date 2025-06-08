@@ -39,8 +39,8 @@ import java.util.function.Supplier;
  */
 public class SimpleButtonConfigFactory implements ButtonConfigFactory
 {
-    private Module _owner;
-    private String _text;
+    private final Module _owner;
+    private final String _text;
     private DetailsURL _url = null;
     private String _jsHandler = null;
     private Integer _insertPosition = null;

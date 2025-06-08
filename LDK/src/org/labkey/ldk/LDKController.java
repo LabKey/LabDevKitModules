@@ -111,7 +111,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetNotificationsAction extends ReadOnlyApiAction<Object>
+    public static class GetNotificationsAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors)
@@ -136,7 +136,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetFileRootSizesAction extends ReadOnlyApiAction<FileRootSizeForm>
+    public static class GetFileRootSizesAction extends ReadOnlyApiAction<FileRootSizeForm>
     {
         @Override
         public ApiResponse execute(FileRootSizeForm form, BindException errors) throws Exception
@@ -212,7 +212,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminOperationsPermission.class)
-    public class GetSiteNotificationDetailsAction extends ReadOnlyApiAction<Object>
+    public static class GetSiteNotificationDetailsAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -242,7 +242,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class UpdateNotificationSubscriptionsAction extends MutatingApiAction<UpdateNotificationSubscriptionsForm>
+    public static class UpdateNotificationSubscriptionsAction extends MutatingApiAction<UpdateNotificationSubscriptionsForm>
     {
         @Override
         public ApiResponse execute(UpdateNotificationSubscriptionsForm form, BindException errors) throws Exception
@@ -349,7 +349,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class RunNotificationAction extends SimpleViewAction<RunNotificationForm>
+    public static class RunNotificationAction extends SimpleViewAction<RunNotificationForm>
     {
         private String _title = null;
 
@@ -403,7 +403,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SendNotificationAction extends MutatingApiAction<RunNotificationForm>
+    public static class SendNotificationAction extends MutatingApiAction<RunNotificationForm>
     {
         @Override
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
@@ -437,7 +437,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class ValidateContainerScopedTablesAction extends SimpleViewAction<Object>
+    public static class ValidateContainerScopedTablesAction extends SimpleViewAction<Object>
     {
         @Override
         public ModelAndView getView(Object form, BindException errors) throws Exception
@@ -459,7 +459,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetNotificationSubscriptionsAction extends ReadOnlyApiAction<RunNotificationForm>
+    public static class GetNotificationSubscriptionsAction extends ReadOnlyApiAction<RunNotificationForm>
     {
         @Override
         public ApiResponse execute(RunNotificationForm form, BindException errors) throws Exception
@@ -509,7 +509,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class SetNotificationSettingsAction extends MutatingApiAction<NotificationSettingsForm>
+    public static class SetNotificationSettingsAction extends MutatingApiAction<NotificationSettingsForm>
     {
         @Override
         public ApiResponse execute(NotificationSettingsForm form, BindException errors)
@@ -648,7 +648,7 @@ public class LDKController extends SpringActionController
 
 
     @RequiresPermission(ReadPermission.class)
-    public class LogMetricAction extends MutatingApiAction<LogMetricForm>
+    public static class LogMetricAction extends MutatingApiAction<LogMetricForm>
     {
         @Override
         public ApiResponse execute(LogMetricForm form, BindException errors) throws Exception
@@ -822,7 +822,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class UpdateQueryAction extends SimpleViewAction<QueryForm>
+    public static class UpdateQueryAction extends SimpleViewAction<QueryForm>
     {
         private QueryForm _form;
 
@@ -1019,7 +1019,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresNoPermission
-    public class RedirectStartAction extends SimpleViewAction<Object>
+    public static class RedirectStartAction extends SimpleViewAction<Object>
     {
         @Override
         public ModelAndView getView(Object form, BindException errors) throws Exception
@@ -1065,7 +1065,7 @@ public class LDKController extends SpringActionController
     public static final String REDIRECT_URL_PROP = "redirectURL";
 
     @RequiresPermission(AdminPermission.class)
-    public class SetRedirectUrlAction extends MutatingApiAction<SetRedirectUrlForm>
+    public static class SetRedirectUrlAction extends MutatingApiAction<SetRedirectUrlForm>
     {
         @Override
         public ApiResponse execute(SetRedirectUrlForm form, BindException errors) throws Exception
@@ -1100,7 +1100,7 @@ public class LDKController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class GetRedirectUrlAction extends ReadOnlyApiAction<Object>
+    public static class GetRedirectUrlAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -1111,7 +1111,7 @@ public class LDKController extends SpringActionController
 
     @RequiresPermission(AdminOperationsPermission.class)
     @AllowedDuringUpgrade
-    public class DownloadNaturalizeInstallScriptAction extends ExportAction<Object>
+    public static class DownloadNaturalizeInstallScriptAction extends ExportAction<Object>
     {
         @Override
         public void export(Object o, HttpServletResponse response, BindException errors) throws Exception

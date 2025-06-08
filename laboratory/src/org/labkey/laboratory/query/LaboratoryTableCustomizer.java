@@ -117,7 +117,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         ColumnInfo wrappedContainer = ti.getColumn("workbook");
         if (wrappedContainer != null)
         {
-            List<FieldKey> cols = new ArrayList<FieldKey>();
+            List<FieldKey> cols = new ArrayList<>();
             cols.addAll(ti.getDefaultVisibleColumns());
             if (!cols.contains(wrappedContainer.getFieldKey()))
             {
@@ -141,7 +141,7 @@ public class LaboratoryTableCustomizer implements TableCustomizer
         assert queryName != null;
 
         List<String> keyFields = ti.getPkColumnNames();
-        if (keyFields.size() == 0)
+        if (keyFields.isEmpty())
         {
             _log.error("Table: " + schemaName + "." + queryName + " has no key fields: " + StringUtils.join(keyFields, ";"));
             return;

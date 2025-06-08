@@ -117,7 +117,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(InsertPermission.class)
-    public class PrepareExptRunAction extends SimpleViewAction<PlanExptRunForm>
+    public static class PrepareExptRunAction extends SimpleViewAction<PlanExptRunForm>
     {
         @Override
         public ModelAndView getView(PlanExptRunForm form, BindException errors) throws Exception
@@ -154,7 +154,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(AdminOperationsPermission.class)
-    public class EnsureIndexesAction extends ConfirmAction<Object>
+    public static class EnsureIndexesAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -206,7 +206,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class EnsureAssayFieldsAction extends ConfirmAction<EnsureAssayFieldsForm>
+    public static class EnsureAssayFieldsAction extends ConfirmAction<EnsureAssayFieldsForm>
     {
         @Override
         public void validateCommand(EnsureAssayFieldsForm form, Errors errors)
@@ -296,7 +296,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(AdminPermission.class)
-    public class SetTableIncrementValueAction extends ConfirmAction<SetTableIncrementForm>
+    public static class SetTableIncrementValueAction extends ConfirmAction<SetTableIncrementForm>
     {
         @Override
         public void validateCommand(SetTableIncrementForm form, Errors errors)
@@ -455,7 +455,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class InitWorkbooksAction extends ConfirmAction<Object>
+    public static class InitWorkbooksAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -494,7 +494,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class InitContainerIncrementingTableAction extends ConfirmAction<SetTableIncrementForm>
+    public static class InitContainerIncrementingTableAction extends ConfirmAction<SetTableIncrementForm>
     {
         @Override
         public void validateCommand(SetTableIncrementForm form, Errors errors)
@@ -566,7 +566,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public class ResetLaboratoryFoldersAction extends ConfirmAction<Object>
+    public static class ResetLaboratoryFoldersAction extends ConfirmAction<Object>
     {
         @Override
         public void validateCommand(Object form, Errors errors)
@@ -605,7 +605,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(InsertPermission.class)
-    public class ProcessAssayDataAction extends AbstractFileUploadAction<ProcessAssayForm>
+    public static class ProcessAssayDataAction extends AbstractFileUploadAction<ProcessAssayForm>
     {
         @Override
         protected void setContentType(HttpServletResponse response)
@@ -698,7 +698,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(AdminPermission.class)
-    public class PopulateDefaultsAction extends MutatingApiAction<PopulateDefaultsForm>
+    public static class PopulateDefaultsAction extends MutatingApiAction<PopulateDefaultsForm>
     {
         @Override
         public ApiResponse execute(PopulateDefaultsForm form, BindException errors) throws Exception
@@ -737,7 +737,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class UpdateWorkbookAction extends MutatingApiAction<UpdateWorkbookForm>
+    public static class UpdateWorkbookAction extends MutatingApiAction<UpdateWorkbookForm>
     {
         @Override
         public ApiResponse execute(UpdateWorkbookForm form, BindException errors) throws Exception
@@ -776,7 +776,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDemographicsProvidersAction extends ReadOnlyApiAction<Object>
+    public static class GetDemographicsProvidersAction extends ReadOnlyApiAction<Object>
     {
         @Override
         public ApiResponse execute(Object form, BindException errors) throws Exception
@@ -803,7 +803,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(UpdatePermission.class)
-    public class UpdateWorkbookTagsAction extends MutatingApiAction<UpdateWorkbookForm>
+    public static class UpdateWorkbookTagsAction extends MutatingApiAction<UpdateWorkbookForm>
     {
         @Override
         public ApiResponse execute(UpdateWorkbookForm form, BindException errors) throws Exception
@@ -918,7 +918,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(UpdatePermission.class)
-    public class SaveTemplateAction extends MutatingApiAction<SaveTemplateForm>
+    public static class SaveTemplateAction extends MutatingApiAction<SaveTemplateForm>
     {
         @Override
         public ApiResponse execute(SaveTemplateForm form, BindException errors) throws Exception
@@ -1036,7 +1036,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class CreateTemplateAction extends ExportAction<ProcessAssayForm>
+    public static class CreateTemplateAction extends ExportAction<ProcessAssayForm>
     {
         @Override
         public void validate(ProcessAssayForm form, BindException errors)
@@ -1103,7 +1103,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDemographicsSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
+    public static class GetDemographicsSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
     {
         @Override
         public ApiResponse execute(DataSourcesForm form, BindException errors)
@@ -1150,7 +1150,7 @@ public class LaboratoryController extends SpringActionController
                 if (getUser().hasSiteAdminPermission())
                 {
                     Map<Container, Set<DemographicsSource>> map = service.getAllDemographicsSources(getUser());
-                    Map<String, JSONArray> siteSummary = new HashMap<String, JSONArray>();
+                    Map<String, JSONArray> siteSummary = new HashMap<>();
                     for (Container c : map.keySet())
                     {
                         JSONArray arr = siteSummary.get(c.getPath());
@@ -1180,7 +1180,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAdditionalDataSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
+    public static class GetAdditionalDataSourcesAction extends ReadOnlyApiAction<DataSourcesForm>
     {
         @Override
         public ApiResponse execute(DataSourcesForm form, BindException errors)
@@ -1227,7 +1227,7 @@ public class LaboratoryController extends SpringActionController
                 if (getUser().hasSiteAdminPermission())
                 {
                     Map<Container, Set<AdditionalDataSource>> map = service.getAllAdditionalDataSources(getUser());
-                    Map<String, JSONArray> siteSummary = new HashMap<String, JSONArray>();
+                    Map<String, JSONArray> siteSummary = new HashMap<>();
                     for (Container c : map.keySet())
                     {
                         JSONArray arr = siteSummary.get(c.getPath());
@@ -1299,7 +1299,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetDemographicsSourcesAction extends MutatingApiAction<SetDataSourcesForm>
+    public static class SetDemographicsSourcesAction extends MutatingApiAction<SetDataSourcesForm>
     {
         @Override
         public ApiResponse execute(SetDataSourcesForm form, BindException errors)
@@ -1320,7 +1320,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            Set<DemographicsSource> sources = new HashSet<DemographicsSource>();
+            Set<DemographicsSource> sources = new HashSet<>();
 
             JSONArray json = new JSONArray(form.getTables());
             for (JSONObject obj : JsonUtil.toJSONObjectList(json))
@@ -1383,7 +1383,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            Set<AdditionalDataSource> sources = new HashSet<AdditionalDataSource>();
+            Set<AdditionalDataSource> sources = new HashSet<>();
 
             JSONArray json = new JSONArray(form.getTables());
             for (JSONObject obj : JsonUtil.toJSONObjectList(json))
@@ -1444,7 +1444,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetUrlDataSourcesAction extends MutatingApiAction<SetUrlDataSourcesForm>
+    public static class SetUrlDataSourcesAction extends MutatingApiAction<SetUrlDataSourcesForm>
     {
         @Override
         public ApiResponse execute(SetUrlDataSourcesForm form, BindException errors)
@@ -1465,7 +1465,7 @@ public class LaboratoryController extends SpringActionController
                 return null;
             }
 
-            Set<URLDataSource> sources = new HashSet<URLDataSource>();
+            Set<URLDataSource> sources = new HashSet<>();
 
             JSONArray json = new JSONArray(form.getSources());
             for (JSONObject obj : JsonUtil.toJSONObjectList(json))
@@ -1500,7 +1500,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetAssayImportHeadersAction extends ReadOnlyApiAction<AssayImportHeadersForm>
+    public static class GetAssayImportHeadersAction extends ReadOnlyApiAction<AssayImportHeadersForm>
     {
         @Override
         public ApiResponse execute(AssayImportHeadersForm form, BindException errors)
@@ -1583,7 +1583,7 @@ public class LaboratoryController extends SpringActionController
                 map.put(key, json.get(key) == null ? null : String.valueOf(json.get(key)));
             }
 
-            if (toActivate.size() > 0)
+            if (!toActivate.isEmpty())
             {
                 toActivate.addAll(activeModules);
                 getContainer().setActiveModules(toActivate);
@@ -1598,7 +1598,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetItemDefaultViewAction extends MutatingApiAction<JsonDataForm>
+    public static class SetItemDefaultViewAction extends MutatingApiAction<JsonDataForm>
     {
         @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
@@ -1632,7 +1632,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SetDataBrowserSettingsAction extends MutatingApiAction<JsonDataForm>
+    public static class SetDataBrowserSettingsAction extends MutatingApiAction<JsonDataForm>
     {
         @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
@@ -1653,7 +1653,7 @@ public class LaboratoryController extends SpringActionController
             WritablePropertyMap propMap = PropertyManager.getWritableProperties(getContainer(), TabbedReportItem.OVERRIDES_PROP_KEY, true);
 
             List<TabbedReportItem> tabbedReports = LaboratoryService.get().getTabbedReportItems(getContainer(), getUser());
-            Map<String, TabbedReportItem> reportMap = new HashMap<String, TabbedReportItem>();
+            Map<String, TabbedReportItem> reportMap = new HashMap<>();
             for (TabbedReportItem item : tabbedReports)
             {
                 reportMap.put(TabbedReportItem.getOverridesPropertyKey(item), item);
@@ -1678,7 +1678,7 @@ public class LaboratoryController extends SpringActionController
                 if (reportCategory != null && !ti.getReportCategory().equals(reportCategory))
                     toSave.put("reportCategory", reportCategory);
 
-                if (toSave.keySet().size() > 0)
+                if (!toSave.keySet().isEmpty())
                     propMap.put(key, toSave.toString());
                 else propMap.remove(key);
             }
@@ -1692,7 +1692,7 @@ public class LaboratoryController extends SpringActionController
 
 
     @RequiresPermission(LaboratoryAdminPermission.class)
-    public class SaveAssayDefaultsAction extends MutatingApiAction<JsonDataForm>
+    public static class SaveAssayDefaultsAction extends MutatingApiAction<JsonDataForm>
     {
         @Override
         public ApiResponse execute(JsonDataForm form, BindException errors)
@@ -1725,7 +1725,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataItemsAction extends MutatingApiAction<GetDataItemsForm>
+    public static class GetDataItemsAction extends MutatingApiAction<GetDataItemsForm>
     {
         @Override
         public ApiResponse execute(GetDataItemsForm form, BindException errors)
@@ -1825,7 +1825,7 @@ public class LaboratoryController extends SpringActionController
                     Set<Module> active = getContainer().getActiveModules();
                     if (!active.contains(m))
                     {
-                        Set<Module> newActive = new HashSet<Module>();
+                        Set<Module> newActive = new HashSet<>();
                         newActive.addAll(active);
                         newActive.add(m);
 
@@ -1840,7 +1840,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetImportMethodsAction extends ReadOnlyApiAction<ImportMethodsForm>
+    public static class GetImportMethodsAction extends ReadOnlyApiAction<ImportMethodsForm>
     {
         @Override
         public ApiResponse execute(ImportMethodsForm form, BindException errors)
@@ -1874,7 +1874,7 @@ public class LaboratoryController extends SpringActionController
                 JSONObject json = new JSONObject();
                 AssayDataProvider adp = LaboratoryService.get().getDataProviderForAssay(provider);
                 List<ExpProtocol> protocolsForProvider = new ArrayList<>();
-                if (protocols.size() == 0)
+                if (protocols.isEmpty())
                     protocolsForProvider.addAll(adp.getProtocols(getContainer()));
                 else
                     protocolsForProvider.addAll(protocols);
@@ -1910,7 +1910,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetDataSummaryAction extends ReadOnlyApiAction<DataSummaryForm>
+    public static class GetDataSummaryAction extends ReadOnlyApiAction<DataSummaryForm>
     {
         @Override
         public ApiResponse execute(DataSummaryForm form, BindException errors)
@@ -1959,7 +1959,7 @@ public class LaboratoryController extends SpringActionController
 
             for (String key : items.keySet())
             {
-                List<JSONObject> jsonItems = new ArrayList<JSONObject>();
+                List<JSONObject> jsonItems = new ArrayList<>();
                 for (NavItem item : items.get(key))
                 {
                     jsonItems.add(item.toJSON(getContainer(), getUser()));
@@ -1987,7 +1987,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class GetSubjectIdSummaryAction extends ReadOnlyApiAction<SubjectSummaryForm>
+    public static class GetSubjectIdSummaryAction extends ReadOnlyApiAction<SubjectSummaryForm>
     {
         @Override
         public ApiResponse execute(SubjectSummaryForm form, BindException errors)
@@ -2249,7 +2249,7 @@ public class LaboratoryController extends SpringActionController
             if (ti == null)
                 return null;
             List<String> pks = ti.getPkColumnNames();
-            if (pks.size() == 0)
+            if (pks.isEmpty())
                 return null;
 
             ActionURL url = new ActionURL("query", "importData", c);
@@ -2330,7 +2330,7 @@ public class LaboratoryController extends SpringActionController
     }
 
     @RequiresPermission(ReadPermission.class)
-    public class DataBrowserAction extends SimpleViewAction<Object>
+    public static class DataBrowserAction extends SimpleViewAction<Object>
     {
         @Override
         public ModelAndView getView(Object form, BindException errors) throws Exception

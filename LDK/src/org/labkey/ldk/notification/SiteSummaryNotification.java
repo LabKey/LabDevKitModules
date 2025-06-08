@@ -189,7 +189,7 @@ public class SiteSummaryNotification implements Notification
         _pctFormat.setMaximumFractionDigits(1);
 
         Map<String, String> saved = getSavedValues(c);
-        Map<String, String> newValues = new HashMap<String, String>();
+        Map<String, String> newValues = new HashMap<>();
 
         StringBuilder msg = new StringBuilder();
         StringBuilder alerts = new StringBuilder();
@@ -214,7 +214,7 @@ public class SiteSummaryNotification implements Notification
             }
         }
 
-        if (alerts.length() > 0)
+        if (!alerts.isEmpty())
         {
             alerts.insert(0, "<b>The following alerts were generated:</b><p>");
             alerts.append("<hr>");
@@ -261,7 +261,7 @@ public class SiteSummaryNotification implements Notification
 
             msg.append("<b>Site Logins In The Past 7 Days:</b><br>\n");
             msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight: bold;'><td>Day of Week</td><td>Date</td><td>Logins</td><td>Distinct Users</td><td>Logins / User</td></tr>");
-            ss.forEach(new Selector.ForEachBlock<ResultSet>()
+            ss.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
@@ -296,7 +296,7 @@ public class SiteSummaryNotification implements Notification
 
         msg.append("Number of Forms Created Yesterday: <br>\n");
 
-        ss.forEach(new Selector.ForEachBlock<ResultSet>()
+        ss.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet rs) throws SQLException
@@ -314,7 +314,7 @@ public class SiteSummaryNotification implements Notification
         String studySize = "studySize";
         if (!studies.isEmpty())
         {
-            Map<String, String> newValueMap = new HashMap<String, String>();
+            Map<String, String> newValueMap = new HashMap<>();
             JSONObject oldValueMap = null;
             if (saved.containsKey(studySize))
             {
@@ -343,7 +343,7 @@ public class SiteSummaryNotification implements Notification
 
             msg.append("</table>");
 
-            if (newValueMap.size() > 0)
+            if (!newValueMap.isEmpty())
                 toSave.put(studySize, new JSONObject(newValueMap).toString());
         }
     }
@@ -458,9 +458,9 @@ public class SiteSummaryNotification implements Notification
         msg.append("</table><br>");
         msg.append("<hr>");
 
-        if (newValueMap.size() > 0)
+        if (!newValueMap.isEmpty())
             toSave.put(fileRootSizes, new JSONObject(newValueMap).toString());
-        if (newValueMapCounts.size() > 0)
+        if (!newValueMapCounts.isEmpty())
             toSave.put(fileRootCounts, new JSONObject(newValueMapCounts).toString());
     }
 
@@ -502,7 +502,7 @@ public class SiteSummaryNotification implements Notification
             final Map<String, String> newValueMap = new HashMap<>();
             final JSONObject oldValueMap = saved.containsKey(tableSizes) ? new JSONObject(saved.get(tableSizes)) : null;
 
-            ss.forEach(new Selector.ForEachBlock<ResultSet>()
+            ss.forEach(new Selector.ForEachBlock<>()
             {
                 @Override
                 public void exec(ResultSet object) throws SQLException
@@ -519,14 +519,14 @@ public class SiteSummaryNotification implements Notification
                         previousValue = oldValueMap.getLong(key);
                     }
 
-                    String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
+                    String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " + key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
                     msg.append("<tr><td>" + (schema == null ? "" : schema) + "</td><td>" + (table == null ? "" : table) + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
                 }
             });
 
             msg.append("</table><br>");
 
-            if (newValueMap.size() > 0)
+            if (!newValueMap.isEmpty())
                 toSave.put(tableSizes, new JSONObject(newValueMap).toString());
         }
 
@@ -543,7 +543,7 @@ public class SiteSummaryNotification implements Notification
         SqlSelector ss;
 
         String dbSizes = "dbSizes";
-        final Map<String, String> newValueMap = new HashMap<String, String>();
+        final Map<String, String> newValueMap = new HashMap<>();
         final JSONObject oldValueMap = saved.containsKey(dbSizes) ? new JSONObject(saved.get(dbSizes)) : null;
 
         if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
@@ -560,10 +560,10 @@ public class SiteSummaryNotification implements Notification
                 msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Database</td><td>Logical Name</td><td>Size (MB)</td><td>Previous Size</td><td>% Change</td></tr>");
                 for (Map<String, Object> row : maps)
                 {
-                    Long size = Long.parseLong(row.get("size").toString());
+                    long size = Long.parseLong(row.get("size").toString());
                     String key = row.get("LogicalName").toString();
 
-                    newValueMap.put(key, size.toString());
+                    newValueMap.put(key, Long.toString(size));
                     Long previousValue = null;
                     if (oldValueMap != null && oldValueMap.has(key))
                     {
@@ -575,7 +575,7 @@ public class SiteSummaryNotification implements Notification
                 }
                 msg.append("</table>");
 
-                if (newValueMap.size() > 0)
+                if (!newValueMap.isEmpty())
                     toSave.put(dbSizes, new JSONObject(newValueMap).toString());
             }
         }
@@ -632,7 +632,7 @@ public class SiteSummaryNotification implements Notification
             if (ld != null)
                 msg.append("<tr><td>" + ld.getName() + "</td><td>" + ld.getContainer().getPath() + "</td><td>" + NumberFormat.getInstance().format(entry.getValue()) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
 
-            if (newValueMap.size() > 0)
+            if (!newValueMap.isEmpty())
                 toSave.put(listSizes, new JSONObject(newValueMap).toString());
         }
 
@@ -692,7 +692,7 @@ public class SiteSummaryNotification implements Notification
         msg.append("<br><b>Assay Summary:</b><br><br>");
         msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Provider</td><td>Protocol</td><td>Container Path</td><td># Runs</td><td># Results</td><td>Previous Value</td><td>% Change</td></tr>");
 
-        Map<String, String> newValueMap = new HashMap<String, String>();
+        Map<String, String> newValueMap = new HashMap<>();
         JSONObject oldValueMap = saved.containsKey(assayResultSize) ? new JSONObject(saved.get(assayResultSize)) : null;
 
         for (String ap : providerMap.keySet())
@@ -716,7 +716,7 @@ public class SiteSummaryNotification implements Notification
         }
         msg.append("</table><br>");
 
-        if (newValueMap.size() > 0)
+        if (!newValueMap.isEmpty())
             toSave.put(assayResultSize, new JSONObject(newValueMap).toString());
     }
 }

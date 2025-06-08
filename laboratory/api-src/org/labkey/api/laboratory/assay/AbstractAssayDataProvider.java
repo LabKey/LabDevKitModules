@@ -173,7 +173,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
         if (props.containsKey(getDefaultMethodPropertyKey(protocolId)))
             return props.get(getDefaultMethodPropertyKey(protocolId));
         else
-            return _importMethods.size() == 0 ?  null : _importMethods.iterator().next().getName();
+            return _importMethods.isEmpty() ?  null : _importMethods.iterator().next().getName();
     }
 
     private String getDefaultMethodPropertyKey(int protocolId)
@@ -263,7 +263,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
             {
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo query = qd.getTable(errors, true);
-                if (query == null || errors.size() > 0)
+                if (query == null || !errors.isEmpty())
                 {
                     _log.error("Unable to create table for query: " + qd.getSchema().getName() + "/" + qd.getName() + ", in container: " + qd.getContainer().getPath());
                     for (QueryException error : errors)
@@ -305,7 +305,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
             {
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo query = qd.getTable(errors, true);
-                if (query == null || errors.size() > 0)
+                if (query == null || !errors.isEmpty())
                 {
                     _log.error("Unable to create table for query: " + qd.getSchema().getName() + "/" + qd.getName() + ", in container: " + qd.getContainer().getPath());
                     for (QueryException error : errors)

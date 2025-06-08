@@ -92,7 +92,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
         return new UpdateService(this);
     }
 
-    private class UpdateService extends SimpleQueryUpdateService
+    private static class UpdateService extends SimpleQueryUpdateService
     {
         public UpdateService(SimpleUserSchema.SimpleTable ti)
         {
@@ -111,7 +111,7 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
         {
             if (container.isWorkbook())
             {
-                Integer rowId;
+                int rowId;
                 try
                 {
                     rowId = Integer.parseInt(container.getName());
@@ -201,8 +201,8 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
 
             final SimpleTranslator it = new SimpleTranslator(input, context);
 
-            final Map<String, Integer> inputColMap = new HashMap<String, Integer>();
-            final Map<String, Integer> outputColMap = new HashMap<String, Integer>();
+            final Map<String, Integer> inputColMap = new HashMap<>();
+            final Map<String, Integer> outputColMap = new HashMap<>();
 
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
@@ -314,9 +314,9 @@ public class LaboratoryWorkbooksTable extends SimpleUserSchema.SimpleTable
      * The IDs are determined in LaboratoryManager, but this code will increment them within the rows
      * of a set of incoming records.
      */
-    private class WorkbookIdGenerator
+    private static class WorkbookIdGenerator
     {
-        private final Map<String, Integer> _idMap = new HashMap<String, Integer>();
+        private final Map<String, Integer> _idMap = new HashMap<>();
 
         public WorkbookIdGenerator()
         {

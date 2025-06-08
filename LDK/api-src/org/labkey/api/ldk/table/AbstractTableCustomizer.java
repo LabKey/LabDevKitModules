@@ -42,7 +42,7 @@ abstract public class AbstractTableCustomizer implements TableCustomizer
      * Rely on DefaultSchema's caching of schema creation, and just track the minimum number of DefaultSchemas to
      * resolve the requested collection of target containers
      */
-    private Map<Container, DefaultSchema> _defaultSchemas = new HashMap<>();
+    private final Map<Container, DefaultSchema> _defaultSchemas = new HashMap<>();
 
     public UserSchema getUserSchema(AbstractTableInfo ti, String name)
     {

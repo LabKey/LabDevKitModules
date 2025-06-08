@@ -123,7 +123,7 @@ abstract public class LaboratoryService
 
     abstract public @Nullable DemographicsProvider getDemographicsProviderByName(Container c, User u, String name);
 
-    public static enum NavItemCategory
+    public enum NavItemCategory
     {
         samples(),
         misc(),

@@ -242,7 +242,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
             final String containerColName = getContainerFilterColumn();
             final KeyManager keyManager = new KeyManager();
             final SimpleTranslator it = new SimpleTranslator(input, context);
-            final Map<String, Integer> inputColMap = new HashMap<String, Integer>();
+            final Map<String, Integer> inputColMap = new HashMap<>();
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
@@ -262,7 +262,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
 
             //set the value of the RowId column
             ColumnInfo pseudoPkCol = getColumn(_pseudoPk);
-            it.addColumn(pseudoPkCol, new Callable<Object>()
+            it.addColumn(pseudoPkCol, new Callable<>()
             {
                 @Override
                 public Object call()
@@ -270,7 +270,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
                     Container c = null;
                     if (inputColMap.containsKey(containerColName))
                     {
-                        String containerId = (String)it.getInputColumnValue(inputColMap.get(containerColName));
+                        String containerId = (String) it.getInputColumnValue(inputColMap.get(containerColName));
                         if (containerId != null)
                             c = ContainerManager.getForId(containerId);
                     }

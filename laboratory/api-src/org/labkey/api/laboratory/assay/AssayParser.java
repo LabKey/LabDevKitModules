@@ -36,14 +36,14 @@ public interface AssayParser
     /**
      * Parses the provided file and json object, returning a list of row maps.
      */
-    public JSONObject getPreview(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException;
+    JSONObject getPreview(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException;
 
     /**
      * Parses the provided file and json object using getPreview(), then saves this to the database
      */
-    public Pair<ExpExperiment, ExpRun> saveBatch(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException;
+    Pair<ExpExperiment, ExpRun> saveBatch(JSONObject json, File file, String fileName, ViewContext ctx) throws BatchValidationException;
 
-    public ExpProtocol getProtocol();
+    ExpProtocol getProtocol();
 
-    public AssayProvider getProvider();
+    AssayProvider getProvider();
 }

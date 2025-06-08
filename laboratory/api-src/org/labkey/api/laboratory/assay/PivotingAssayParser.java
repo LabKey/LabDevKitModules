@@ -15,7 +15,6 @@
  */
 package org.labkey.api.laboratory.assay;
 
-import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -25,10 +24,8 @@ import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +56,7 @@ public class PivotingAssayParser extends DefaultAssayParser
             DomainProperty valueCol = _pivotMethod.getValueColumn(_protocol);
             DomainProperty pivotCol = _pivotMethod.getPivotColumn(_protocol);
             Map<Integer, String> resultCols = null;
-            Integer rowIdx = 0;
+            int rowIdx = 0;
 
             for (List<String> line : getFileLines(context.getFile()))
             {
@@ -93,8 +90,8 @@ public class PivotingAssayParser extends DefaultAssayParser
                         row.addAll(rowBase);
                         row.add(pair.first);
                         row.add(pair.second);
-                        row.add(rowIdx.toString());
-                        out.writeNext(row.toArray(new String[row.size()]));
+                        row.add(Integer.toString(rowIdx));
+                        out.writeNext(row.toArray(new String[0]));
                     }
                 }
                 else
@@ -104,7 +101,7 @@ public class PivotingAssayParser extends DefaultAssayParser
                     row.add(pivotCol.getLabel());
                     row.add(valueCol.getLabel());
                     row.add("_rowIdx");
-                    out.writeNext(row.toArray(new String[row.size()]));
+                    out.writeNext(row.toArray(new String[0]));
                 }
 
                 rowIdx++;
@@ -126,7 +123,7 @@ public class PivotingAssayParser extends DefaultAssayParser
     private Map<Integer, String> inspectHeader(List<String> header, ImportContext context) throws BatchValidationException
     {
         Map<Integer, String> resultMap = new HashMap<>();
-        Map<String, String> allowable = new CaseInsensitiveHashMap<String>();
+        Map<String, String> allowable = new CaseInsensitiveHashMap<>();
         BatchValidationException errors = new BatchValidationException();
 
         for (String val : _pivotMethod.getAllowableValues())

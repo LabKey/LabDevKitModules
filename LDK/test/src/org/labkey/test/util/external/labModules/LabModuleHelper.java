@@ -23,7 +23,6 @@ import org.labkey.test.Locator;
 import org.labkey.test.WebDriverWrapper;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.Ext4Helper;
-import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.UIAssayHelper;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
@@ -95,7 +94,7 @@ public class LabModuleHelper
     {
         Locator l = getNavPanelItem(label, itemText);
         _test.waitForElement(l);
-        Assert.assertEquals("Incorrect number of elements: " + label + "/" + itemText, l.findElements(_test.getDriver()).size(), 1);
+        Assert.assertEquals("Incorrect number of elements: " + label + "/" + itemText, 1, l.findElements(_test.getDriver()).size());
 
         _test.waitAndClick(l);
     }
@@ -417,7 +416,7 @@ public class LabModuleHelper
         if (name == null)
             return null;
 
-        if (name.length() == 0)
+        if (name.isEmpty())
             return null;
 
         StringBuilder buf = new StringBuilder(name.length());

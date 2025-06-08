@@ -42,7 +42,7 @@ public class NotificationJob implements Job
         _log.info("Trying to run notification: " + _notification.getName());
 
         Set<Container> activeContainers = NotificationServiceImpl.get().getActiveContainers(_notification);
-        if (activeContainers.size() == 0)
+        if (activeContainers.isEmpty())
         {
             _log.info("there are no active containers, skipping");
         }

@@ -466,7 +466,8 @@ public class NotificationServiceImpl extends NotificationService
         TableSelector ts = new TableSelector(t, Collections.singleton("recipient"), filter, null);
         if (ts.getRowCount() > 0)
         {
-            ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+            ts.forEach(new TableSelector.ForEachBlock<>()
+            {
                 @Override
                 public void exec(ResultSet rs) throws SQLException
                 {
@@ -586,7 +587,7 @@ public class NotificationServiceImpl extends NotificationService
         }
 
         List<Address> recipients = NotificationServiceImpl.get().getEmails(notification, c);
-        if (recipients.size() == 0)
+        if (recipients.isEmpty())
         {
             _log.info("Notification: " + notification.getName() + " has no recipients, skipping");
             return;
@@ -605,7 +606,7 @@ public class NotificationServiceImpl extends NotificationService
 
             mail.setFrom(NotificationServiceImpl.get().getReturnEmail(c));
             mail.setSubject(notification.getEmailSubject(c));
-            mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[recipients.size()]));
+            mail.addRecipients(Message.RecipientType.TO, recipients.toArray(new Address[0]));
 
             MailHelper.send(mail, u, c);
         }

@@ -162,7 +162,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
     @Override
     public List<NavItem> getSettingsItems(Container c, User u)
     {
-        List<NavItem> items = new ArrayList<NavItem>();
+        List<NavItem> items = new ArrayList<>();
         String categoryName = "Samples";
         String general = "General Settings";
         String adminSettings = "Site Administration";
