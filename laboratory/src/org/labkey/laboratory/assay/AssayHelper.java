@@ -136,7 +136,6 @@ public class AssayHelper
             if (templateId == null)
             {
                 row = Table.insert(u, ti, row);
-                row.get("rowid");
             }
             else
             {
