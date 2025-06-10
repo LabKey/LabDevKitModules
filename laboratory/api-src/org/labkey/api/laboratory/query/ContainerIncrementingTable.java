@@ -94,7 +94,7 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
         @Override
         protected Map<String, Object> insertRow(User user, Container container, Map<String, Object> row) throws DuplicateKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
-            Integer rowId = null;
+            Integer rowId;
             boolean hasSelfAssignedId = false;
             // This idea here is that the majority of the time the ID will auto-increment within this container (defined as parent + workbooks)
             // however, there is a backdoor that lets the IDs get set manually.  An example of this would be when a row was deleted accidentally or otherwise, and you want
@@ -279,7 +279,7 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
                 }
             };
 
-            final Map<String, Integer> inputColMap = new HashMap<String, Integer>();
+            final Map<String, Integer> inputColMap = new HashMap<>();
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);
@@ -356,8 +356,8 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
      */
     private class IncrementIdGenerator
     {
-        private final Map<Container, Integer> _idMap = new HashMap<Container, Integer>();
-        private final Map<Container, Set<Integer>> _existingIdsMap = new HashMap<Container, Set<Integer>>();
+        private final Map<Container, Integer> _idMap = new HashMap<>();
+        private final Map<Container, Set<Integer>> _existingIdsMap = new HashMap<>();
 
         public IncrementIdGenerator()
         {
@@ -409,7 +409,7 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
 
             Set<Integer> set = _existingIdsMap.get(target);
             if (set == null)
-                set = new HashSet<Integer>();
+                set = new HashSet<>();
 
             //if we have already tested this ID, it is assumed to exist
             if (set.contains(rowId))

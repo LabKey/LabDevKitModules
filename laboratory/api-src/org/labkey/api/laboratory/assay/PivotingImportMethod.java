@@ -40,8 +40,8 @@ abstract public class PivotingImportMethod extends DefaultAssayImportMethod
     protected AssayImportMethod _importMethod;
     protected String _pivotField;
     protected String _valueField;
-    protected TableInfo _sourceTable = null;
-    protected String _sourceColumn = null;
+    protected TableInfo _sourceTable;
+    protected String _sourceColumn;
 
     public PivotingImportMethod(AssayImportMethod method, String pivotField, String valueField, TableInfo sourceTable, String sourceColumn)
     {

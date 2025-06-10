@@ -36,28 +36,26 @@ import java.util.List;
  */
 public interface AssayDataProvider extends DataProvider
 {
-    abstract public String getProviderName();
+    String getProviderName();
 
-    abstract public AssayProvider getAssayProvider();
+    AssayProvider getAssayProvider();
 
     /**
      * Returns the set of AssayImportMethods supported by this assay.  If none are provided, a default import method
      * will be used
-     * @return
      */
-    abstract public Collection<AssayImportMethod> getImportMethods();
+    Collection<AssayImportMethod> getImportMethods();
 
     /**
      * Return true if this import pathway can be used with assay run templates, which allows runs to be prepared ahead of importing results
-     * @return
      */
-    public boolean supportsRunTemplates();
+    boolean supportsRunTemplates();
 
-    public List<ExpProtocol> getProtocols(Container c);
+    List<ExpProtocol> getProtocols(Container c);
 
-    abstract public AssayImportMethod getImportMethodByName(String methodName);
+    AssayImportMethod getImportMethodByName(String methodName);
 
-    abstract public String getDefaultImportMethodName(Container c, User u, int protocolId);
+    String getDefaultImportMethodName(Container c, User u, int protocolId);
 
-    abstract public boolean isModuleEnabled(Container c);
+    boolean isModuleEnabled(Container c);
 }

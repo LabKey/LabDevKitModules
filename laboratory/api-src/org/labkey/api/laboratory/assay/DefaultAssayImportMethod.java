@@ -326,7 +326,7 @@ public class DefaultAssayImportMethod implements AssayImportMethod
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("plate"), 1), null);
 
         final Map<Object, Object> wellMap = new HashMap<>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet object) throws SQLException

@@ -46,10 +46,10 @@ public class QueryCache
 {
     private static final Logger _log = LogManager.getLogger(QueryCache.class);
 
-    private Map<String, AssayProtocolSchema> _cachedAssaySchemas = new HashMap<>();
-    private Map<String, UserSchema> _cachedUserSchemas = new HashMap<>();
-    private Map<String, TableInfo> _cachedQueries = new HashMap<>();
-    private Map<String, ColumnInfo> _cachedColumns = new HashMap<>();
+    private final Map<String, AssayProtocolSchema> _cachedAssaySchemas = new HashMap<>();
+    private final Map<String, UserSchema> _cachedUserSchemas = new HashMap<>();
+    private final Map<String, TableInfo> _cachedQueries = new HashMap<>();
+    private final Map<String, ColumnInfo> _cachedColumns = new HashMap<>();
 
     public QueryCache()
     {
@@ -104,7 +104,7 @@ public class QueryCache
 
             List<QueryException> errors = new ArrayList<>();
             TableInfo ti = qd.getTable(errors, true);
-            if (errors.size() > 0)
+            if (!errors.isEmpty())
             {
                 _log.error("Unable to create tabbed report item for query: " + schemaPath + "." + queryName + " in " + targetContainer.getPath());
                 for (QueryException e : errors)

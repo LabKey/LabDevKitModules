@@ -42,8 +42,8 @@ public class LookupValidationHelper
     private final TableInfo _table;
     private static final Logger _log = LogManager.getLogger(LookupValidationHelper.class);
 
-    private final Map<String, UserSchema> _userSchemaMap = new HashMap<String, UserSchema>();
-    private final Map<String, Map<String, String>> _allowableValueMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, UserSchema> _userSchemaMap = new HashMap<>();
+    private final Map<String, Map<String, String>> _allowableValueMap = new HashMap<>();
 
     private LookupValidationHelper(String containerId, int userId, String schemaName, String queryName)
     {

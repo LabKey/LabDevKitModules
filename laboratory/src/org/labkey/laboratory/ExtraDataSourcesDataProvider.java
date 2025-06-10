@@ -208,7 +208,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
     @Override
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
-        List<NavItem> items = new ArrayList<NavItem>();
+        List<NavItem> items = new ArrayList<>();
 
         LaboratoryServiceImpl service = LaboratoryServiceImpl.get();
         Set<AdditionalDataSource> sources = service.getAdditionalDataSources(c, u);
@@ -239,7 +239,7 @@ public class ExtraDataSourcesDataProvider extends AbstractDataProvider
         {
             if (owner instanceof ReportItem sq)
             {
-                QueryCache cache = ((ReportItem) owner).getQueryCache();
+                QueryCache cache = sq.getQueryCache();
                 TabbedReportItem reportItem = new QueryTabbedReportItem(cache, this, sq.getSchema(), sq.getQuery(), sq.getLabel(), owner.getReportCategory());
                 if (sq.getTargetContainer(c) != null)
                     reportItem.setTargetContainer(sq.getTargetContainer(c));

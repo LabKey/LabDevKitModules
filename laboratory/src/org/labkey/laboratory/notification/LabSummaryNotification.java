@@ -227,7 +227,7 @@ public class LabSummaryNotification implements Notification
 
         msg.append("</table><p></p><hr>");
 
-        if (newValueMap.size() > 0)
+        if (!newValueMap.isEmpty())
             toSave.put(rowCount, new JSONObject(newValueMap).toString());
     }
 
@@ -273,7 +273,7 @@ public class LabSummaryNotification implements Notification
 
         msg.append("</table><p></p><hr>");
 
-        if (newValueMap.size() > 0)
+        if (!newValueMap.isEmpty())
             toSave.put(rowCount, new JSONObject(newValueMap).toString());
     }
 
@@ -343,9 +343,9 @@ public class LabSummaryNotification implements Notification
         msg.append("</table><br>");
         msg.append("<hr>");
 
-        if (newValueMap.size() > 0)
+        if (!newValueMap.isEmpty())
             toSave.put(fileRootSizes, new JSONObject(newValueMap).toString());
-        if (newValueMapCounts.size() > 0)
+        if (!newValueMapCounts.isEmpty())
             toSave.put(fileRootCounts, new JSONObject(newValueMapCounts).toString());
     }
 }

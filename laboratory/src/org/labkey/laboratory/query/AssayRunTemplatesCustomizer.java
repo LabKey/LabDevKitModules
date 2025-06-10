@@ -44,7 +44,7 @@ public class AssayRunTemplatesCustomizer implements TableCustomizer
             ati.setUpdateURL(DetailsURL.fromString("/laboratory/prepareExptRun.view?assayId=${assayId}&templateId=${rowid}"));
             ati.setDetailsURL(null);
 
-            List<ColumnInfo> newCols = new ArrayList<ColumnInfo>();
+            List<ColumnInfo> newCols = new ArrayList<>();
 
             ExprColumn completeCol = new ExprColumn(ti, "enter_results", new SQLFragment("'Enter Results'"), JdbcType.VARCHAR, ti.getColumn("assayId"), ti.getColumn("runid"));
             completeCol.setName("enter_results");
@@ -65,7 +65,7 @@ public class AssayRunTemplatesCustomizer implements TableCustomizer
             newCols.addAll(ati.getColumns());
 
             //reset default visible columns on table
-            List<FieldKey> defaultColumns = new ArrayList<FieldKey>();
+            List<FieldKey> defaultColumns = new ArrayList<>();
             defaultColumns.add(completeCol.getFieldKey());
             defaultColumns.addAll(ati.getDefaultVisibleColumns());
             ati.setDefaultVisibleColumns(defaultColumns);

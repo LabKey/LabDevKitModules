@@ -72,7 +72,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -120,7 +119,7 @@ public class DefaultAssayParser implements AssayParser
             if (!seen.contains(pd))
             {
                 String description = pd.getDescription();
-                if (description != null && description.length() > 0)
+                if (description != null && !description.isEmpty())
                     map.put(description.toLowerCase(), pd);
                 seen.add(pd);
             }
@@ -309,7 +308,6 @@ public class DefaultAssayParser implements AssayParser
     /**
      * Reads the raw input file and converts it to a regular TSV file before passing to TabLoader
      * This allows subclasses to transform the input data
-     * @return
      */
     protected String readRawFile(ImportContext context) throws BatchValidationException
     {
@@ -330,7 +328,7 @@ public class DefaultAssayParser implements AssayParser
                 }
 
                 if (!StringUtils.isEmpty(StringUtils.join(line)))
-                    out.writeNext(line.toArray(new String[line.size()]));
+                    out.writeNext(line.toArray(new String[0]));
             }
 
             return sw.toString();
@@ -417,7 +415,6 @@ public class DefaultAssayParser implements AssayParser
 
     /**
      * Override this method to provide custom processing of each result row provided as JSON
-     * @return
      */
     protected List<Map<String, Object>> processRowsFromJson(List<Map<String, Object>> rows, ImportContext context)
     {
@@ -641,7 +638,7 @@ public class DefaultAssayParser implements AssayParser
             {
                 JSONArray arr = ExcelFactory.convertExcelToJSON(file, true);
                 List<List<String>> ret = new ArrayList<>();
-                if (arr.length() == 0)
+                if (arr.isEmpty())
                     return ret;
 
                 JSONObject sheet = arr.getJSONObject(0);

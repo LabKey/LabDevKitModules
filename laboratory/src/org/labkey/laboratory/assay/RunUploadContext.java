@@ -82,7 +82,7 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         if (_runProperties != null)
         {
             AssayProvider provider = AssayService.get().getProvider(getProtocol());
-            Map<DomainProperty, String> props = new HashMap<DomainProperty, String>();
+            Map<DomainProperty, String> props = new HashMap<>();
 
 
             for (DomainProperty dp : provider.getRunDomain(getProtocol()).getProperties())
@@ -105,7 +105,7 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
         if (_batchProperties != null)
         {
             AssayProvider provider = AssayService.get().getProvider(getProtocol());
-            Map<DomainProperty, String> props = new HashMap<DomainProperty, String>();
+            Map<DomainProperty, String> props = new HashMap<>();
 
             for (DomainProperty dp : provider.getBatchDomain(getProtocol()).getProperties())
             {

@@ -35,7 +35,7 @@ public class FreezerTriggerHelper
     private final User _user;
     private final TableInfo _table;
 
-    private final Map<String, Map<String, Integer>> _cachedRows = new HashMap<String, Map<String, Integer>>();
+    private final Map<String, Map<String, Integer>> _cachedRows = new HashMap<>();
 
     private FreezerTriggerHelper(String containerId, int userId)
     {
@@ -86,7 +86,7 @@ public class FreezerTriggerHelper
 
     public String getKey(String location, String freezer, String cane, String box, String box_row, String box_column)
     {
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
 
         if (!StringUtils.isEmpty(location))
             tokens.add("location: " + location);
@@ -115,8 +115,8 @@ public class FreezerTriggerHelper
 
         TableSelector ts = new TableSelector(_table, PageFlowUtil.set("location", "freezer", "cane", "box", "box_row", "box_column", "rowid"), filter, null);
 
-        final Map<String, Integer> keys = new HashMap<String, Integer>();
-        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        final Map<String, Integer> keys = new HashMap<>();
+        ts.forEach(new Selector.ForEachBlock<>()
         {
             @Override
             public void exec(ResultSet rs) throws SQLException

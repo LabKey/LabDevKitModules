@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class CustomPermissionsTable<SchemaType extends UserSchema> extends SimpleUserSchema.SimpleTable<SchemaType>
 {
-    private Map<Class<? extends Permission>, Class<? extends Permission>> _permMap = new HashMap<>();
+    private final Map<Class<? extends Permission>, Class<? extends Permission>> _permMap = new HashMap<>();
 
     public CustomPermissionsTable(SchemaType schema, TableInfo table, ContainerFilter cf)
     {

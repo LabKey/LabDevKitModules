@@ -28,8 +28,8 @@ import org.labkey.api.view.ActionURL;
  */
 abstract public class AbstractUrlNavItem extends AbstractNavItem
 {
-    protected String _labelText = null;
-    protected String _itemText = null;
+    protected String _labelText;
+    protected String _itemText;
     protected DetailsURL _detailsURL = null;
     protected String _staticURL = null;
 

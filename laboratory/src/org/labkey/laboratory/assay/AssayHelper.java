@@ -126,7 +126,7 @@ public class AssayHelper
             validateTemplate(u, c, protocol, templateId, title, importMethod, json);
 
             TableInfo ti = LaboratorySchema.getInstance().getSchema().getTable(LaboratorySchema.TABLE_ASSAY_RUN_TEMPLATES);
-            Map<String, Object> row = new HashMap<String, Object>();
+            Map<String, Object> row = new HashMap<>();
             row.put("assayId", protocol.getRowId());
             row.put("title", title);
             row.put("importMethod", importMethod);
@@ -136,7 +136,6 @@ public class AssayHelper
             if (templateId == null)
             {
                 row = Table.insert(u, ti, row);
-                templateId = (Integer)row.get("rowid");
             }
             else
             {
@@ -287,7 +286,7 @@ public class AssayHelper
 
     public static List<String> ensureAssayFields(User user, String providerName, boolean renameConflictingFields, boolean reportMessagesOnly) throws ChangePropertyDescriptorException
     {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
 
         if (!reportMessagesOnly)
             _log.info("Attempting to synchronize columns for all instances of assay: " + providerName);
@@ -299,7 +298,7 @@ public class AssayHelper
             return messages;
         }
 
-        List<ExpProtocol> allProtocols = new ArrayList<ExpProtocol>();
+        List<ExpProtocol> allProtocols = new ArrayList<>();
         Integer[] protocolIds = new TableSelector(ExperimentService.get().getTinfoProtocol(), Collections.singleton("rowid"), null, null).getArray(Integer.class);
         for (Integer protocolId : protocolIds)
         {
@@ -448,7 +447,7 @@ public class AssayHelper
                 CacheManager.clearAllKnownCaches();
             }
 
-            if (messages.size() == 0)
+            if (messages.isEmpty())
             {
                 String msg = "No changes are necessary";
                 messages.add(msg);

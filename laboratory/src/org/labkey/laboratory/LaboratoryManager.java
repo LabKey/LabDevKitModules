@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -226,7 +225,6 @@ public class LaboratoryManager
 
     /**
      * This is designed to iterate a folder and children, resetting the webparts and tabs
-     * @param c
      */
     public void resetLaboratoryFolderTypes(User u, Container c, boolean includeChildren)
     {
@@ -315,14 +313,14 @@ public class LaboratoryManager
         List<String> toDelete = new ArrayList<>(existingTags);
         toDelete.removeAll(newTags);
 
-        if (toDelete.size() > 0)
+        if (!toDelete.isEmpty())
         {
             SimpleFilter filter1 = new SimpleFilter(FieldKey.fromString("tag"), toDelete, CompareType.IN);
             filter1.addCondition(FieldKey.fromString("container"), c.getId());
             Table.delete(ti, filter1);
         }
 
-        List<String> toAdd = new ArrayList<String>(newTags);
+        List<String> toAdd = new ArrayList<>(newTags);
         toAdd.removeAll(existingTags);
 
         Date created = new Date();
@@ -461,7 +459,7 @@ public class LaboratoryManager
 
         QueryUpdateService qus = ct.getUpdateService();
         String colName = ct.getIncrementingCol();
-        Set<String> toSelect = new HashSet<String>();
+        Set<String> toSelect = new HashSet<>();
         toSelect.add(colName);
         for (String ci : ct.getPkColumnNames())
         {

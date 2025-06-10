@@ -48,7 +48,6 @@ import org.labkey.api.view.NavTree;
 import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -125,7 +124,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         assert queryName != null;
 
         List<String> keyFields = ti.getPkColumnNames();
-        assert keyFields.size() > 0 : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
+        assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
         if (keyFields.size() != 1)
         {
             _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
@@ -159,14 +158,14 @@ public class DefaultTableCustomizer implements TableCustomizer
             assert queryName != null;
 
             List<String> keyFields = ti.getPkColumnNames();
-            assert keyFields.size() > 0 : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
+            assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
             if (keyFields.size() != 1)
             {
                 _log.error("Table: " + schemaName + "." + queryName + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
                 return;
             }
 
-            if (schemaName != null && queryName != null && keyFields.size() > 0)
+            if (schemaName != null && queryName != null && !keyFields.isEmpty())
             {
                 String keyField = keyFields.get(0);
                 if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
@@ -393,7 +392,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         if (moreActionsBtn == null)
         {
             //abort if there are no custom buttons
-            if (buttons.size() == 0)
+            if (buttons.isEmpty())
                 return false;
 
             moreActionsBtn = new UserDefinedButtonConfig();

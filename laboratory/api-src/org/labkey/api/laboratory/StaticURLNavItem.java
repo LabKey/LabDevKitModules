@@ -15,8 +15,6 @@
  */
 package org.labkey.api.laboratory;
 
-import org.labkey.api.query.DetailsURL;
-
 /**
  * User: bimber
  * Date: 11/21/12
