@@ -713,4 +713,10 @@ public class LaboratoryServiceImpl extends LaboratoryService
 
         return null;
     }
+
+    @Override
+    public void clearDataProviderCache()
+    {
+        LaboratoryDataProvider.clearCache();
+    }
 }

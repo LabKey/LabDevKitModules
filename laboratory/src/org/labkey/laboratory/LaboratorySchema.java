@@ -39,6 +39,7 @@ public class LaboratorySchema
     public static final String TABLE_WORKBOOK_TAGS = "workbook_tags";
     public static final String TABLE_ASSAY_RUN_TEMPLATES = "assay_run_templates";
     public static final String TABLE_SPECIES = "species";
+    public static final String TABLE_REPORTS = "reports";
 
     public static LaboratorySchema getInstance()
     {

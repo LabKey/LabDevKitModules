@@ -15,17 +15,23 @@
  */
 package org.labkey.laboratory;
 
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
+import org.labkey.api.cache.Cache;
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.laboratory.AbstractDataProvider;
+import org.labkey.api.laboratory.DataProvider;
 import org.labkey.api.laboratory.DetailsUrlWithoutLabelNavItem;
 import org.labkey.api.laboratory.JSTabbedReportItem;
 import org.labkey.api.laboratory.LaboratoryService;
+import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.laboratory.QueryCountNavItem;
 import org.labkey.api.laboratory.QueryImportNavItem;
 import org.labkey.api.laboratory.QueryTabbedReportItem;
@@ -33,16 +39,17 @@ import org.labkey.api.laboratory.ReportItem;
 import org.labkey.api.laboratory.SimpleSettingsItem;
 import org.labkey.api.laboratory.SummaryNavItem;
 import org.labkey.api.laboratory.TabbedReportItem;
-import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.ldk.table.QueryCache;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryAction;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.logging.LogHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewContext;
 import org.labkey.api.view.template.ClientDependency;
@@ -62,9 +69,21 @@ public class LaboratoryDataProvider extends AbstractDataProvider
     public static final String NAME = "Laboratory";
     private final Module _module;
 
+    private static final Logger _log = LogHelper.getLogger(LaboratoryDataProvider.class, "Messages from LaboratoryDataProvider");
+
+    private static Cache<String, List<TabbedReportModel>> _cache = null;
+
     public LaboratoryDataProvider(Module m)
     {
         _module = m;
+    }
+
+    public static void clearCache()
+    {
+        if (_cache != null)
+        {
+            _cache.clear();
+        }
     }
 
     @Override
@@ -332,6 +351,235 @@ public class LaboratoryDataProvider extends AbstractDataProvider
         item2.setOwnerKey(owner.getPropertyManagerKey());
         items.add(item2);
 
+        List<TabbedReportModel> models = getTabbedReports(c, u);
+        if (!models.isEmpty())
+        {
+            items.addAll(models.stream().map(m -> {
+                if (m.isValid())
+                {
+                    _log.error("Invalid tabbed report in container: " + c.getPath() + ", rowId: " + m.getRowId());
+                }
+
+                return(m.toNavItem(c, u, cache, owner, this));
+            }).toList());
+        }
+
         return Collections.unmodifiableList(items);
+    }
+
+    private synchronized Cache<String, List<TabbedReportModel>> getCache()
+    {
+        if (_cache == null)
+        {
+            _cache = CacheManager.getStringKeyCache(1000, CacheManager.UNLIMITED, "LaboratoryDataProviderCache");
+        }
+
+        return _cache;
+    }
+
+    private synchronized List<TabbedReportModel> getTabbedReports(Container c, User u)
+    {
+        c = c.isWorkbookOrTab() ? c.getParent() : c;
+
+        List<TabbedReportModel> models = getCache().get(c.getId());
+        if (models != null)
+            return models;
+
+        UserSchema us = QueryService.get().getUserSchema(u, c, LaboratoryModule.SCHEMA_NAME);
+        if (us == null)
+        {
+            return Collections.emptyList();
+        }
+
+        models = new ArrayList<>(new TableSelector(us.getTable(LaboratorySchema.TABLE_REPORTS)).getArrayList(TabbedReportModel.class));
+        models = Collections.unmodifiableList(models);
+        getCache().put(c.getId(), models);
+
+        return models;
+    }
+
+    public static class TabbedReportModel
+    {
+        private int _rowId;
+        private String _category;
+        private String _reportType;
+        private String _reportTitle;
+        private String _sortOrder;
+        private String _containerPath;
+        private String _schemaName;
+        private String _queryName;
+        private String _viewName;
+        private String _reportPath;
+        private String _subjectFieldName;
+        private String _description;
+
+        public boolean isValid()
+        {
+            if (getCategory() == null || getSchemaName() == null || getQueryName() == null)
+            {
+                return false;
+            }
+
+            if (getContainerPath() != null)
+            {
+                Container target = ContainerManager.getForPath(getContainerPath());
+                if (target == null)
+                {
+                    _log.error("Unknown container for saved TabbedReportItem: " + getContainerPath() + ", rowId: " + getRowId());
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public TabbedReportItem toNavItem(Container c, User u, QueryCache cache, NavItem owner, DataProvider provider)
+        {
+            QueryTabbedReportItem report = new QueryTabbedReportItem(cache, provider, getSchemaName(), getQueryName(), getReportTitle() == null ? getQueryName() : getReportTitle(), getCategory());
+            report.setQueryCache(cache);
+            if (getSubjectFieldName() != null)
+            {
+                report.setSubjectIdFieldKey(FieldKey.fromString(getSubjectFieldName()));
+            }
+
+            if (getContainerPath() != null)
+            {
+                Container target = ContainerManager.getForPath(getContainerPath());
+                if (target != null)
+                {
+                    report.setTargetContainer(target);
+                }
+            }
+
+            if (getViewName() != null)
+            {
+                report.setViewName(getViewName());
+            }
+
+            report.setVisible(owner.isVisible(c, u));
+            report.setOwnerKey(owner.getPropertyManagerKey());
+
+            return report;
+        }
+
+        public int getRowId()
+        {
+            return _rowId;
+        }
+
+        public void setRowId(int rowId)
+        {
+            _rowId = rowId;
+        }
+
+        public String getCategory()
+        {
+            return _category;
+        }
+
+        public void setCategory(String category)
+        {
+            _category = category;
+        }
+
+        public String getReportType()
+        {
+            return _reportType;
+        }
+
+        public void setReportType(String reportType)
+        {
+            _reportType = reportType;
+        }
+
+        public String getReportTitle()
+        {
+            return _reportTitle;
+        }
+
+        public void setReportTitle(String reportTitle)
+        {
+            _reportTitle = reportTitle;
+        }
+
+        public String getSortOrder()
+        {
+            return _sortOrder;
+        }
+
+        public void setSortOrder(String sortOrder)
+        {
+            _sortOrder = sortOrder;
+        }
+
+        public String getContainerPath()
+        {
+            return _containerPath;
+        }
+
+        public void setContainerPath(String containerPath)
+        {
+            _containerPath = containerPath;
+        }
+
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        public void setSchemaName(String schemaName)
+        {
+            _schemaName = schemaName;
+        }
+
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        public void setQueryName(String queryName)
+        {
+            _queryName = queryName;
+        }
+
+        public String getViewName()
+        {
+            return _viewName;
+        }
+
+        public void setViewName(String viewName)
+        {
+            _viewName = viewName;
+        }
+
+        public String getReportPath()
+        {
+            return _reportPath;
+        }
+
+        public void setReportPath(String reportPath)
+        {
+            _reportPath = reportPath;
+        }
+
+        public String getSubjectFieldName()
+        {
+            return _subjectFieldName;
+        }
+
+        public void setSubjectFieldName(String subjectFieldName)
+        {
+            _subjectFieldName = subjectFieldName;
+        }
+
+        public String getDescription()
+        {
+            return _description;
+        }
+
+        public void setDescription(String description)
+        {
+            _description = description;
+        }
     }
 }
