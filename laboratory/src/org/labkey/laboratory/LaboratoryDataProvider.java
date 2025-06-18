@@ -57,6 +57,7 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -355,13 +356,13 @@ public class LaboratoryDataProvider extends AbstractDataProvider
         if (!models.isEmpty())
         {
             items.addAll(models.stream().map(m -> {
-                if (m.isValid())
+                if (!m.isValid())
                 {
-                    _log.error("Invalid tabbed report in container: " + c.getPath() + ", rowId: " + m.getRowId());
+                    return null;
                 }
 
                 return(m.toNavItem(c, u, cache, owner, this));
-            }).toList());
+            }).filter(Objects::nonNull).toList());
         }
 
         return Collections.unmodifiableList(items);
@@ -417,6 +418,7 @@ public class LaboratoryDataProvider extends AbstractDataProvider
         {
             if (getCategory() == null || getSchemaName() == null || getQueryName() == null)
             {
+                _log.error("Missing either category, schema or query for laboratory.reports item: " + getContainerPath() + ", rowId: " + getRowId());
                 return false;
             }
 
