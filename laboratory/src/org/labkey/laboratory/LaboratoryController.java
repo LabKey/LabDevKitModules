@@ -1792,7 +1792,17 @@ public class LaboratoryController extends SpringActionController
                     ensureModuleActive(item);
 
                     if (form.isIncludeAll() || item.isVisible(getContainer(), getUser()))
-                        json.add(item.toJSON(getContainer(), getUser()));
+                    {
+                        JSONObject jo = item.toJSON(getContainer(), getUser());
+                        if (jo == null)
+                        {
+                            _log.error("Invalid JSON for tabbedReport item: " + item.getPropertyManagerKey());
+                        }
+                        else
+                        {
+                            json.add(jo);
+                        }
+                    }
                 }
                 results.put(LaboratoryService.NavItemCategory.tabbedReports.name(), json);
             }

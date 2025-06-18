@@ -330,10 +330,15 @@ public class LaboratoryDataProvider extends AbstractDataProvider
     @Override
     public List<TabbedReportItem> getTabbedReportItems(Container c, User u)
     {
+        if (!c.getActiveModules().contains(getOwningModule()))
+        {
+            return Collections.emptyList();
+        }
+
         List<TabbedReportItem> items = new ArrayList<>();
         QueryCache cache = new QueryCache();
 
-        NavItem nav = new QueryImportNavItem(this, LaboratoryModule.SCHEMA_NAME, "Samples", LaboratoryService.NavItemCategory.samples, "Samples", cache);
+        NavItem nav = getReportItems(c, u).get(0);
         TabbedReportItem item = new QueryTabbedReportItem(cache, this, LaboratoryModule.SCHEMA_NAME, "Samples", "Samples", "Samples");
         item.setQueryCache(cache);
         item.setVisible(nav.isVisible(c, u));
