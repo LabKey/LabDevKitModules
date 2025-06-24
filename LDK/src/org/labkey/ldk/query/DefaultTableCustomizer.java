@@ -136,8 +136,7 @@ public class DefaultTableCustomizer implements TableCustomizer
                 return;
             }
 
-            keyFields.clear();
-            keyFields.add(alternatePK);
+            keyFields = Collections.singletonList(alternatePK);
         }
 
         if (keyFields.size() != 1)
@@ -184,8 +183,7 @@ public class DefaultTableCustomizer implements TableCustomizer
                     return;
                 }
 
-                keyFields.clear();
-                keyFields.add(alternatePK);
+                keyFields = Collections.singletonList(alternatePK);
             }
 
             if (keyFields.size() != 1)
