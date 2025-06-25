@@ -294,7 +294,6 @@ public class LaboratoryController extends SpringActionController
         }
     }
 
-
     @RequiresPermission(AdminPermission.class)
     public class SetTableIncrementValueAction extends ConfirmAction<SetTableIncrementForm>
     {
@@ -578,7 +577,7 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
+            return new HtmlView("This action will reset webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
         }
 
         @Override
