@@ -15,20 +15,44 @@
 * limitations under the License.
 */
 %>
+<%@ page import="org.json.JSONObject" %>
+<%@ page import="org.labkey.api.laboratory.query.TabbedReportFilterProvider" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
+<%@ page import="org.labkey.laboratory.LaboratoryServiceImpl" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%!
     @Override
     public void addClientDependencies(ClientDependencies dependencies)
     {
         dependencies.add("laboratory.context");
-        dependencies.add("laboratory/panel/ProjectFilterType.js");
+    }
+
+    private String getFilterConfig()
+    {
+        StringBuilder ret = new StringBuilder();
+
+        for (TabbedReportFilterProvider p : LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()))
+        {
+            if (!p.isVisible(getContainer(), getUser()))
+            {
+                continue;
+            }
+
+            JSONObject config = new JSONObject();
+            config.put("xtype", h(p.getXType()));
+            config.put("inputValue", h(p.getInputValue()));
+            config.put("label", h(p.getLabel()));
+
+            ret.append(config).append(",");
+        }
+
+        return ret.toString();
     }
 %>
 <%
-    JspView me = (JspView) HttpView.currentView();
+    JspView<?> me = HttpView.currentView();
     String wpId = "wp_" + me.getWebPartRowId();
 %>
 
@@ -90,11 +114,7 @@
                 xtype: 'ldk-multisubjectfiltertype',
                 inputValue: LDK.panel.MultiSubjectFilterType.filterName,
                 label: LDK.panel.MultiSubjectFilterType.label
-            },{
-                xtype: 'laboratory-projectfiltertype',
-                inputValue: Laboratory.panel.ProjectFilterType.filterName,
-                label: Laboratory.panel.ProjectFilterType.label
-            },{
+            },<%=unsafe(getFilterConfig())%>{
                 xtype: 'ldk-nofiltersfiltertype',
                 inputValue: LDK.panel.NoFiltersFilterType.filterName,
                 label: LDK.panel.NoFiltersFilterType.label
