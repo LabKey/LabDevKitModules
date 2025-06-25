@@ -139,7 +139,11 @@ public class DefaultTableCustomizer implements TableCustomizer
             keyFields = Collections.singletonList(alternatePK);
         }
 
-        if (keyFields.size() != 1)
+        if (keyFields.isEmpty())
+        {
+            return;
+        }
+        else if (keyFields.size() > 1)
         {
             _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
             return;
@@ -186,13 +190,17 @@ public class DefaultTableCustomizer implements TableCustomizer
                 keyFields = Collections.singletonList(alternatePK);
             }
 
-            if (keyFields.size() != 1)
+            if (keyFields.isEmpty())
+            {
+                return;
+            }
+            else if (keyFields.size() != 1)
             {
                 _log.error("Table: " + schemaName + "." + queryName + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
                 return;
             }
 
-            if (schemaName != null && queryName != null && !keyFields.isEmpty())
+            if (schemaName != null && queryName != null)
             {
                 String keyField = keyFields.get(0);
                 if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
