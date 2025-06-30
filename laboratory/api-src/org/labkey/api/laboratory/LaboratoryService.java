@@ -1,4 +1,4 @@
-cd L/*
+/*
  * Copyright (c) 2012-2018 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
