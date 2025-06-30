@@ -633,6 +633,7 @@
     <table tableName="reports" tableDbType="TABLE" useColumnOrder="true">
         <pkColumnName>rowid</pkColumnName>
         <javaCustomizer class="org.labkey.ldk.query.DefaultTableCustomizer" />
+        <tableTitle>Extra Reports</tableTitle>
         <auditLogging>DETAILED</auditLogging>
         <columns>
             <column columnName="rowid">

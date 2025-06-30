@@ -43,6 +43,7 @@ import org.labkey.api.laboratory.NavItem;
 import org.labkey.api.laboratory.TabbedReportItem;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.SimpleAssayDataProvider;
+import org.labkey.api.laboratory.query.TabbedReportFilterProvider;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -85,6 +86,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     private final Map<String, DataProvider> _dataProviders = new HashMap<>();
     private final Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
     private final List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
+    private final List<TabbedReportFilterProvider> _tabbedReportFilterProviders = new ArrayList<>();
 
     public static final String DEMOGRAPHICS_PROPERTY_CATEGORY = "laboratory.demographicsSource";
     public static final String DATASOURCE_PROPERTY_CATEGORY = "laboratory.additionalDataSource";
@@ -712,5 +714,23 @@ public class LaboratoryServiceImpl extends LaboratoryService
         }
 
         return null;
+    }
+
+    @Override
+    public void clearDataProviderCache()
+    {
+        LaboratoryDataProvider.clearCache();
+    }
+
+    @Override
+    public void registerTabbedReportFilterProvider(TabbedReportFilterProvider provider)
+    {
+        _tabbedReportFilterProviders.add(provider);
+    }
+
+    @Override
+    public List<TabbedReportFilterProvider> getTabbedReportFilterProviderProviders(final Container c, final User u)
+    {
+        return _tabbedReportFilterProviders.stream().filter(d -> d.isAvailable(c, u)).toList();
     }
 }
