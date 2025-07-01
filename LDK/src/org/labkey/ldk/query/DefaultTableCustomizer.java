@@ -125,7 +125,24 @@ public class DefaultTableCustomizer implements TableCustomizer
 
         List<String> keyFields = ti.getPkColumnNames();
         assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
-        if (keyFields.size() != 1)
+
+        if (_settings.getPrimaryKeyField() != null)
+        {
+            String alternatePK = _settings.getPrimaryKeyField();
+            if (!keyFields.contains(alternatePK))
+            {
+                _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " supplied an alternate primaryKeyField that doesnt match actual PKs: " + alternatePK);
+                return;
+            }
+
+            keyFields = Collections.singletonList(alternatePK);
+        }
+
+        if (keyFields.isEmpty())
+        {
+            return;
+        }
+        else if (keyFields.size() > 1)
         {
             _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
             return;
@@ -159,13 +176,30 @@ public class DefaultTableCustomizer implements TableCustomizer
 
             List<String> keyFields = ti.getPkColumnNames();
             assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
-            if (keyFields.size() != 1)
+
+            if (_settings.getPrimaryKeyField() != null)
+            {
+                String alternatePK = _settings.getPrimaryKeyField();
+                if (!keyFields.contains(alternatePK))
+                {
+                    _log.error("Table: " + ti.getUserSchema().getSchemaName() + "." + ti.getPublicName() + " supplied an alternate primaryKeyField that doesnt match actual PKs: " + alternatePK);
+                    return;
+                }
+
+                keyFields = Collections.singletonList(alternatePK);
+            }
+
+            if (keyFields.isEmpty())
+            {
+                return;
+            }
+            else if (keyFields.size() != 1)
             {
                 _log.error("Table: " + schemaName + "." + queryName + " has more than 1 PK: " + StringUtils.join(keyFields, ";") + ", cannot apply custom links - please update the TableCustomizer properties");
                 return;
             }
 
-            if (schemaName != null && queryName != null && !keyFields.isEmpty())
+            if (schemaName != null && queryName != null)
             {
                 String keyField = keyFields.get(0);
                 if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
@@ -444,7 +478,8 @@ public class DefaultTableCustomizer implements TableCustomizer
             setEditLinkOverrides(Boolean.class, true),
             auditMode(String.class, AuditBehaviorType.DETAILED.name()),
             disableFacetingForNumericCols(Boolean.class, true),
-            overrideDetailsUrl(Boolean.class, true);
+            overrideDetailsUrl(Boolean.class, true),
+            primaryKeyField(String.class, null);
 
             private final Class _clazz;
             private final Object _defaultVal;
@@ -528,6 +563,17 @@ public class DefaultTableCustomizer implements TableCustomizer
             }
 
             return AuditBehaviorType.DETAILED;
+        }
+
+        public String getPrimaryKeyField()
+        {
+            Object fieldName = getProperty(PROPERIES.primaryKeyField);
+            if (fieldName != null)
+            {
+                return fieldName.toString();
+            }
+
+            return null;
         }
 
         public boolean isDisableFacetingForNumericCols()

@@ -59,6 +59,7 @@ import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.laboratory.assay.AssayParser;
 import org.labkey.api.laboratory.query.ContainerIncrementingTable;
+import org.labkey.api.laboratory.query.TabbedReportFilterProvider;
 import org.labkey.api.laboratory.security.LaboratoryAdminPermission;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleHtmlView;
@@ -293,7 +294,6 @@ public class LaboratoryController extends SpringActionController
             return ContainerManager.getHomeContainer().getStartURL(getUser());
         }
     }
-
 
     @RequiresPermission(AdminPermission.class)
     public static class SetTableIncrementValueAction extends ConfirmAction<SetTableIncrementForm>
@@ -578,7 +578,7 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
+            return new HtmlView("This action will reset webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
         }
 
         @Override
@@ -1568,15 +1568,22 @@ public class LaboratoryController extends SpringActionController
             for (String key : json.keySet())
             {
                 String providerName = AbstractNavItem.inferDataProviderNameFromKey(key);
-                DataProvider provider = LaboratoryService.get().getDataProvider(providerName);
-
-                //for some types, no DataProvider, was explicitly registered, such as many assays
-                //in these cases we cannot infer the owning module.
-                if (provider != null && provider.getOwningModule() != null)
+                if ("tabReportFilterProvider".equals(providerName))
                 {
-                    if (!activeModules.contains(provider.getOwningModule()))
+                    // Ignore
+                }
+                else
+                {
+                    DataProvider provider = LaboratoryService.get().getDataProvider(providerName);
+
+                    //for some types, no DataProvider, was explicitly registered, such as many assays
+                    //in these cases we cannot infer the owning module.
+                    if (provider != null && provider.getOwningModule() != null)
                     {
-                        toActivate.add(provider.getOwningModule());
+                        if (!activeModules.contains(provider.getOwningModule()))
+                        {
+                            toActivate.add(provider.getOwningModule());
+                        }
                     }
                 }
 
@@ -1792,7 +1799,17 @@ public class LaboratoryController extends SpringActionController
                     ensureModuleActive(item);
 
                     if (form.isIncludeAll() || item.isVisible(getContainer(), getUser()))
-                        json.add(item.toJSON(getContainer(), getUser()));
+                    {
+                        JSONObject jo = item.toJSON(getContainer(), getUser());
+                        if (jo == null)
+                        {
+                            _log.error("Invalid JSON for tabbedReport item: " + item.getPropertyManagerKey());
+                        }
+                        else
+                        {
+                            json.add(jo);
+                        }
+                    }
                 }
                 results.put(LaboratoryService.NavItemCategory.tabbedReports.name(), json);
             }
@@ -1809,6 +1826,16 @@ public class LaboratoryController extends SpringActionController
                 }
                 results.put(LaboratoryService.NavItemCategory.misc.name(), json);
             }
+
+            List<JSONObject> json = new ArrayList<>();
+            for (TabbedReportFilterProvider item : LaboratoryService.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()))
+            {
+                if (form.isIncludeAll() || item.isAvailable(getContainer(), getUser()))
+                {
+                    json.add(item.toJSON(getContainer(), getUser()));
+                }
+            }
+            results.put("tabbedReportFilterProviderProviders", json);
 
             results.put("success", true);
 
@@ -2338,8 +2365,10 @@ public class LaboratoryController extends SpringActionController
             JspView<Object> view = new JspView<>("/org/labkey/laboratory/view/dataBrowser.jsp", form);
             view.setTitle("Data Browser");
             view.setHidePageTitle(true);
-            //view.setFrame(WebPartView.FrameType.NONE);
-            //getPageConfig().setTemplate(PageConfig.Template.None);
+
+            LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()).forEach(p -> {
+                p.getClientDependencies().forEach(view::addClientDependency);
+            });
 
             return view;
         }

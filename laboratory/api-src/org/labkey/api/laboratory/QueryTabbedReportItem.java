@@ -30,6 +30,7 @@ public class QueryTabbedReportItem extends TabbedReportItem
 {
     private String _schemaName;
     private String _queryName;
+    private String _viewName;
 
     public QueryTabbedReportItem(QueryCache cache, DataProvider provider, String schemaName, String queryName, String label, String reportCategory)
     {
@@ -67,6 +68,16 @@ public class QueryTabbedReportItem extends TabbedReportItem
         _queryName = queryName;
     }
 
+    public String getViewName()
+    {
+        return _viewName;
+    }
+
+    public void setViewName(String viewName)
+    {
+        _viewName = viewName;
+    }
+
     @Override
     public JSONObject toJSON(Container c, User u)
     {
@@ -77,12 +88,18 @@ public class QueryTabbedReportItem extends TabbedReportItem
             return null;
         }
 
-        inferColumnsFromTable(ti);
+        inferColumnsFromTable(ti, c, u);
         JSONObject json = super.toJSON(c, u);
 
         json.put("schemaName", getSchemaName());
         json.put("queryName", getQueryName());
         String viewName = getDefaultViewName(c, getOwnerKey());
+
+        if (getViewName() != null)
+        {
+            viewName = getViewName();
+        }
+
         if (viewName != null)
         {
             json.put("viewName", viewName);
