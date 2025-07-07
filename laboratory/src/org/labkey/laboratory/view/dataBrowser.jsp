@@ -27,6 +27,11 @@
     public void addClientDependencies(ClientDependencies dependencies)
     {
         dependencies.add("laboratory.context");
+        dependencies.add("/laboratory/panel/DataBrowserPanel.js");
+        dependencies.add("LDK/panel/AbstractFilterType.js");
+        dependencies.add("LDK/panel/SingleSubjectFilterType.js");
+        dependencies.add("LDK/panel/MultiSubjectFilterType.js");
+        dependencies.add("LDK/panel/NoFiltersFilterType.js");
     }
 
     private String getFilterConfig()
@@ -59,53 +64,13 @@
 <div id="<%=h(wpId)%>"></div>
 
 <script type="text/javascript" nonce="<%=getScriptNonce()%>">
+    var subjectId = LABKEY.ActionURL.getParameter('subjectId');
+
     Ext4.onReady(function(){
-        var webpartId = <%=q(wpId)%>;
-
-        Ext4.define('Laboratory.panel.TabbedReportPanel', {
-            extend: 'LDK.panel.TabbedReportPanel',
-
-            initComponent: function(){
-                Ext4.ns('Laboratory.tabbedReports');
-
-                Ext4.apply(this, {
-                    //defaultReport: 'abstract',
-                    reportNamespace: Laboratory.tabbedReports
-                });
-
-                Ext4.Msg.wait('Loading...');
-                Laboratory.Utils.getDataItems({
-                    types: ['tabbedReports'],
-                    scope: this,
-                    success: this.onDataLoad,
-                    failure: LDK.Utils.getErrorCallback()
-                });
-
-                this.callParent();
-            },
-
-            onDataLoad: function(results){
-                Ext4.Msg.hide();
-                this.reports = [];
-                Ext4.each(results.tabbedReports, function(report){
-                    LDK.Assert.assertNotEmpty('Tabbed Report is null', report);
-                    if (report && report.key){
-                        report.id = report.key.replace(/:/g, '_');
-                        report.category = report.reportCategory;
-
-                        if (report.targetContainer){
-                            report.containerPath = report.targetContainer;
-                        }
-                        this.reports.push(report);
-                    }
-                }, this);
-
-                this.reports = LDK.Utils.sortByProperty(this.reports, 'name', false);
-                this.reports = LDK.Utils.sortByProperty(this.reports, 'reportCategory', false);
-
-                this.createTabPanel();
-            },
-
+        Ext4.create('Laboratory.panel.DataBrowserPanel', {
+            initialContext: subjectId ? {
+                subjects: subjectId
+            } : null,
             filterTypes: [{
                 xtype: 'ldk-singlesubjectfiltertype',
                 inputValue: LDK.panel.SingleSubjectFilterType.filterName,
@@ -119,8 +84,6 @@
                 inputValue: LDK.panel.NoFiltersFilterType.filterName,
                 label: LDK.panel.NoFiltersFilterType.label
             }]
-        });
-
-        Ext4.create('Laboratory.panel.TabbedReportPanel').render(webpartId);
+        }).render(<%=q(wpId)%>);
     });
 </script>
