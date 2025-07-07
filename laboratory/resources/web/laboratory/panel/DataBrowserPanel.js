@@ -5,7 +5,6 @@ Ext4.define('Laboratory.panel.DataBrowserPanel', {
         Ext4.ns('Laboratory.tabbedReports');
 
         Ext4.apply(this, {
-            //defaultReport: 'abstract',
             reportNamespace: Laboratory.tabbedReports
         });
 
@@ -23,6 +22,7 @@ Ext4.define('Laboratory.panel.DataBrowserPanel', {
     onDataLoad: function(results){
         Ext4.Msg.hide();
         this.reports = [];
+        var foundDefault = false;
         Ext4.each(results.tabbedReports, function(report){
             LDK.Assert.assertNotEmpty('Tabbed Report is null', report);
             if (report && report.key){
@@ -33,6 +33,16 @@ Ext4.define('Laboratory.panel.DataBrowserPanel', {
                     report.containerPath = report.targetContainer;
                 }
                 this.reports.push(report);
+
+                if (report.isDefaultReport) {
+                    this.defaultReport = report.id;
+                    if (foundDefault) {
+                        log.error('More than one TabbedReport marked as default!');
+                    }
+
+                    foundDefault = true;
+                    console.log(this.defaultReport);
+                }
             }
         }, this);
 
