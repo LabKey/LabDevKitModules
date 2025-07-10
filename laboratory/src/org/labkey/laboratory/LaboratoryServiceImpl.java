@@ -52,6 +52,7 @@ import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ViewContext;
 import org.labkey.laboratory.assay.AssayHelper;
@@ -201,7 +202,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
         try
         {
             FileLike targetDirectory = AssayFileWriter.ensureUploadDirectory(ctx.getContainer());
-            FileLike file = AssayFileWriter.findUniqueFileName(basename, targetDirectory);
+            FileLike file = FileUtil.findUniqueFileName(basename, targetDirectory);
 
             return this.saveAssayBatch(results, json, file.toNioPathForRead().toFile(), ctx, provider, protocol);
         }
