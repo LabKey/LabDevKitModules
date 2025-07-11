@@ -1071,8 +1071,8 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
         return filter ? Ext4.apply({}, filter) : null;
     },
 
-    getFiltersFromUrl: function(){
-        var context = {};
+    getFiltersFromUrl: function(context){
+        context = context || {};
 
         if (document.location.hash){
             var token = document.location.hash.split('#');
@@ -1302,18 +1302,11 @@ Ext4.define('LDK.panel.TabbedReportPanel', {
             if (report)
                 this.silentlySetActiveTab(report);
         }
-        else if (this.defaultTab) {
-            var tab = tabPanel.down('#' + this.defaultTab);
-            tabPanel.suspendEvents();
-            tab.suspendEvents();
-            tabPanel.setActiveTab(tab);
-            tab.resumeEvents();
-            tabPanel.resumeEvents();
-        }
 
         //populate initial fields
         var shouldChange = true;
-        this.initialContext = this.getFiltersFromUrl();
+
+        this.initialContext = this.getFiltersFromUrl(this.initialContext);
         var filterType = this.initialContext.inputType;
         if (filterType){
             var radio = this.down('#inputType');
