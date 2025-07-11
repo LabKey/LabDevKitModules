@@ -1658,6 +1658,8 @@ public class LaboratoryController extends SpringActionController
             Map<String, Object> results = new HashMap<>();
 
             WritablePropertyMap propMap = PropertyManager.getWritableProperties(getContainer(), TabbedReportItem.OVERRIDES_PROP_KEY, true);
+            WritablePropertyMap visibilityMap = PropertyManager.getWritableProperties(getContainer(), NavItem.PROPERTY_CATEGORY, true);
+            boolean shouldSaveVisibility = false;
 
             List<TabbedReportItem> tabbedReports = LaboratoryService.get().getTabbedReportItems(getContainer(), getUser());
             Map<String, TabbedReportItem> reportMap = new HashMap<>();
@@ -1669,7 +1671,7 @@ public class LaboratoryController extends SpringActionController
             JSONObject json = new JSONObject(form.getJsonData());
             for (String key : json.keySet())
             {
-                JSONObject toSave= new JSONObject();
+                JSONObject toSave = new JSONObject();
 
                 TabbedReportItem ti = reportMap.get(key);
                 if (ti == null)
@@ -1685,12 +1687,48 @@ public class LaboratoryController extends SpringActionController
                 if (reportCategory != null && !ti.getReportCategory().equals(reportCategory))
                     toSave.put("reportCategory", reportCategory);
 
-                if (!toSave.keySet().isEmpty())
+                String isDefaultReport = StringUtils.trimToNull(props.optString("isDefaultReport"));
+                if (isDefaultReport != null)
+                {
+                    if (!ti.hasOverride(getContainer(), "isDefaultReport"))
+                    {
+                        if ("true".equals(isDefaultReport))
+                        {
+                            toSave.put("isDefaultReport", isDefaultReport);
+                        }
+                    }
+                    else
+                    {
+                        toSave.put("isDefaultReport", isDefaultReport);
+                    }
+                }
+
+                String isVisible = StringUtils.trimToNull(props.optString("isVisible"));
+                if (isVisible != null)
+                {
+                    if (!isVisible.equals(visibilityMap.get(ti.getPropertyManagerKey())))
+                    {
+                        visibilityMap.put(ti.getPropertyManagerKey(), isVisible);
+                        shouldSaveVisibility = true;
+                    }
+                }
+
+                if (!toSave.isEmpty())
+                {
                     propMap.put(key, toSave.toString());
-                else propMap.remove(key);
+                }
+                else
+                {
+                    propMap.remove(key);
+                }
             }
 
             propMap.save();
+
+            if (shouldSaveVisibility)
+            {
+                visibilityMap.save();
+            }
 
             results.put("success", true);
             return new ApiSimpleResponse(results);

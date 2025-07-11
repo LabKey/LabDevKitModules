@@ -46,7 +46,6 @@ public class TabbedReportItem extends AbstractNavItem
     private final Map<String, FieldKey> _additionalKeys = new HashMap<>();
 
     public static final String OVERRIDES_PROP_KEY = "laboratory.tabItemOverride";
-    public static final String FILTER_PROP_KEY = "laboratory.tabItemFilterOverride";
 
     protected static final Logger _log = LogManager.getLogger(TabbedReportItem.class);
 
@@ -177,6 +176,23 @@ public class TabbedReportItem extends AbstractNavItem
         return item.getDataProvider().getKey() + "||tabReport||" + item.getReportCategory() + "||" + item.getName() + "||" + item.getLabel();
     }
 
+    public boolean hasOverride(Container c, String propName)
+    {
+        Map<String, String> map = PropertyManager.getProperties(c, OVERRIDES_PROP_KEY);
+        if (!map.containsKey(getPropertyManagerKey()))
+        {
+            return false;
+        }
+
+        JSONObject props = new JSONObject(map.get(getPropertyManagerKey()));
+        if (!props.has(propName))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static void applyOverrides(NavItem item, Container c, JSONObject json)
     {
         Map<String, String> map = PropertyManager.getProperties(c, OVERRIDES_PROP_KEY);
@@ -188,9 +204,9 @@ public class TabbedReportItem extends AbstractNavItem
 
             if (props.has("reportCategory"))
                 json.put("reportCategory", props.get("reportCategory"));
-            // retained for settings saved prior to refactor
-            else if (props.has("category"))
-                json.put("reportCategory", props.get("category"));
+
+            if (props.has("isDefaultReport"))
+                json.put("isDefaultReport", props.get("isDefaultReport"));
         }
     }
 }
