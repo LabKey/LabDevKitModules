@@ -69,6 +69,9 @@ Ext4.define('Laboratory.panel.CustomizeDataBrowserPanel', {
         },{
             html: '<b>Visible?</b>',
             style: 'padding-bottom: 5px;margin-left: 5px;'
+        },{
+            html: '<b>Default Report?</b>',
+            style: 'padding-bottom: 5px;margin-left: 5px;'
         }];
 
         items = LDK.Utils.sortByProperty(items, 'name', false);
@@ -90,9 +93,14 @@ Ext4.define('Laboratory.panel.CustomizeDataBrowserPanel', {
                 width: 300,
                 value: item.label
             },{
-                xtype: 'displayfield',
-                value: item.visible,
+                xtype: 'checkbox',
+                checked: item.visible,
                 style: 'margin-left: 15px;'
+            },{
+                xtype: 'radio',
+                name: 'isDefaultReport',
+                inputValue: true,
+                checked: item.isDefaultReport
             }]);
         }, this);
 
@@ -100,7 +108,7 @@ Ext4.define('Laboratory.panel.CustomizeDataBrowserPanel', {
             itemId: 'theTable',
             layout: {
                 type: 'table',
-                columns: 4
+                columns: 5
             },
             border: false,
             defaults: {
@@ -117,15 +125,17 @@ Ext4.define('Laboratory.panel.CustomizeDataBrowserPanel', {
     doSave: function(btn){
         var toSave = {};
         var items = btn.up('form').down('#theTable').items;
-        var cols = 4;
+        var cols = 5;
         var rows = (items.getCount() / cols);
 
         for (var i=1;i<rows;i++){
             var base = i * cols;
             var navItem = items.get(base).navItem;
             toSave[navItem.overridesKey] = {
+                reportCategory: items.get(base + 1).getValue(),
                 label:  items.get(base + 2).getValue(),
-                reportCategory: items.get(base + 1).getValue()
+                isVisible: items.get(base + 3).getValue(),
+                isDefaultReport: items.get(base + 4).getValue()
             }
         }
 
