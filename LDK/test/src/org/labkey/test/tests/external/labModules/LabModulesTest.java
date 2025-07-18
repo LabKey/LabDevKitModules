@@ -27,7 +27,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.collections.CaseInsensitiveHashMap;
 import org.labkey.remoteapi.query.Filter;
 import org.labkey.remoteapi.query.InsertRowsCommand;
-import org.labkey.remoteapi.query.SaveRowsResponse;
+import org.labkey.remoteapi.query.RowsResponse;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.Sort;
@@ -530,7 +530,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             insertCmd.addRow(rowMap);
         }
 
-        SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+        RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
         assertEquals("Incorrect number of rows created", SUBJECTS.length, saveResp.getRowsAffected().intValue());
     }
 
@@ -553,7 +553,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             insertCmd.addRow(rowMap);
         }
 
-        SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+        RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
         assertEquals("Incorrect number of rows created", PROJECT_ENROLLMENT.length, saveResp.getRowsAffected().intValue());
 
         //test expectations
@@ -598,7 +598,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             insertCmd.addRow(rowMap);
         }
 
-        SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+        RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
         assertEquals("Incorrect number of rows created", SAMPLE_DATA.length, saveResp.getRowsAffected().intValue());
     }
 
@@ -618,7 +618,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             insertCmd.addRow(rowMap);
         }
 
-        SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+        RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
         assertEquals("Incorrect number of rows created", MAJOR_EVENTS.length, saveResp.getRowsAffected().intValue());
     }
 
@@ -1739,7 +1739,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             rowMap.put("_selfAssignedId_", "true");
             insertCmd.addRow(rowMap);
 
-            SaveRowsResponse saveResp = insertCmd.execute(cn, getProjectName());
+            RowsResponse saveResp = insertCmd.execute(cn, getProjectName());
             throw new Exception("The saveRows call above should have thrown an exception");
         }
         catch (CommandException e)
