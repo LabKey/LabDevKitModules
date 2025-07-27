@@ -21,7 +21,7 @@ alter table laboratory.samples
   add column subjectid varchar(200)
 ;
 
-
+-- @SkipOnEmptySchemasBegin
 insert into laboratory.species
 (common_name,scientific_name)
 values
@@ -35,6 +35,7 @@ values
 insert into laboratory.dna_mol_type
 (mol_type) values ('Vector')
 ;
+-- @SkipOnEmptySchemasEnd
 
 DROP TABLE IF EXISTS laboratory.site_module_properties;
 CREATE TABLE laboratory.site_module_properties (

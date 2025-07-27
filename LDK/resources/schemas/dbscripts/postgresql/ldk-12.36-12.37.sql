@@ -6,6 +6,7 @@ CREATE TABLE ldk.months (
     CONSTRAINT PK_months PRIMARY KEY (rowid)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT into ldk.months (monthName, monthNum) VALUES ('January', 1);
 INSERT into ldk.months (monthName, monthNum) VALUES ('February', 2);
 INSERT into ldk.months (monthName, monthNum) VALUES ('March', 3);
@@ -18,3 +19,4 @@ INSERT into ldk.months (monthName, monthNum) VALUES ('September', 9);
 INSERT into ldk.months (monthName, monthNum) VALUES ('October', 10);
 INSERT into ldk.months (monthName, monthNum) VALUES ('November', 11);
 INSERT into ldk.months (monthName, monthNum) VALUES ('December', 12);
+-- @SkipOnEmptySchemasEnd
