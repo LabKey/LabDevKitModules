@@ -55,7 +55,7 @@ public interface AssayDataProvider extends DataProvider
 
     AssayImportMethod getImportMethodByName(String methodName);
 
-    String getDefaultImportMethodName(Container c, User u, int protocolId);
+    String getDefaultImportMethodName(Container c, User u, long protocolId);
 
     boolean isModuleEnabled(Container c);
 }

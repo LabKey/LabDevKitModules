@@ -166,7 +166,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
     }
 
     @Override
-    public String getDefaultImportMethodName(Container c, User u, int protocolId)
+    public String getDefaultImportMethodName(Container c, User u, long protocolId)
     {
         Container targetContainer = c.isWorkbook() ? c.getParent() : c;
         Map<String, String> props = PropertyManager.getProperties(targetContainer, PROPERTY_CATEGORY);
@@ -176,7 +176,7 @@ abstract public class AbstractAssayDataProvider extends AbstractDataProvider imp
             return _importMethods.isEmpty() ?  null : _importMethods.iterator().next().getName();
     }
 
-    private String getDefaultMethodPropertyKey(int protocolId)
+    private String getDefaultMethodPropertyKey(long protocolId)
     {
         return getKey() + "||" + protocolId;
     }

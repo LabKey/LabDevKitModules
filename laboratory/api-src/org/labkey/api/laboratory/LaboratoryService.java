@@ -76,7 +76,7 @@ abstract public class LaboratoryService
 
     abstract public Set<AssayDataProvider> getRegisteredAssayProviders();
 
-    abstract public AssayDataProvider getDataProviderForAssay(int protocolId);
+    abstract public AssayDataProvider getDataProviderForAssay(long protocolId);
 
     abstract public AssayDataProvider getDataProviderForAssay(AssayProvider ap);
 

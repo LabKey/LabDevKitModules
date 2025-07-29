@@ -196,7 +196,7 @@ public class RunUploadContext<ProviderType extends AssayProvider> implements Ass
      * The RowId for the run that is being deleted and reuploaded, or null if this is a new run
      */
     @Override
-    public Integer getReRunId()
+    public Long getReRunId()
     {
         return null;
     }
