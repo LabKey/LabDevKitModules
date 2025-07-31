@@ -79,6 +79,7 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ErrorRenderer;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
@@ -622,7 +623,7 @@ public class LaboratoryController extends SpringActionController
             try
             {
                 FileLike targetDirectory = AssayFileWriter.ensureUploadDirectory(getContainer());
-                return AssayFileWriter.findUniqueFileName(filename, targetDirectory).toNioPathForWrite().toFile();
+                return FileUtil.findUniqueFileName(filename, targetDirectory).toNioPathForWrite().toFile();
             }
             catch (ExperimentException e)
             {
