@@ -34,10 +34,12 @@ CREATE TABLE laboratory.qual_results
     CONSTRAINT PK_qual_results PRIMARY KEY (rowid)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.qual_results (meaning, description) VALUES ('POS', 'Positive');
 INSERT INTO laboratory.qual_results (meaning, description) VALUES ('NEG', 'Negative');
 INSERT INTO laboratory.qual_results (meaning, description) VALUES ('OUTLIER', 'Outlier');
 INSERT INTO laboratory.qual_results (meaning, description) VALUES ('ND', 'No Data');
+-- @SkipOnEmptySchemasEnd
 
 CREATE TABLE laboratory.assay_requests
 (

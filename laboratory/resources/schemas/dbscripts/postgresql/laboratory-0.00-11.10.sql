@@ -216,11 +216,13 @@ WITH (OIDS=FALSE);
 -- ----------------------------
 -- Records of laboratory.dna_mol_type
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.dna_mol_type VALUES ('mRNA');
 INSERT INTO laboratory.dna_mol_type VALUES ('vRNA');
 INSERT INTO laboratory.dna_mol_type VALUES ('gDNA');
 INSERT INTO laboratory.dna_mol_type VALUES ('Plasmid');
 INSERT INTO laboratory.dna_mol_type VALUES ('RNA');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for laboratory.sample_type
@@ -236,6 +238,7 @@ WITH (OIDS=FALSE);
 -- ----------------------------
 -- Records of sample_type
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.sample_type VALUES ('Nasal swab');
 INSERT INTO laboratory.sample_type VALUES ('PBMC');
 INSERT INTO laboratory.sample_type VALUES ('Plasma');
@@ -245,6 +248,7 @@ INSERT INTO laboratory.sample_type VALUES ('Total RNA');
 INSERT INTO laboratory.sample_type VALUES ('mRNA');
 INSERT INTO laboratory.sample_type VALUES ('vRNA');
 INSERT INTO laboratory.sample_type VALUES ('RNA');
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for laboratory.sample_additive
@@ -256,6 +260,7 @@ CREATE TABLE laboratory.sample_additive
     CONSTRAINT PK_sample_additive PRIMARY KEY (additive)
 ) WITH (OIDS=FALSE);
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.sample_additive (Additive) VALUES
     ('EDTA'),
     ('Heparin'),
@@ -263,3 +268,4 @@ INSERT INTO laboratory.sample_additive (Additive) VALUES
     ('Sodium citrate');
 
 INSERT INTO laboratory.sample_type VALUES ('Cell Line');
+-- @SkipOnEmptySchemasEnd

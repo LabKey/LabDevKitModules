@@ -18,6 +18,7 @@ CREATE TABLE laboratory.workbook_group_members (
   CONSTRAINT pk_workbook_group_members PRIMARY KEY (rowid)
 );
 
+-- @SkipOnEmptySchemasBegin
 DELETE FROM laboratory.sample_type  WHERE type = 'Brain';
 INSERT INTO laboratory.sample_type (type) VALUES ('Brain');
 
@@ -29,6 +30,7 @@ INSERT INTO laboratory.sample_type (type) VALUES ('Spleen');
 
 DELETE FROM laboratory.sample_additive  WHERE additive = 'Filter Paper';
 INSERT INTO laboratory.sample_additive (additive) VALUES ('Filter Paper');
+-- @SkipOnEmptySchemasEnd
 
 ALTER TABLE laboratory.workbooks ADD folder entityid;
 

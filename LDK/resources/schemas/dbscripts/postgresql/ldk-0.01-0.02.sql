@@ -19,6 +19,7 @@ CREATE TABLE ldk.integers (
   CONSTRAINT PK_integers PRIMARY KEY (value)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ldk.integers (value) VALUES (0);
 INSERT INTO ldk.integers (value) VALUES (1);
 INSERT INTO ldk.integers (value) VALUES (2);
@@ -120,4 +121,4 @@ INSERT INTO ldk.integers (value) VALUES (97);
 INSERT INTO ldk.integers (value) VALUES (98);
 INSERT INTO ldk.integers (value) VALUES (99);
 INSERT INTO ldk.integers (value) VALUES (100);
-
+-- @SkipOnEmptySchemasEnd
