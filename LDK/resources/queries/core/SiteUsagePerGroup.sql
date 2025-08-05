@@ -23,8 +23,8 @@ a.EventType
 FROM core.groups g
 
 LEFT JOIN core.Members m ON (g.UserId = m.GroupId.UserId)
-LEFT JOIN "/".auditlog.audit a
-ON (a.CreatedBy.UserId = m.UserId.UserId AND a.EventType = 'UserAuditEvent' AND a.Comment LIKE '%logged in%')
+LEFT JOIN "/".auditlog.UserAuditEvent a
+ON (a.CreatedBy.UserId = m.UserId.UserId AND a.Comment LIKE '%logged in%')
 
 WHERE g.Name IS NOT NULL
 AND g.Name != ''

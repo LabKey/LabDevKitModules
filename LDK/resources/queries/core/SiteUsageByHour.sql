@@ -19,8 +19,8 @@ SELECT
 hour(a.date) as Hour,
 count(*) AS Visits
 
-FROM "/".auditlog.audit a
+FROM "/".auditlog.UserAuditEvent a
 
-WHERE a.EventType = 'UserAuditEvent' AND a.Comment LIKE '%logged in%'
+WHERE a.Comment LIKE '%logged in%'
 
 GROUP BY hour(a.date)

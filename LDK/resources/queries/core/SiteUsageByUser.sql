@@ -18,6 +18,6 @@ PARAMETERS(MinDate TIMESTAMP)
 SELECT
 a.CreatedBy,
 COUNT(a.Date) AS LogInCount
-FROM "/".auditlog.audit a
+FROM "/".auditlog.UserAuditEvent a
 WHERE a.Comment LIKE '%logged in%' AND cast(a.date as date) >= cast(MinDate as date)
 GROUP BY a.CreatedBy

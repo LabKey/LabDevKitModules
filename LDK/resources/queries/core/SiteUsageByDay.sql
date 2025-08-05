@@ -27,8 +27,7 @@ CASE
 END as dayOfWeek,
 count(*) AS Logins
 
-FROM "/".auditlog.audit a
+FROM "/".auditlog.UserAuditEvent a
 
-WHERE a.EventType = 'UserAuditEvent'
-AND a.Comment LIKE '%logged in%'
+WHERE a.Comment LIKE '%logged in%'
 GROUP BY cast(a.date as date)
