@@ -15,19 +15,19 @@
  */
 SELECT
 
-cast(a.date as date) as date,
+cast(a.Created as date) as Date,
 CASE
-  WHEN dayofweek(cast(a.date as date)) = 1 THEN 'Sunday'
-  WHEN dayofweek(cast(a.date as date)) = 2 THEN 'Monday'
-  WHEN dayofweek(cast(a.date as date)) = 3 THEN 'Tuesday'
-  WHEN dayofweek(cast(a.date as date)) = 4 THEN 'Wednesday'
-  WHEN dayofweek(cast(a.date as date)) = 5 THEN 'Thursday'
-  WHEN dayofweek(cast(a.date as date)) = 6 THEN 'Friday'
-  WHEN dayofweek(cast(a.date as date)) = 7 THEN 'Saturday'
+    WHEN dayofweek(cast(a.Created as date)) = 1 THEN 'Sunday'
+    WHEN dayofweek(cast(a.Created as date)) = 2 THEN 'Monday'
+    WHEN dayofweek(cast(a.Created as date)) = 3 THEN 'Tuesday'
+    WHEN dayofweek(cast(a.Created as date)) = 4 THEN 'Wednesday'
+    WHEN dayofweek(cast(a.Created as date)) = 5 THEN 'Thursday'
+    WHEN dayofweek(cast(a.Created as date)) = 6 THEN 'Friday'
+    WHEN dayofweek(cast(a.Created as date)) = 7 THEN 'Saturday'
 END as dayOfWeek,
 count(*) AS Logins
 
 FROM "/".auditlog.UserAuditEvent a
 
 WHERE a.Comment LIKE '%logged in%'
-GROUP BY cast(a.date as date)
+GROUP BY cast(a.Created as date)
