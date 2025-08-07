@@ -17,7 +17,7 @@ SELECT
 
 m.UserId,
 g.Name AS GroupName,
-a.Date,
+a.Created AS Date,
 a.EventType
 
 FROM core.groups g
@@ -28,4 +28,4 @@ ON (a.CreatedBy.UserId = m.UserId.UserId AND a.Comment LIKE '%logged in%')
 
 WHERE g.Name IS NOT NULL
 AND g.Name != ''
-AND a.Date IS NOT NULL
+AND a.Created IS NOT NULL
