@@ -5,6 +5,8 @@ CREATE TABLE laboratory.result_status (
   CONSTRAINT PK_result_status PRIMARY KEY (status)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.result_status (status, not_trusted) VALUES ('Definitive', false);
 INSERT INTO laboratory.result_status (status, not_trusted) VALUES ('Outlier', true);
 INSERT INTO laboratory.result_status (status, not_trusted) VALUES ('Replaced', true);
+-- @SkipOnEmptySchemasEnd

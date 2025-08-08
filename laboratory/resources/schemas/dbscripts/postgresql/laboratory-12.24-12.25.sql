@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+-- @SkipOnEmptySchemasBegin
 DELETE FROM laboratory.sample_type WHERE type = 'Serum';
 INSERT INTO laboratory.sample_type (type) VALUES ('Serum');
 DELETE FROM laboratory.sample_type WHERE type = 'Tissue';
 INSERT INTO laboratory.sample_type (type) VALUES ('Tissue');
 DELETE FROM laboratory.sample_type WHERE type = 'Supernatant';
 INSERT INTO laboratory.sample_type (type) VALUES ('Supernatant');
+-- @SkipOnEmptySchemasEnd
 
 -- NOTE: SQLServer will not allow 2 FKs pointing to the same table with update cascade
 -- therefore rather than let 1 field update and the other not, we get rid of both

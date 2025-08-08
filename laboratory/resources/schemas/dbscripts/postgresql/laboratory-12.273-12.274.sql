@@ -9,11 +9,13 @@ DELETE FROM laboratory.samplecategory WHERE category = 'Pos Control';
 DELETE FROM laboratory.samplecategory WHERE category = 'Neg Control';
 DELETE FROM laboratory.samplecategory WHERE category = 'Control';
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.samplecategory (category) VALUES ('Pos Control');
 INSERT INTO laboratory.samplecategory (category) VALUES ('Neg Control');
 INSERT INTO laboratory.samplecategory (category) VALUES ('Control');
 INSERT INTO laboratory.samplecategory (category) VALUES ('Blank');
 INSERT INTO laboratory.samplecategory (category) VALUES ('Standard');
+-- @SkipOnEmptySchemasEnd
 
 ALTER TABLE laboratory.samplecategory ADD control boolean;
 UPDATE laboratory.samplecategory SET control = true;

@@ -1,3 +1,4 @@
+-- @SkipOnEmptySchemasBegin
 INSERT INTO ldk.integers (value) VALUES (101);
 INSERT INTO ldk.integers (value) VALUES (102);
 INSERT INTO ldk.integers (value) VALUES (103);
@@ -898,3 +899,4 @@ INSERT INTO ldk.integers (value) VALUES (997);
 INSERT INTO ldk.integers (value) VALUES (998);
 INSERT INTO ldk.integers (value) VALUES (999);
 INSERT INTO ldk.integers (value) VALUES (1000);
+-- @SkipOnEmptySchemasEnd

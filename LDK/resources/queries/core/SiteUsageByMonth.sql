@@ -15,15 +15,14 @@
  */
 SELECT
 
-year(a.date) as year,
-month(a.date) as month,
-cast(cast(year(a.date) as varchar) || '-' || cast(month(a.date) as varchar) || '-01' as DATE) as date,
+year(a.Created) as year,
+month(a.Created) as month,
+cast(cast(year(a.Created) as varchar) || '-' || cast(month(a.Created) as varchar) || '-01' as DATE) as date,
 count(*) AS Logins
 
-FROM "/".auditlog.audit a
+FROM "/".auditlog.UserAuditEvent a
 --FROM audit_pg.auditLog a
 
-WHERE a.EventType = 'UserAuditEvent'
-AND a.Comment LIKE '%logged in%'
+WHERE a.Comment LIKE '%logged in%'
 
-GROUP BY year(a.date), month(a.date)
+GROUP BY year(a.Created), month(a.Created)

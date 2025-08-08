@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 delete from laboratory.reference_peptides;
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('AAAQQRGPRK', null);
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('AADWDLQHPQ', null);
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('AADWDLQHPQPAPQQGQLRE', null);
@@ -5017,3 +5018,4 @@ INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('Y
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('YYREGRDQLWKGPGE', null);
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('YYSARRHRIL', null);
 INSERT INTO laboratory.reference_peptides (sequence, mhc_restriction) VALUES ('YYSARRHRILDIYLE', null);
+-- @SkipOnEmptySchemasEnd

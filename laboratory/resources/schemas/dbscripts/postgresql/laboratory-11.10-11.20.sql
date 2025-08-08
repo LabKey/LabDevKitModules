@@ -26,11 +26,13 @@ ALTER TABLE laboratory.inventory
 
 /* laboratory-11.13-11.14.sql */
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.sample_type VALUES
 ('BLCL'),
 ('DNA'),
 ('Whole Blood')
 ;
+-- @SkipOnEmptySchemasEnd
 
 ALTER TABLE laboratory.inventory
   add column cell_number float
@@ -124,6 +126,7 @@ CREATE TABLE laboratory.report_types
   CONSTRAINT pk_report_types PRIMARY KEY (type )
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.report_types
 (type) VALUES
 ('query'),
@@ -132,7 +135,7 @@ INSERT INTO laboratory.report_types
 ('webpart'),
 ('details')
 ;
-
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for laboratory.subjects
@@ -181,6 +184,7 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of laboratory.species
 -- ----------------------------
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.species
 (common_name, scientific_name, mhc_prefix)
 VALUES
@@ -197,7 +201,7 @@ VALUES
 ('Mouse', 'Mus musculus', null),
 ('Rat', 'Rattus norvegicus', null)
 ;
-
+-- @SkipOnEmptySchemasEnd
 
 DROP TABLE IF EXISTS laboratory.geographic_origins;
 CREATE TABLE laboratory.geographic_origins (
@@ -226,6 +230,7 @@ CREATE TABLE laboratory.well_layout (
   CONSTRAINT PK_well_layout PRIMARY KEY (rowid)
 );
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.well_layout
 (Plate,Well_96,Well_96_Padded,Well_384,Well_384_Padded,AddressByRow_96,AddressByColumn_96,AddressByColumn_384,AddressByRow_384)
 VALUES
@@ -614,7 +619,7 @@ VALUES
 (4, 'H11', 'H11', 'P23', 'P23', 95, 88, 368, 383),
 (4, 'H12', 'H12', 'P24', 'P24', 96, 96, 384, 384)
 ;
-
+-- @SkipOnEmptySchemasEnd
 
 -- ----------------------------
 -- Table structure for laboratory.genders
@@ -631,6 +636,7 @@ WITH (OIDS=FALSE)
 
 ;
 
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.genders
 (code, meaning, numericvalue)
 VALUES
@@ -638,10 +644,14 @@ VALUES
 ('f', 'Female', 2),
 ('u', 'Unknown', 0)
 ;
+-- @SkipOnEmptySchemasEnd
 
 drop table if exists laboratory.samples;
 
+-- @SkipOnEmptySchemasBegin
 insert into laboratory.sample_type (type) values ('gDNA');
+-- @SkipOnEmptySchemasEnd
+
 insert into laboratory.sample_source (source) values ('gDNA');
 insert into laboratory.sample_source (source) values ('DNA');
 

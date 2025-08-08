@@ -17,4 +17,7 @@ DROP TABLE laboratory.site_module_properties;
 DROP TABLE laboratory.module_properties;
 
 INSERT INTO laboratory.samplecategory (category) VALUES ('NTC');
+
+-- @SkipOnEmptySchemasBegin
 INSERT INTO laboratory.samplecategory (category) VALUES ('Unknown');
+-- @SkipOnEmptySchemasEnd

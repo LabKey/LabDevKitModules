@@ -24,15 +24,15 @@ from (
 
 SELECT
 
-year(a.date) as year,
-month(a.date) as month,
+year(a.Created) as year,
+month(a.Created) as month,
 a.CreatedBy.DisplayName as user
 
-FROM "/".auditlog.audit a
+FROM "/".auditlog.UserAuditEvent a
 
-WHERE a.EventType = 'UserAuditEvent' AND a.Comment LIKE '%logged in%'
+WHERE a.Comment LIKE '%logged in%'
 
-GROUP BY year(a.date), month(a.date), a.CreatedBy.DisplayName
+GROUP BY year(a.Created), month(a.Created), a.CreatedBy.DisplayName
 
 ) a
 
