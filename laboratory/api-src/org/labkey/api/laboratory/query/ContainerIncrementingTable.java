@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static org.labkey.api.exp.api.ExperimentService.asInteger;
+
 /**
  * User: bimber
  * Date: 3/12/13
@@ -153,6 +155,8 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
             return null;
         else if (value instanceof Integer)
             return (Integer)value;
+        else if (value instanceof Long)
+            return asInteger(value);
         else if (value instanceof Double)
             return ((Double)value).intValue();
         try
@@ -326,9 +330,9 @@ public class ContainerIncrementingTable extends SimpleUserSchema.SimpleTable
                         Object selfAssignedId = it.getInputColumnValue(inputColMap.get(_incrementingCol));
                         if (selfAssignedId != null)
                         {
-                            if (selfAssignedId instanceof Integer)
+                            if (selfAssignedId instanceof Integer || selfAssignedId instanceof Long)
                             {
-                                rowId = (Integer)selfAssignedId;
+                                rowId = asInteger(selfAssignedId);
 
                                 if (idGen.hasRowWithId(c, rowId))
                                     _context.getErrors().addRowError(new ValidationException("A record is already present with ID: " + rowId));
