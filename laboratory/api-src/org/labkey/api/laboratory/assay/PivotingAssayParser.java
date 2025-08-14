@@ -18,6 +18,7 @@ package org.labkey.api.laboratory.assay;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.collections.IntHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.query.BatchValidationException;
@@ -27,7 +28,6 @@ import org.labkey.api.util.Pair;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +122,7 @@ public class PivotingAssayParser extends DefaultAssayParser
      */
     private Map<Integer, String> inspectHeader(List<String> header, ImportContext context) throws BatchValidationException
     {
-        Map<Integer, String> resultMap = new HashMap<>();
+        Map<Integer, String> resultMap = new IntHashMap<>();
         Map<String, String> allowable = new CaseInsensitiveHashMap<>();
         BatchValidationException errors = new BatchValidationException();
 

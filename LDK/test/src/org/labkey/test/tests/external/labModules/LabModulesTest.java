@@ -494,7 +494,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
                     Date d = dateFormat.parse(expectations[idx]);
                     assertEquals("Incorrect value for: " + col + " on row " + i, d, serverVal);
                 }
-                else if ((serverVal instanceof Integer || serverVal instanceof Double))
+                else if ((serverVal instanceof Integer || serverVal instanceof Long || serverVal instanceof Double))
                 {
                     double d = Double.parseDouble(expectations[idx]);
                     assertEquals("Incorrect value for: " + col + " on row " + i, d, Double.parseDouble(serverVal.toString()), DELTA);

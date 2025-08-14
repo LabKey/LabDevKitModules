@@ -462,7 +462,7 @@ public class DefaultAssayParser implements AssayParser
         errors.confirmNoErrors();
     }
 
-    protected void saveTemplate(ViewContext ctx, int templateId, int runId) throws BatchValidationException
+    protected void saveTemplate(ViewContext ctx, int templateId, long runId) throws BatchValidationException
     {
         try
         {

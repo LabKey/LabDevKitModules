@@ -172,7 +172,7 @@ public class LaboratoryServiceImpl extends LaboratoryService
     }
 
     @Override
-    public AssayDataProvider getDataProviderForAssay(int protocolId)
+    public AssayDataProvider getDataProviderForAssay(long protocolId)
     {
         ExpProtocol protocol = ExperimentService.get().getExpProtocol(protocolId);
         if (protocol == null)
