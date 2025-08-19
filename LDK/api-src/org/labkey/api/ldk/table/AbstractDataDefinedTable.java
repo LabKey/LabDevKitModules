@@ -194,9 +194,10 @@ abstract public class AbstractDataDefinedTable<SchemaType extends UserSchema> ex
         protected int truncateRows(User user, Container container)
         {
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_filterColumn), _filterValue, CompareType.EQUAL);
-            if (getColumn("container") != null)
+
+            if (getContainerFieldKey() != null)
             {
-                filter.addClause(new ContainerFilter.CurrentOrParentAndWorkbooks(container, user).createFilterClause(getSchema(), FieldKey.fromParts("container")));
+                filter.addClause(new ContainerFilter.CurrentOrParentAndWorkbooks(container, user).createFilterClause(getSchema(), getContainerFieldKey()));
             }
 
             return Table.delete(getDbTable(), filter);
