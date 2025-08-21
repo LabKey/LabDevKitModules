@@ -47,6 +47,7 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.ExcelHelper;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -1222,6 +1223,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         goToProjectHome();
     }
 
+    @LogMethod
     private void workbookCreationTest() throws Exception
     {
         _helper.goToLabHome();
@@ -1288,10 +1290,12 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Assert.assertEquals("Incorrect number of oligos, found: " + oligoNames, expected, srr.getRowCount().intValue());
     }
 
+    @LogMethod
     private void dnaOligosTableTest() throws Exception
     {
         log("Testing DNA Oligos Table");
         _helper.goToLabHome();
+        verifyOligoCount(_oligosTotal);
 
         _helper.clickNavPanelItem("DNA_Oligos:", IMPORT_DATA_TEXT);
         new Window.WindowFinder(getDriver()).withTitle(IMPORT_DATA_TEXT).waitFor();
