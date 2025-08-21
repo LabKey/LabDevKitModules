@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1265,11 +1266,13 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     private void verifyOligoCount(int expected) throws Exception
     {
         SelectRowsCommand sr = new SelectRowsCommand("laboratory", "dna_oligos");
-        sr.setColumns(Arrays.asList("rowid"));
+        sr.setColumns(Arrays.asList("rowid", "name"));
 
         Connection cn = WebTestHelper.getRemoteApiConnection();
         SelectRowsResponse srr = sr.execute(cn, getCurrentContainerPath());
-        Assert.assertEquals(expected, srr.getRowCount().intValue());
+
+        String oligoNames = srr.getRows().stream().map(row -> row.get("name").toString()).collect(Collectors.joining(","));
+        Assert.assertEquals("Incorrect number of oligos, found: " + oligoNames, expected, srr.getRowCount().intValue());
     }
 
     private void dnaOligosTableTest() throws Exception
