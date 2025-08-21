@@ -1265,11 +1265,20 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
     private void verifyOligoCount(int expected) throws Exception
     {
+        log("verifying oligo count, expected: " + expected);
+
         SelectRowsCommand sr = new SelectRowsCommand("laboratory", "dna_oligos");
-        sr.setColumns(Arrays.asList("rowid", "name"));
+        sr.setColumns(Arrays.asList("rowid", "name", "container"));
 
         Connection cn = WebTestHelper.getRemoteApiConnection();
         SelectRowsResponse srr = sr.execute(cn, getCurrentContainerPath());
+
+        if (expected != srr.getRowCount().intValue())
+        {
+            srr.getRows().forEach(row -> {
+                log("row: " + row);
+            });
+        }
 
         String oligoNames = srr.getRows().stream().map(row -> row.get("name").toString()).collect(Collectors.joining(","));
         Assert.assertEquals("Incorrect number of oligos, found: " + oligoNames, expected, srr.getRowCount().intValue());
