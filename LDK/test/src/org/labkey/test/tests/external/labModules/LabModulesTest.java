@@ -1274,7 +1274,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         log("verifying oligo count, expected: " + expected);
 
         SelectRowsCommand sr = new SelectRowsCommand("laboratory", "dna_oligos");
-        sr.setColumns(Arrays.asList("rowid", "name", "container"));
+        sr.setColumns(Arrays.asList("rowid", "name", "container", "sequence"));
 
         Connection cn = WebTestHelper.getRemoteApiConnection();
         SelectRowsResponse srr = sr.execute(cn, getCurrentContainerPath());
