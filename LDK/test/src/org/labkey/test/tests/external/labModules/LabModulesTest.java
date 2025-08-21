@@ -418,6 +418,10 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
             _apiContainerHelper.deleteWorkbook(getProjectName(), highestWorkbookId, true, 90000);
         }
 
+        log("resetting oligo count");
+        _oligosTotal = 0;
+        verifyOligoCount(0);
+
         return highestWorkbookId;
     }
 
