@@ -206,7 +206,8 @@ public class LookupValidationHelper
             c = ContainerManager.getForPath(containerPath);
             if (c == null)
             {
-                throw new IllegalArgumentException("Unknown container: " + containerPath);
+                _log.error("Error running '" + triggerScriptName + "' trigger script. Container '{}' not found", containerPath);
+                return false;
             }
         }
 
