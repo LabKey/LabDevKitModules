@@ -31,6 +31,9 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.view.DeveloperMenuNavTrees;
+import org.labkey.api.view.NavTree;
+import org.labkey.api.view.PopupDeveloperView;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
@@ -84,6 +87,17 @@ public class LDKModule extends ExtendedSimpleModule
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL(), AdminOperationsPermission.class);
+        PopupDeveloperView.registerMenuProvider((c, user, trees) -> {
+            if (c.isRoot() & user.hasSiteAdminPermission())
+            {
+                trees.add(DeveloperMenuNavTrees.Section.tools, new NavTree("Notification Service Admin", DetailsURL.fromString("ldk/notificationSiteAdmin.view", c).getActionURL()));
+            }
+            else if (!c.isRoot() & c.hasPermission(user, AdminPermission.class))
+            {
+                trees.add(DeveloperMenuNavTrees.Section.tools, new NavTree("Notification Service Admin", DetailsURL.fromString("ldk/notificationAdmin.view", c).getActionURL()));
+            }
+        });
+
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "file root usage summary", DetailsURL.fromString("/ldk/folderSizeSummary.view").getActionURL(), ReadPermission.class);
 
         if (isSqlServer())
