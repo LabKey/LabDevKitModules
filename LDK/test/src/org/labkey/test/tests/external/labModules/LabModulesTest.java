@@ -47,6 +47,7 @@ import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.DataRegionTable;
 import org.labkey.test.util.ExcelHelper;
 import org.labkey.test.util.Ext4Helper;
+import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
@@ -67,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -100,93 +102,93 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     protected static final String IMPORT_DATA_TEXT = "Import Data";
 
     private static final String[][] SUBJECTS = new String[][]{
-        {"Participant0001","m","02/03/2001", "02/03/2012"},
-        {"Participant0002","f","02/04/2001", null},
-        {"Participant0003","f","02/05/2001", null},
-        {"Participant0004","f","02/06/2001", null},
-        {"Participant0005","m","02/07/2001", null},
-        {"Participant0006","m","02/08/2002", null},
-        {"Participant0007","m","02/09/2001", null},
-        {"Participant0008","f","02/10/2001", null},
-        {"Participant0009","m","02/11/2001", null},
-        {"Participant0010","m","02/12/2001", null},
-        {"Participant0011","f","02/13/2001", null},
-        {"Participant0012","f","02/14/2001", null},
-        {"Participant0013","f","02/15/2001", null},
-        {"Participant0014","f","02/16/2010", null},
-        {"Participant0015","f","02/17/2001", null},
-        {"Participant0016","f","02/18/2001", null},
-        {"Participant0017","f","02/19/2001", null},
-        {"Participant0018","m","02/20/2001", null},
-        {"Participant0019","m","02/21/2001", null},
-        {"Participant0020","m","02/22/2001", null}
+            {"Participant0001", "m", "02/03/2001", "02/03/2012"},
+            {"Participant0002", "f", "02/04/2001", null},
+            {"Participant0003", "f", "02/05/2001", null},
+            {"Participant0004", "f", "02/06/2001", null},
+            {"Participant0005", "m", "02/07/2001", null},
+            {"Participant0006", "m", "02/08/2002", null},
+            {"Participant0007", "m", "02/09/2001", null},
+            {"Participant0008", "f", "02/10/2001", null},
+            {"Participant0009", "m", "02/11/2001", null},
+            {"Participant0010", "m", "02/12/2001", null},
+            {"Participant0011", "f", "02/13/2001", null},
+            {"Participant0012", "f", "02/14/2001", null},
+            {"Participant0013", "f", "02/15/2001", null},
+            {"Participant0014", "f", "02/16/2010", null},
+            {"Participant0015", "f", "02/17/2001", null},
+            {"Participant0016", "f", "02/18/2001", null},
+            {"Participant0017", "f", "02/19/2001", null},
+            {"Participant0018", "m", "02/20/2001", null},
+            {"Participant0019", "m", "02/21/2001", null},
+            {"Participant0020", "m", "02/22/2001", null}
     };
 
     private static final String[][] SAMPLE_DATA = new String[][]{
-            {"Participant0001_RNA","Participant0001","RNA","06/23/2009","Freezer1"},
-            {"Participant0002_DNA","Participant0002","DNA","06/23/2005","Freezer1"},
-            {"Participant0003_gDNA","Participant0003","gDNA","08/21/2007","Freezer1"},
-            {"Participant0004_RNA","Participant0004","RNA","","Freezer1"},
-            {"Participant0005_DNA","Participant0005","DNA","08/21/2007","Freezer1"},
-            {"Participant0006_gDNA","Participant0006","gDNA","06/23/2009","Freezer1"},
-            {"Participant0007_RNA","Participant0007","RNA","","Freezer1"},
-            {"Participant0008_DNA","Participant0008","DNA","06/23/2009","Freezer1"},
-            {"Participant0009_gDNA","Participant0009","gDNA","","Freezer1"},
-            {"Participant0010_RNA","Participant0010","RNA","08/21/2007","Freezer1"},
-            {"Participant0011_DNA","Participant0011","DNA","","Freezer1"},
-            {"Participant0012_gDNA","Participant0012","gDNA","08/21/2007","Freezer1"},
-            {"Participant0013_RNA","Participant0013","RNA","","Freezer1"},
-            {"OtherSample","","DNA","","Freezer1"},
-            {"Participant0015_gDNA","Participant0015","gDNA","06/23/2009","Freezer1"},
-            {"Participant0016_RNA","Participant0016","RNA","08/21/2007","Freezer1"},
-            {"Participant0017_DNA","Participant0017","DNA","08/21/2007","Freezer1"},
-            {"Participant0018_gDNA","Participant0018","gDNA","02/03/2012","Freezer1"},
-            {"OtherSample2","","RNA","","Freezer1"},
-            {"Participant0020_DNA","Participant0020","DNA","02/03/2012","Freezer1"},
-            {"Participant0001_gDNA","Participant0001","gDNA","04/23/2008","Freezer1"},
-            {"Participant0002_RNA","Participant0002","RNA","10/23/2009","Freezer1"},
-            {"Participant0003_DNA","Participant0003","DNA","05/02/2001","Freezer1"},
-            {"Participant0004_gDNA","Participant0004","gDNA","04/23/2008","Freezer1"}
+            {"Participant0001_RNA", "Participant0001", "RNA", "06/23/2009", "Freezer1"},
+            {"Participant0002_DNA", "Participant0002", "DNA", "06/23/2005", "Freezer1"},
+            {"Participant0003_gDNA", "Participant0003", "gDNA", "08/21/2007", "Freezer1"},
+            {"Participant0004_RNA", "Participant0004", "RNA", "", "Freezer1"},
+            {"Participant0005_DNA", "Participant0005", "DNA", "08/21/2007", "Freezer1"},
+            {"Participant0006_gDNA", "Participant0006", "gDNA", "06/23/2009", "Freezer1"},
+            {"Participant0007_RNA", "Participant0007", "RNA", "", "Freezer1"},
+            {"Participant0008_DNA", "Participant0008", "DNA", "06/23/2009", "Freezer1"},
+            {"Participant0009_gDNA", "Participant0009", "gDNA", "", "Freezer1"},
+            {"Participant0010_RNA", "Participant0010", "RNA", "08/21/2007", "Freezer1"},
+            {"Participant0011_DNA", "Participant0011", "DNA", "", "Freezer1"},
+            {"Participant0012_gDNA", "Participant0012", "gDNA", "08/21/2007", "Freezer1"},
+            {"Participant0013_RNA", "Participant0013", "RNA", "", "Freezer1"},
+            {"OtherSample", "", "DNA", "", "Freezer1"},
+            {"Participant0015_gDNA", "Participant0015", "gDNA", "06/23/2009", "Freezer1"},
+            {"Participant0016_RNA", "Participant0016", "RNA", "08/21/2007", "Freezer1"},
+            {"Participant0017_DNA", "Participant0017", "DNA", "08/21/2007", "Freezer1"},
+            {"Participant0018_gDNA", "Participant0018", "gDNA", "02/03/2012", "Freezer1"},
+            {"OtherSample2", "", "RNA", "", "Freezer1"},
+            {"Participant0020_DNA", "Participant0020", "DNA", "02/03/2012", "Freezer1"},
+            {"Participant0001_gDNA", "Participant0001", "gDNA", "04/23/2008", "Freezer1"},
+            {"Participant0002_RNA", "Participant0002", "RNA", "10/23/2009", "Freezer1"},
+            {"Participant0003_DNA", "Participant0003", "DNA", "05/02/2001", "Freezer1"},
+            {"Participant0004_gDNA", "Participant0004", "gDNA", "04/23/2008", "Freezer1"}
     };
 
     private static final String[][] PROJECT_ENROLLMENT = new String[][]{
-            {"Participant0001","Project1","Controls","01/02/2004","08/31/2007"},
-            {"Participant0002","Project1","Controls","01/02/2004",""},
-            {"Participant0003","Project1","Group A","01/02/2004","9/30/2007"},
-            {"Participant0004","Project1","Group A","01/02/2004",""},
-            {"Participant0005","Project1","Group A","01/02/2004",""},
-            {"Participant0006","Project1","Group B","01/16/2004","9/30/2007"},
-            {"Participant0007","Project1","Group B","01/16/2004","12/14/2006"},
-            {"Participant0008","Project2","Controls","01/16/2004","12/14/2006"},
-            {"Participant0009","Project2","Controls","07/21/2002",""},
-            {"Participant0010","Project2","Group A","07/21/2002",""},
-            {"Participant0011","Project2","Group A","09/09/2002","09/09/2003"},
-            {"Participant0012","Project2","Group A","09/09/2002",""},
-            {"Participant0013","Project2","Group B","03/25/2004",""},
-            {"Participant0014","Project2","Group B","03/25/2004","03/25/2005"},
-            {"Participant0015","Project22","","03/25/2004","03/25/2005"},
-            {"Participant0016","Project22","","04/08/2004","04/08/2005"},
-            {"Participant0017","Project13","","04/08/2004","04/08/2005"},
-            {"Participant0018","Project13","","04/08/2004",""},
-            {"Participant0019","Project13","","10/12/2002","10/12/2003"},
-            {"Participant0020","Project13","","01/02/2004","01/01/2005"},
-            {"Participant0001","Project3","","05/02/2002",""},
-            {"Participant0002","Project3","","01/02/2003","08/31/2007"},
-            {"Participant0003","Project3","","01/02/2003",""},
-            {"Participant0004","Project3","","01/02/2003","9/30/2007"}
+            {"Participant0001", "Project1", "Controls", "01/02/2004", "08/31/2007"},
+            {"Participant0002", "Project1", "Controls", "01/02/2004", ""},
+            {"Participant0003", "Project1", "Group A", "01/02/2004", "9/30/2007"},
+            {"Participant0004", "Project1", "Group A", "01/02/2004", ""},
+            {"Participant0005", "Project1", "Group A", "01/02/2004", ""},
+            {"Participant0006", "Project1", "Group B", "01/16/2004", "9/30/2007"},
+            {"Participant0007", "Project1", "Group B", "01/16/2004", "12/14/2006"},
+            {"Participant0008", "Project2", "Controls", "01/16/2004", "12/14/2006"},
+            {"Participant0009", "Project2", "Controls", "07/21/2002", ""},
+            {"Participant0010", "Project2", "Group A", "07/21/2002", ""},
+            {"Participant0011", "Project2", "Group A", "09/09/2002", "09/09/2003"},
+            {"Participant0012", "Project2", "Group A", "09/09/2002", ""},
+            {"Participant0013", "Project2", "Group B", "03/25/2004", ""},
+            {"Participant0014", "Project2", "Group B", "03/25/2004", "03/25/2005"},
+            {"Participant0015", "Project22", "", "03/25/2004", "03/25/2005"},
+            {"Participant0016", "Project22", "", "04/08/2004", "04/08/2005"},
+            {"Participant0017", "Project13", "", "04/08/2004", "04/08/2005"},
+            {"Participant0018", "Project13", "", "04/08/2004", ""},
+            {"Participant0019", "Project13", "", "10/12/2002", "10/12/2003"},
+            {"Participant0020", "Project13", "", "01/02/2004", "01/01/2005"},
+            {"Participant0001", "Project3", "", "05/02/2002", ""},
+            {"Participant0002", "Project3", "", "01/02/2003", "08/31/2007"},
+            {"Participant0003", "Project3", "", "01/02/2003", ""},
+            {"Participant0004", "Project3", "", "01/02/2003", "9/30/2007"}
     };
 
     private static final String[][] MAJOR_EVENTS = new String[][]{
-            {"Participant0001","09/26/2002","Appendectomy","Surgery"},
-            {"Participant0002","09/27/2002","Appendectomy","Surgery"},
-            {"Participant0003","09/28/2002","Gave Birth","Medical"},
-            {"Participant0004","09/29/2002","Vaccination","Medical"},
-            {"Participant0005","09/30/2002","Biopsy",""},
-            {"Participant0001","11/04/2006","Influenza Infection",""},
-            {"Participant0002","11/05/2006","Influenza Infection",""},
-            {"Participant0003","11/06/2006","Influenza Infection",""},
-            {"Participant0004","11/07/2006","Influenza Infection",""},
-            {"Participant0005","11/08/2006","Influenza Infection",""}
+            {"Participant0001", "09/26/2002", "Appendectomy", "Surgery"},
+            {"Participant0002", "09/27/2002", "Appendectomy", "Surgery"},
+            {"Participant0003", "09/28/2002", "Gave Birth", "Medical"},
+            {"Participant0004", "09/29/2002", "Vaccination", "Medical"},
+            {"Participant0005", "09/30/2002", "Biopsy", ""},
+            {"Participant0001", "11/04/2006", "Influenza Infection", ""},
+            {"Participant0002", "11/05/2006", "Influenza Infection", ""},
+            {"Participant0003", "11/06/2006", "Influenza Infection", ""},
+            {"Participant0004", "11/07/2006", "Influenza Infection", ""},
+            {"Participant0005", "11/08/2006", "Influenza Infection", ""}
     };
 
     @Override
@@ -262,7 +264,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
     protected void setupAssays()
     {
-        for(Pair<String, String> pair : getAssaysToCreate())
+        for (Pair<String, String> pair : getAssaysToCreate())
         {
             _helper.defineAssay(pair.getKey(), pair.getValue());
         }
@@ -302,7 +304,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         checkDate("02/20/11", dateFormat3);
         checkDate("3/5/99", dateFormat3);
 
-        String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2024-01-01', 'c'), 'Y-m-d');");
+        String clientFormattedString = (String) executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('2024-01-01', 'c'), 'Y-m-d');");
         assertEquals("Incorrect date parsing", "2024-01-01", clientFormattedString);
     }
 
@@ -314,10 +316,10 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Date expectedDate = format.parse(dateStr);
         String expectedString = stdFormat.format(expectedDate);
 
-        String clientDateStr = (String)executeScript("return (new Date()).toString()");
-        String clientFormattedString = (String)executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('" + dateStr + "'), 'Y-m-d');");
+        String clientDateStr = (String) executeScript("return (new Date()).toString()");
+        String clientFormattedString = (String) executeScript("return Ext4.Date.format(LDK.ConvertUtils.parseDate('" + dateStr + "'), 'Y-m-d');");
 
-        String clientTimezone = (String)executeScript("return Ext4.Date.getTimezone(LDK.ConvertUtils.parseDate('" + dateStr + "'));");
+        String clientTimezone = (String) executeScript("return Ext4.Date.getTimezone(LDK.ConvertUtils.parseDate('" + dateStr + "'));");
         String serverTimezone = Calendar.getInstance().getTimeZone().getDisplayName(false, TimeZone.SHORT);
         Date now = new Date();
 
@@ -347,9 +349,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         int idx = 0;
         for (Map<String, Object> row : resp1.getRows())
         {
-            Integer workbookId = (Integer)row.get("workbookId");
-            String container = (String)row.get("container");
-            String containerName = (String)row.get("container/name");
+            Integer workbookId = (Integer) row.get("workbookId");
+            String container = (String) row.get("container");
+            String containerName = (String) row.get("container/name");
 
             CreateContainerResponse workbook = workbooks.get(idx);
 
@@ -381,9 +383,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         int workbookIdOffset = 1 + highestWorkbookId;
         for (Map<String, Object> row : resp2.getRows())
         {
-            Integer workbookId = (Integer)row.get("workbookId");
-            String container = (String)row.get("container");
-            String containerName = (String)row.get("container/name");
+            Integer workbookId = (Integer) row.get("workbookId");
+            String container = (String) row.get("container");
+            String containerName = (String) row.get("container/name");
 
             CreateContainerResponse workbook = workbooks.get(idx);
 
@@ -413,9 +415,13 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         int highestWorkbookId = 0;
         for (Map<String, Object> row : resp0.getRows())
         {
-            highestWorkbookId = (Integer)row.get("workbookId");
+            highestWorkbookId = (Integer) row.get("workbookId");
             _apiContainerHelper.deleteWorkbook(getProjectName(), highestWorkbookId, true, 90000);
         }
+
+        log("resetting oligo count");
+        _oligosTotal = 0;
+        verifyOligoCount(0);
 
         return highestWorkbookId;
     }
@@ -429,43 +435,43 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Connection cn = WebTestHelper.getRemoteApiConnection();
         SelectRowsCommand sr = new SelectRowsCommand("laboratory", "samples");
         List<String> columns = Arrays.asList("samplename", "subjectId", "gender", "sampletype", "sampleDate",
-            "overlappingProjects/projects", "overlappingProjects/groups",
-            "allProjects/projects", "allProjects/groups",
-            "majorEvents/Appendectomy::DaysPostEvent", "majorEvents/Appendectomy::YearsPostEvent", "majorEvents/Gave Birth::DaysPostEvent", "majorEvents/Vaccination::YearsPostEventDecimal", "majorEvents/Biopsy::MonthsPostEvent", "majorEvents/Influenza Infection::DaysPostEvent",
-            "relativeDates/Project1::DaysPostStart", "relativeDates/Project2::MonthsPostStart", "relativeDates/Project3::YearsPostStartDecimal");
+                "overlappingProjects/projects", "overlappingProjects/groups",
+                "allProjects/projects", "allProjects/groups",
+                "majorEvents/Appendectomy::DaysPostEvent", "majorEvents/Appendectomy::YearsPostEvent", "majorEvents/Gave Birth::DaysPostEvent", "majorEvents/Vaccination::YearsPostEventDecimal", "majorEvents/Biopsy::MonthsPostEvent", "majorEvents/Influenza Infection::DaysPostEvent",
+                "relativeDates/Project1::DaysPostStart", "relativeDates/Project2::MonthsPostStart", "relativeDates/Project3::YearsPostStartDecimal");
         sr.setColumns(columns);
         sr.setSorts(Arrays.asList(new Sort("samplename"), new Sort("sampleDate"), new Sort("sampleType")));
 
         SelectRowsResponse resp = sr.execute(cn, getProjectName());
         assertEquals("Incorrect number of rows returned", SAMPLE_DATA.length, resp.getRowCount().intValue());
 
-        List<String> colOrder = Arrays.asList("samplename","subjectId","sampledate","sampletype","overlappingProjects/projects","overlappingProjects/groups","allProjects/projects","allProjects/groups","majorEvents/Appendectomy::DaysPostEvent","majorEvents/Appendectomy::YearsPostEvent","majorEvents/Gave Birth::DaysPostEvent","majorEvents/Vaccination::YearsPostEventDecimal","majorEvents/Biopsy::MonthsPostEvent","majorEvents/Influenza Infection::DaysPostEvent","relativeDates/Project1::DaysPostStart","relativeDates/Project2::MonthsPostStart","relativeDates/Project3::YearsPostStartDecimal");
+        List<String> colOrder = Arrays.asList("samplename", "subjectId", "sampledate", "sampletype", "overlappingProjects/projects", "overlappingProjects/groups", "allProjects/projects", "allProjects/groups", "majorEvents/Appendectomy::DaysPostEvent", "majorEvents/Appendectomy::YearsPostEvent", "majorEvents/Gave Birth::DaysPostEvent", "majorEvents/Vaccination::YearsPostEventDecimal", "majorEvents/Biopsy::MonthsPostEvent", "majorEvents/Influenza Infection::DaysPostEvent", "relativeDates/Project1::DaysPostStart", "relativeDates/Project2::MonthsPostStart", "relativeDates/Project3::YearsPostStartDecimal");
 
         List<String[]> expected = new ArrayList<>();
-        expected.add(new String[]{"OtherSample",null,null,"DNA",null,null,null,null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"OtherSample2",null,null,"RNA",null,null,null,null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0001_gDNA","Participant0001","04/23/2008","gDNA","Project3",null,"Project1\nProject3","Project1 (Controls)","2036","5",null,null,null,"536",null,null,"5.9",null});
-        expected.add(new String[]{"Participant0001_RNA","Participant0001","06/23/2009","RNA","Project3",null,"Project1\nProject3","Project1 (Controls)","2462","6",null,null,null,"962",null,null,"7.1",null});
-        expected.add(new String[]{"Participant0002_DNA","Participant0002","06/23/2005","DNA","Project1\nProject3","Project1 (Controls)","Project1\nProject3","Project1 (Controls)","1000","2",null,null,null,"-500","538",null,"2.4",null});
-        expected.add(new String[]{"Participant0002_RNA","Participant0002","10/23/2009","RNA","Project1","Project1 (Controls)","Project1\nProject3","Project1 (Controls)","2583","7",null,null,null,"1083","2121",null,null,null});
-        expected.add(new String[]{"Participant0003_DNA","Participant0003","05/02/2001","DNA",null,null,"Project1\nProject3","Project1 (Group A)",null,null,"-514",null,null,"-2014",null,null,null,null});
-        expected.add(new String[]{"Participant0003_gDNA","Participant0003","08/21/2007","gDNA","Project1\nProject3","Project1 (Group A)","Project1\nProject3","Project1 (Group A)",null,null,"1788",null,null,"288","1327",null,"4.6",null});
-        expected.add(new String[]{"Participant0004_gDNA","Participant0004","04/23/2008","gDNA","Project1","Project1 (Group A)","Project1\nProject3","Project1 (Group A)",null,null,null,"5.5",null,"533","1573",null,null,null});
-        expected.add(new String[]{"Participant0004_RNA","Participant0004",null,"RNA",null,null,"Project1\nProject3","Project1 (Group A)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0005_DNA","Participant0005","08/21/2007","DNA","Project1","Project1 (Group A)","Project1","Project1 (Group A)",null,null,null,null,"58","286","1327",null,null,null});
-        expected.add(new String[]{"Participant0006_gDNA","Participant0006","06/23/2009","gDNA",null,null,"Project1","Project1 (Group B)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0007_RNA","Participant0007",null,"RNA",null,null,"Project1","Project1 (Group B)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0008_DNA","Participant0008","06/23/2009","DNA",null,null,"Project2","Project2 (Controls)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0009_gDNA","Participant0009",null,"gDNA",null,null,"Project2","Project2 (Controls)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0010_RNA","Participant0010","08/21/2007","RNA","Project2","Project2 (Group A)","Project2","Project2 (Group A)",null,null,null,null,null,null,null,"61",null,null});
-        expected.add(new String[]{"Participant0011_DNA","Participant0011",null,"DNA",null,null,"Project2","Project2 (Group A)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0012_gDNA","Participant0012","08/21/2007","gDNA","Project2","Project2 (Group A)","Project2","Project2 (Group A)",null,null,null,null,null,null,null,"59",null,null});
-        expected.add(new String[]{"Participant0013_RNA","Participant0013",null,"RNA",null,null,"Project2","Project2 (Group B)",null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0015_gDNA","Participant0015","06/23/2009","gDNA",null,null,"Project22",null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0016_RNA","Participant0016","08/21/2007","RNA",null,null,"Project22",null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0017_DNA","Participant0017","08/21/2007","DNA",null,null,"Project13",null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0018_gDNA","Participant0018","02/03/2012","gDNA","Project13",null,"Project13",null,null,null,null,null,null,null,null,null,null,null});
-        expected.add(new String[]{"Participant0020_DNA","Participant0020","02/03/2012","DNA",null,null,"Project13",null,null,null,null,null,null,null,null,null,null,null});
+        expected.add(new String[]{"OtherSample", null, null, "DNA", null, null, null, null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"OtherSample2", null, null, "RNA", null, null, null, null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0001_gDNA", "Participant0001", "04/23/2008", "gDNA", "Project3", null, "Project1\nProject3", "Project1 (Controls)", "2036", "5", null, null, null, "536", null, null, "5.9", null});
+        expected.add(new String[]{"Participant0001_RNA", "Participant0001", "06/23/2009", "RNA", "Project3", null, "Project1\nProject3", "Project1 (Controls)", "2462", "6", null, null, null, "962", null, null, "7.1", null});
+        expected.add(new String[]{"Participant0002_DNA", "Participant0002", "06/23/2005", "DNA", "Project1\nProject3", "Project1 (Controls)", "Project1\nProject3", "Project1 (Controls)", "1000", "2", null, null, null, "-500", "538", null, "2.4", null});
+        expected.add(new String[]{"Participant0002_RNA", "Participant0002", "10/23/2009", "RNA", "Project1", "Project1 (Controls)", "Project1\nProject3", "Project1 (Controls)", "2583", "7", null, null, null, "1083", "2121", null, null, null});
+        expected.add(new String[]{"Participant0003_DNA", "Participant0003", "05/02/2001", "DNA", null, null, "Project1\nProject3", "Project1 (Group A)", null, null, "-514", null, null, "-2014", null, null, null, null});
+        expected.add(new String[]{"Participant0003_gDNA", "Participant0003", "08/21/2007", "gDNA", "Project1\nProject3", "Project1 (Group A)", "Project1\nProject3", "Project1 (Group A)", null, null, "1788", null, null, "288", "1327", null, "4.6", null});
+        expected.add(new String[]{"Participant0004_gDNA", "Participant0004", "04/23/2008", "gDNA", "Project1", "Project1 (Group A)", "Project1\nProject3", "Project1 (Group A)", null, null, null, "5.5", null, "533", "1573", null, null, null});
+        expected.add(new String[]{"Participant0004_RNA", "Participant0004", null, "RNA", null, null, "Project1\nProject3", "Project1 (Group A)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0005_DNA", "Participant0005", "08/21/2007", "DNA", "Project1", "Project1 (Group A)", "Project1", "Project1 (Group A)", null, null, null, null, "58", "286", "1327", null, null, null});
+        expected.add(new String[]{"Participant0006_gDNA", "Participant0006", "06/23/2009", "gDNA", null, null, "Project1", "Project1 (Group B)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0007_RNA", "Participant0007", null, "RNA", null, null, "Project1", "Project1 (Group B)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0008_DNA", "Participant0008", "06/23/2009", "DNA", null, null, "Project2", "Project2 (Controls)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0009_gDNA", "Participant0009", null, "gDNA", null, null, "Project2", "Project2 (Controls)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0010_RNA", "Participant0010", "08/21/2007", "RNA", "Project2", "Project2 (Group A)", "Project2", "Project2 (Group A)", null, null, null, null, null, null, null, "61", null, null});
+        expected.add(new String[]{"Participant0011_DNA", "Participant0011", null, "DNA", null, null, "Project2", "Project2 (Group A)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0012_gDNA", "Participant0012", "08/21/2007", "gDNA", "Project2", "Project2 (Group A)", "Project2", "Project2 (Group A)", null, null, null, null, null, null, null, "59", null, null});
+        expected.add(new String[]{"Participant0013_RNA", "Participant0013", null, "RNA", null, null, "Project2", "Project2 (Group B)", null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0015_gDNA", "Participant0015", "06/23/2009", "gDNA", null, null, "Project22", null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0016_RNA", "Participant0016", "08/21/2007", "RNA", null, null, "Project22", null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0017_DNA", "Participant0017", "08/21/2007", "DNA", null, null, "Project13", null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0018_gDNA", "Participant0018", "02/03/2012", "gDNA", "Project13", null, "Project13", null, null, null, null, null, null, null, null, null, null, null});
+        expected.add(new String[]{"Participant0020_DNA", "Participant0020", "02/03/2012", "DNA", null, null, "Project13", null, null, null, null, null, null, null, null, null, null, null});
 
         assertEquals("Test has bad values for expected data", SAMPLE_DATA.length, expected.size());
 
@@ -522,7 +528,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         for (String[] arr : SUBJECTS)
         {
-            Map<String,Object> rowMap = new HashMap<>();
+            Map<String, Object> rowMap = new HashMap<>();
             rowMap.put("subjectname", arr[0]);
             rowMap.put("gender", arr[1]);
             rowMap.put("birth", arr[2]);
@@ -542,7 +548,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         for (String[] arr : PROJECT_ENROLLMENT)
         {
-            Map<String,Object> rowMap = new HashMap<>();
+            Map<String, Object> rowMap = new HashMap<>();
             rowMap.put("subjectId", arr[0]);
             rowMap.put("project", arr[1]);
             //NOTE: this is deliberately inserting using empty string, not null.  LK is expected to convert that to NULL.  If this doesnt happen,
@@ -586,7 +592,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         for (String[] arr : SAMPLE_DATA)
         {
-            Map<String,Object> rowMap = new HashMap<>();
+            Map<String, Object> rowMap = new HashMap<>();
             rowMap.put("samplename", arr[0]);
             rowMap.put("subjectId", arr[1]);
             rowMap.put("sampleType", arr[2]);
@@ -610,7 +616,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         for (String[] arr : MAJOR_EVENTS)
         {
-            Map<String,Object> rowMap = new HashMap<>();
+            Map<String, Object> rowMap = new HashMap<>();
             rowMap.put("subjectId", arr[0]);
             rowMap.put("date", arr[1]);
             rowMap.put("event", arr[2]);
@@ -634,7 +640,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitForElement(LabModuleHelper.getNavPanelRow("Sequence:"), WAIT_FOR_PAGE);
         _helper.verifyNavPanelRowItemPresent("Sequence:");
 
-        for(Pair<String, String> pair : getAssaysToCreate())
+        for (Pair<String, String> pair : getAssaysToCreate())
         {
             _helper.verifyNavPanelRowItemPresent(pair.getValue() + ":");
             assertElementNotPresent(LabModuleHelper.getNavPanelItem(pair.getValue() + ":", IMPORT_DATA_TEXT));
@@ -892,8 +898,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         SelectRowsResponse resp = sr.execute(cn, getProjectName());
 
         List<String[]> expected = new ArrayList<>();
-        expected.add(new String[]{"Participant0001_gDNA","11","m"});
-        expected.add(new String[]{"Participant0001_RNA","11","m"});
+        expected.add(new String[]{"Participant0001_gDNA", "11", "m"});
+        expected.add(new String[]{"Participant0001_RNA", "11", "m"});
 
         assertEquals("Incorrect number of rows returned", expected.size(), resp.getRowCount().intValue());
 
@@ -989,7 +995,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     private void deleteSourceByLabel(String label, String parentItemId)
     {
         Ext4CmpRef panel = _ext4Helper.queryOne("#" + parentItemId, Ext4CmpRef.class);
-        Long idx = (Long)panel.getFnEval("return this.getSourceIdx(arguments[0])", label);
+        Long idx = (Long) panel.getFnEval("return this.getSourceIdx(arguments[0])", label);
         if (idx == null)
             return;
 
@@ -1125,7 +1131,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         Ext4FieldRef.getForBoxLabel(this, "Major Events").setValue(true);
 
         sleep(100);
-        assertTrue("Incorrect value for samples checkbox", (Boolean)_ext4Helper.queryOne(samplesSelector, Ext4FieldRef.class).getValue());
+        assertTrue("Incorrect value for samples checkbox", (Boolean) _ext4Helper.queryOne(samplesSelector, Ext4FieldRef.class).getValue());
 
         click(Ext4Helper.Locators.ext4Button("Submit"));
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
@@ -1193,7 +1199,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         waitAndClick(_helper.toolIcon("Import Data"));
         assertElementPresent(Ext4Helper.Locators.menuItem("Sequence"));
-        for(Pair<String, String> pair : getAssaysToCreate())
+        for (Pair<String, String> pair : getAssaysToCreate())
         {
             assertElementPresent(Ext4Helper.Locators.menuItem(pair.getValue()));
         }
@@ -1217,7 +1223,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         goToProjectHome();
     }
 
-    private void workbookCreationTest()
+    @LogMethod
+    private void workbookCreationTest() throws Exception
     {
         _helper.goToLabHome();
 
@@ -1256,15 +1263,39 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         assertTextPresent("Your upload was successful");
         _oligosTotal++;
+        verifyOligoCount(_oligosTotal);
         clickButton("OK", 0);
 
         _helper.goToLabHome();
     }
 
-    private void dnaOligosTableTest()
+    private void verifyOligoCount(int expected) throws Exception
+    {
+        log("verifying oligo count, expected: " + expected);
+
+        SelectRowsCommand sr = new SelectRowsCommand("laboratory", "dna_oligos");
+        sr.setColumns(Arrays.asList("rowid", "name", "container", "sequence"));
+
+        Connection cn = WebTestHelper.getRemoteApiConnection();
+        SelectRowsResponse srr = sr.execute(cn, getCurrentContainerPath());
+
+        if (expected != srr.getRowCount().intValue())
+        {
+            srr.getRows().forEach(row -> {
+                log("row: " + row);
+            });
+        }
+
+        String oligoNames = srr.getRows().stream().map(row -> row.get("name").toString()).collect(Collectors.joining(","));
+        Assert.assertEquals("Incorrect number of oligos, found: " + oligoNames, expected, srr.getRowCount().intValue());
+    }
+
+    @LogMethod
+    private void dnaOligosTableTest() throws Exception
     {
         log("Testing DNA Oligos Table");
         _helper.goToLabHome();
+        verifyOligoCount(_oligosTotal);
 
         _helper.clickNavPanelItem("DNA_Oligos:", IMPORT_DATA_TEXT);
         new Window.WindowFinder(getDriver()).withTitle(IMPORT_DATA_TEXT).waitFor();
@@ -1277,7 +1308,11 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         setFormElement(Locator.name("oligo_type"), "Type1");
         sleep(150); //there's a buffer when committing changes
         clickButton("Submit", 0);
+        new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
+        assertTextPresent("Your upload was successful!");
+        clickButton("OK");
         _oligosTotal += 1;
+        verifyOligoCount(_oligosTotal);
 
         _helper.goToLabHome();
         _helper.clickNavPanelItem("DNA_Oligos:", IMPORT_DATA_TEXT);
@@ -1290,11 +1325,12 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         String sequence = "tggGg gGAAAAgg";
         setFormElementJS(Locator.name("text"), "Name\tSequence\nTestPrimer1\tatg\nTestPrimer2\t" + sequence);
         clickButton("Upload", 0);
-        _oligosTotal += 2;
 
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         assertTextPresent("Success! 2 rows inserted.");
         clickButton("OK");
+        _oligosTotal += 2;
+        verifyOligoCount(_oligosTotal);
 
         //verify row imported
         _helper.goToLabHome();

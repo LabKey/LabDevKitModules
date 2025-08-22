@@ -67,7 +67,7 @@ public class LaboratoryUserSchema extends SimpleUserSchema
             return super.createWrappedTable(name, sourceTable, cf);
     }
 
-    private SimpleTable getSubjectsTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getSubjectsTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new ContainerScopedTable<>(this, schematable, cf, "subjectname").init();
     }
@@ -77,27 +77,27 @@ public class LaboratoryUserSchema extends SimpleUserSchema
         return new ContainerScopedTable<>(this, schematable, cf, pkCol).init();
     }
 
-    private SimpleTable getDnaOligosTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getDnaOligosTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new ContainerIncrementingTable(this, schematable, cf, "oligo_id").init();
     }
 
-    private SimpleTable getSamplesTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getSamplesTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new ContainerIncrementingTable(this, schematable, cf, "freezerid").init();
     }
 
-    private SimpleTable getPeptideTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getPeptideTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new ContainerIncrementingTable(this, schematable, cf, "peptideId").init();
     }
 
-    private SimpleTable getAntibodiesTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getAntibodiesTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new ContainerIncrementingTable(this, schematable, cf, "antibodyId").init();
     }
 
-    private SimpleTable getWorkbooksTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
+    private SimpleTable<?> getWorkbooksTable(String name, @NotNull TableInfo schematable, ContainerFilter cf)
     {
         return new LaboratoryWorkbooksTable(this, schematable, cf).init();
     }
