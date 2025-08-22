@@ -80,7 +80,7 @@ Ext4.define('Laboratory.panel.AssayImportPanel', {
                     Ext4.Msg.hide();
                     switch(action.failureType){
                         case 'client':
-                            Ext4.Msg.alert("One or more fields has a missing or improper value");
+                            Ext4.Msg.alert("Error", "One or more fields has a missing or improper value");
                             break;
                         default:
                             this.handleFailure(action.response);
