@@ -1308,6 +1308,9 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         setFormElement(Locator.name("oligo_type"), "Type1");
         sleep(150); //there's a buffer when committing changes
         clickButton("Submit", 0);
+        new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
+        assertTextPresent("Your upload was successful!");
+        clickButton("OK");
         _oligosTotal += 1;
         verifyOligoCount(_oligosTotal);
 
@@ -1322,12 +1325,12 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         String sequence = "tggGg gGAAAAgg";
         setFormElementJS(Locator.name("text"), "Name\tSequence\nTestPrimer1\tatg\nTestPrimer2\t" + sequence);
         clickButton("Upload", 0);
-        _oligosTotal += 2;
-        verifyOligoCount(_oligosTotal);
 
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         assertTextPresent("Success! 2 rows inserted.");
         clickButton("OK");
+        _oligosTotal += 2;
+        verifyOligoCount(_oligosTotal);
 
         //verify row imported
         _helper.goToLabHome();
