@@ -193,12 +193,12 @@ public class LookupValidationHelper
         qus.updateRows(_user, _container, toUpdate, oldPKs, null, new HashMap<>());
     }
 
-    public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val) throws SQLException
+    public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val, String triggerScriptName) throws SQLException
     {
-        return verifyNotUsed(targetSchema, targetTable, targetField, val, null);
+        return verifyNotUsed(targetSchema, targetTable, targetField, val, null, triggerScriptName);
     }
 
-    public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val, @Nullable String containerPath) throws SQLException
+    public boolean verifyNotUsed(String targetSchema, String targetTable, String targetField, Object val, @Nullable String containerPath, String triggerScriptName) throws SQLException
     {
         Container c = _container;
         if (containerPath != null)
@@ -206,20 +206,30 @@ public class LookupValidationHelper
             c = ContainerManager.getForPath(containerPath);
             if (c == null)
             {
-                throw new IllegalArgumentException("Unknown container: " + containerPath);
+                _log.error("Error running '" + triggerScriptName + "' trigger script. Container '{}' not found", containerPath);
+                return false;
             }
         }
 
         UserSchema us = QueryService.get().getUserSchema(_user, c, targetSchema);
         if (us == null)
-            throw new IllegalArgumentException("Unknown schema: " + targetSchema);
+        {
+            _log.error("Error running '" + triggerScriptName + "' trigger script. Schema '{}' not found in container '{}'", targetSchema, c.getName());
+            return false;
+        }
 
         TableInfo ti = us.getTable(targetTable);
         if (ti == null)
-            throw new IllegalArgumentException("Unknown table: " + targetTable);
+        {
+            _log.error("Error running '" + triggerScriptName + "' trigger script.  Table '{}' not found in container '{}'", targetTable, c.getName());
+            return false;
+        }
 
         if (ti.getColumn(targetField) == null)
-            throw new IllegalArgumentException("Unknown column: " + targetField + " in table: " + targetTable);
+        {
+            _log.error("Error running '" + triggerScriptName + "' trigger script. Column '{}' not found in table '{}'", targetField, targetTable);
+            return false;
+        }
 
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString(targetField), val), null);
 
