@@ -128,7 +128,7 @@ public class DefaultTableCustomizer implements TableCustomizer
         List<String> keyFields = ti.getPkColumnNames();
         if (keyFields.isEmpty())
         {
-            _log.error("No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
+            _log.debug("No key fields found for the table, cannot set details URL: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
             return;
         }
 
@@ -185,7 +185,13 @@ public class DefaultTableCustomizer implements TableCustomizer
             List<String> keyFields = ti.getPkColumnNames();
             if (keyFields.isEmpty())
             {
-                _log.error("No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
+                // There does not seem to be a more direct test for 'is editable'
+                if (ti.getUpdateService() == null)
+                {
+                    return;
+                }
+
+                _log.debug("No key fields found for the table, cannot customize edit UI: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
                 return;
             }
 
