@@ -118,13 +118,19 @@ public class DefaultTableCustomizer implements TableCustomizer
         }
 
         String schemaName = ti.getUserSchema().getSchemaName();
-        assert schemaName != null;
-
         String queryName = ti.getPublicName();
-        assert queryName != null;
+        if (queryName == null)
+        {
+            _log.error("TableInfo.getPublicName() was null", new Exception());
+            return;
+        }
 
         List<String> keyFields = ti.getPkColumnNames();
-        assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
+        if (keyFields.isEmpty())
+        {
+            _log.error("No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
+            return;
+        }
 
         if (_settings.getPrimaryKeyField() != null)
         {
@@ -169,13 +175,19 @@ public class DefaultTableCustomizer implements TableCustomizer
         {
             //otherwise apply custom urls
             String schemaName = ti.getUserSchema().getSchemaName();
-            assert schemaName != null;
-
             String queryName = ti.getPublicName();
-            assert queryName != null;
+            if (queryName == null)
+            {
+                _log.error("TableInfo.getPublicName() was null", new Exception());
+                return;
+            }
 
             List<String> keyFields = ti.getPkColumnNames();
-            assert !keyFields.isEmpty() : "No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName();
+            if (keyFields.isEmpty())
+            {
+                _log.error("No key fields found for the table: " + ti.getPublicSchemaName() + "." + ti.getPublicName());
+                return;
+            }
 
             if (_settings.getPrimaryKeyField() != null)
             {
