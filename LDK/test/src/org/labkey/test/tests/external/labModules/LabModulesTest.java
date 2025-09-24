@@ -75,6 +75,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.labkey.test.util.PermissionsHelper.READER_ROLE;
 
 /**
  * Contains a series of tests designed to test the UI in the laboratory module.
@@ -634,7 +635,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         goToProjectHome();
 
         //verify import not visible to reader
-        impersonateRole("Reader");
+        impersonateRole(READER_ROLE);
         _helper.goToLabHome();
 
         waitForElement(LabModuleHelper.getNavPanelRow("Sequence:"), WAIT_FOR_PAGE);
@@ -1216,7 +1217,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         //verify settings hidden for readers
         Locator settings = _helper.toolIcon("Settings");
         assertElementPresent(settings);
-        impersonateRole("Reader");
+        impersonateRole(READER_ROLE);
         _helper.goToLabHome();
         assertElementNotPresent(settings);
         stopImpersonatingRole();
