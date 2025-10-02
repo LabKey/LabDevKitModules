@@ -235,7 +235,7 @@ public class LaboratoryModule extends ExtendedSimpleModule
     }
 
     @Override
-    public @NotNull Set<Class> getIntegrationTests()
+    public @NotNull Set<Class<?>> getIntegrationTests()
     {
         return PageFlowUtil.set(WorkbookTestCase.class);
     }
