@@ -150,7 +150,7 @@ public class LDKModule extends ExtendedSimpleModule
     }
 
     @Override
-    public @NotNull Set<Class> getIntegrationTests()
+    public @NotNull Set<Class<?>> getIntegrationTests()
     {
         return PageFlowUtil.set(LookupSetTable.TestCase.class);
     }
