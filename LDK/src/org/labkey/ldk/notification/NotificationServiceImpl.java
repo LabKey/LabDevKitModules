@@ -26,6 +26,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+import org.labkey.api.audit.AuditLogService;
+import org.labkey.api.audit.provider.SiteSettingsAuditProvider.SiteSettingsAuditEvent;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -168,11 +170,19 @@ public class NotificationServiceImpl extends NotificationService
         return Boolean.parseBoolean(prop);
     }
 
-    public void setServiceEnabled(Boolean status)
+    public void setServiceEnabled(User u, Boolean status)
     {
+        boolean oldStatus = isServiceEnabled();
         WritablePropertyMap pm = PropertyManager.getWritableProperties(ContainerManager.getRoot(), NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
         pm.put(ENABLED_PROP, status.toString());
         pm.save();
+
+        if (status != oldStatus)
+        {
+            SiteSettingsAuditEvent event = new SiteSettingsAuditEvent(ContainerManager.getRoot(),
+                    "Notification service has been " + (status ? "enabled" : "disabled") + ".");
+            AuditLogService.get().addEvent(u, event);
+        }
     }
 
     @Override
@@ -219,17 +229,28 @@ public class NotificationServiceImpl extends NotificationService
         return email == null ? null : getAddress(email);
     }
 
-    public void setReturnEmail(Container c, String returnEmail)
+    public void setReturnEmail(Container c, User u, String returnEmail)
     {
         try
         {
             if(returnEmail != null)
             {
                 ValidEmail email = new ValidEmail(returnEmail);
+                String previous = getConfigProperty(c, RETURN_EMAIL);
 
                 WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
                 pm.put(RETURN_EMAIL, email.getEmailAddress());
                 pm.save();
+
+                if(!returnEmail.equals(previous))
+                {
+                    SiteSettingsAuditEvent event = new SiteSettingsAuditEvent(c, "Notification reply-to email updated.");
+                    String before = previous == null ? "" : previous;
+                    String after = email.getEmailAddress();
+                    String html = "<table><tr><td class='labkey-form-label'>Reply-to email</td><td>" + PageFlowUtil.filter(before) + "&nbsp;&raquo;&nbsp;" + PageFlowUtil.filter(after) + "</td></tr></table>";
+                    event.setChanges(html);
+                    AuditLogService.get().addEvent(u, event);
+                }
             }
         }
         catch (ValidEmail.InvalidEmailException e)
@@ -247,13 +268,25 @@ public class NotificationServiceImpl extends NotificationService
         return UserManager.getUser(Integer.parseInt(user));
     }
 
-    public void setUser(Container c, Integer userId)
+    public void setUser(Container c, User u, Integer userId)
     {
         if(userId != null)
         {
+            User previousUser = getUser(c);
             WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.CONFIG_PROPERTY_DOMAIN, true);
             pm.put(USER_PROP, String.valueOf(userId));
             pm.save();
+
+            if (previousUser == null || (previousUser.getUserId() != userId))
+            {
+                User newUser = UserManager.getUser(userId);
+                String before = previousUser == null ? "" : previousUser.getEmail();
+                String after = newUser == null ? "" : newUser.getEmail();
+                SiteSettingsAuditEvent event = new SiteSettingsAuditEvent(c, "Notification service user updated.");
+                String html = "<table><tr><td class='labkey-form-label'>Service user</td><td>" + PageFlowUtil.filter(before) + "&nbsp;&raquo;&nbsp;" + PageFlowUtil.filter(after) + "</td></tr></table>";
+                event.setChanges(html);
+                AuditLogService.get().addEvent(u, event);
+            }
         }
     }
 
@@ -362,11 +395,20 @@ public class NotificationServiceImpl extends NotificationService
         return false;
     }
 
-    public void setActive(Notification n, Container c, boolean active)
+    public void setActive(Notification n, Container c, User u, boolean active)
     {
+        boolean old = isActive(n, c);
         WritablePropertyMap pm = PropertyManager.getWritableProperties(c, NotificationServiceImpl.STATUS_PROPERTY_DOMAIN, true);
         pm.put(getKey(n), active ? String.valueOf(active) : null);
         pm.save();
+
+        if (old != active)
+        {
+            String action = active ? "enabled" : "disabled";
+            String comment = "Notification '" + n.getName() + "' has been " + action + ".";
+            SiteSettingsAuditEvent event = new SiteSettingsAuditEvent(c, comment);
+            AuditLogService.get().addEvent(u, event);
+        }
     }
 
     @Override
@@ -530,6 +572,9 @@ public class NotificationServiceImpl extends NotificationService
     {
         TableInfo ti = LDKSchema.getTable(LDKSchema.TABLE_NOTIFICATION_RECIPIENTS);
 
+        List<UserPrincipal> actuallyAdded = new ArrayList<>();
+        List<UserPrincipal> actuallyRemoved = new ArrayList<>();
+
         if (toAdd != null)
         {
             for (UserPrincipal up : toAdd)
@@ -548,20 +593,49 @@ public class NotificationServiceImpl extends NotificationService
                     row.put("createdby", u.getUserId());
                     row.put("created", new Date());
                     Table.insert(u, ti, row);
+                    actuallyAdded.add(up);
                 }
             }
+        }
 
-            if (toRemove != null)
+        if (toRemove != null)
+        {
+            for (UserPrincipal up : toRemove)
             {
-                for (UserPrincipal up : toRemove)
-                {
-                    SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
-                    filter.addCondition(FieldKey.fromString("recipient"), up.getUserId());
-                    filter.addCondition(FieldKey.fromString("notificationtype"), n.getName());
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("container"), c.getId(), CompareType.EQUAL);
+                filter.addCondition(FieldKey.fromString("recipient"), up.getUserId());
+                filter.addCondition(FieldKey.fromString("notificationtype"), n.getName());
 
-                    Table.delete(ti, filter);
-                }
+                Table.delete(ti, filter);
+                actuallyRemoved.add(up);
             }
+        }
+
+        // Audit event
+        if ((!actuallyAdded.isEmpty() || !actuallyRemoved.isEmpty()) && u != null)
+        {
+            StringBuilder html = new StringBuilder();
+            if (!actuallyAdded.isEmpty())
+            {
+                html.append("<div class='labkey-form-label'>Added recipients</div><ul>");
+                for (UserPrincipal up : actuallyAdded)
+                {
+                    html.append("<li>").append(PageFlowUtil.filter(up.getName())).append(" (ID: ").append(up.getUserId()).append(")</li>");
+                }
+                html.append("</ul>");
+            }
+            if (!actuallyRemoved.isEmpty())
+            {
+                html.append("<div class='labkey-form-label'>Removed recipients</div><ul>");
+                for (UserPrincipal up : actuallyRemoved)
+                {
+                    html.append("<li>").append(PageFlowUtil.filter(up.getName())).append(" (ID: ").append(up.getUserId()).append(")</li>");
+                }
+                html.append("</ul>");
+            }
+            SiteSettingsAuditEvent event = new SiteSettingsAuditEvent(c, "Updated notification subscriptions for '" + n.getName() + "'.");
+            event.setChanges(html.toString());
+            AuditLogService.get().addEvent(u, event);
         }
     }
 
