@@ -385,7 +385,7 @@ public class LDKController extends SpringActionController
                 sb.append(msg == null ? "The notification did not produce a message" : msg);
             }
 
-            return new HtmlView(HtmlString.of(sb));
+            return new HtmlView(HtmlString.unsafe(sb.toString()));
         }
 
         @Override
@@ -912,7 +912,7 @@ public class LDKController extends SpringActionController
                     }
                     catch (URISyntaxException e)
                     {
-                        return new HtmlView(HtmlString.of("Invalid redirect URL set: " + urlString));
+                        return new HtmlView(HtmlString.unsafe("Invalid redirect URL set: " + urlString));
                     }
                 }
             }
