@@ -21,26 +21,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
-import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.ExportAction;
 import org.labkey.api.action.HasAllowBindParameter;
 import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.ReadOnlyApiAction;
-import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
-import org.labkey.api.data.CoreSchema;
-import org.labkey.api.data.DbSequenceManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.PropertyManager.WritablePropertyMap;
-import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlScriptRunner;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
@@ -70,7 +64,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.settings.LookAndFeelProperties;
 import org.labkey.api.util.ConfigurationException;
-import org.labkey.api.util.GUID;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
 import org.labkey.api.util.StringUtilsLabKey;
@@ -86,7 +80,6 @@ import org.labkey.api.view.WebPartView;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.sql.LDKNaturalizeInstallationManager;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.net.URISyntaxException;
@@ -371,7 +364,7 @@ public class LDKController extends SpringActionController
 
             if (!n.isAvailable(getContainer()))
             {
-                return new HtmlView("The notification " + form.getKey() + " is not available in this container");
+                return new HtmlView(HtmlString.of("The notification " + form.getKey() + " is not available in this container"));
             }
 
             _title = n.getName();
@@ -392,7 +385,7 @@ public class LDKController extends SpringActionController
                 sb.append(msg == null ? "The notification did not produce a message" : msg);
             }
 
-            return new HtmlView(sb.toString());
+            return new HtmlView(HtmlString.unsafe(sb.toString()));
         }
 
         @Override
@@ -448,7 +441,7 @@ public class LDKController extends SpringActionController
             String sb = "This page is designed to inspect all registered container scoped tables and report any tables with duplicate keys in the same container.  This should be enforced by the user schema; however, direct DB inserts will bypass this check.<p>" +
                     StringUtils.join(messages, "<br>");
 
-            return new HtmlView(sb);
+            return new HtmlView(HtmlString.of(sb));
         }
 
         @Override
@@ -520,7 +513,7 @@ public class LDKController extends SpringActionController
                 {
                     if (form.getEnabled() != null)
                     {
-                        NotificationServiceImpl.get().setServiceEnabled(form.getEnabled());
+                        NotificationServiceImpl.get().setServiceEnabled(getUser(), form.getEnabled());
                     }
                 }
 
@@ -529,7 +522,7 @@ public class LDKController extends SpringActionController
                     try
                     {
                         ValidEmail e = new ValidEmail(form.getReplyEmail());
-                        NotificationServiceImpl.get().setReturnEmail(getContainer(), e.getEmailAddress());
+                        NotificationServiceImpl.get().setReturnEmail(getContainer(), getUser(), e.getEmailAddress());
                     }
                     catch (ValidEmail.InvalidEmailException e)
                     {
@@ -555,7 +548,7 @@ public class LDKController extends SpringActionController
                             return null;
                         }
 
-                        NotificationServiceImpl.get().setUser(getContainer(), u.getUserId());
+                        NotificationServiceImpl.get().setUser(getContainer(), getUser(), u.getUserId());
                     }
                     catch (ValidEmail.InvalidEmailException e)
                     {
@@ -576,7 +569,7 @@ public class LDKController extends SpringActionController
                             return null;
                         }
 
-                        NotificationServiceImpl.get().setActive(n, getContainer(), notifications.getBoolean(key));
+                        NotificationServiceImpl.get().setActive(n, getContainer(), getUser(), notifications.getBoolean(key));
                     }
                 }
             }
@@ -904,7 +897,7 @@ public class LDKController extends SpringActionController
                 String urlString = PropertyManager.getProperties(getContainer(), REDIRECT_URL_DOMAIN).get(REDIRECT_URL_PROP);
                 if (urlString == null)
                 {
-                    return new HtmlView("This folder is only visible to admins");
+                    return new HtmlView(HtmlString.of("This folder is only visible to admins"));
                 }
                 else
                 {
@@ -919,7 +912,7 @@ public class LDKController extends SpringActionController
                     }
                     catch (URISyntaxException e)
                     {
-                        return new HtmlView("Invalid redirect URL set: " + urlString);
+                        return new HtmlView(HtmlString.unsafe("Invalid redirect URL set: " + urlString));
                     }
                 }
             }
