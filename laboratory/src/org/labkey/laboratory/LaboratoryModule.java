@@ -197,6 +197,10 @@ public class LaboratoryModule extends ExtendedSimpleModule
         LDKService.get().registerQueryButton(btn4, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
 
         LDKService.get().registerQueryButton(new ShowBulkEditButton(this, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES), LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
+
+        SimpleButtonConfigFactory btn5 = new SimpleButtonConfigFactory(this, "Manage Freezers", DetailsURL.fromString("/query/executeQuery.view?schemaName=laboratory&query.queryName=freezers"));
+        btn5.setPermission(LaboratoryAdminPermission.class);
+        LDKService.get().registerQueryButton(btn5, LaboratoryModule.SCHEMA_NAME, LaboratorySchema.TABLE_SAMPLES);
     }
 
     @Override
