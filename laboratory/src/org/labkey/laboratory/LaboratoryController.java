@@ -615,7 +615,7 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        protected File getTargetFile(String filename) throws IOException
+        protected FileLike getTargetFile(String filename) throws IOException
         {
             if (!PipelineService.get().hasValidPipelineRoot(getContainer()))
                 throw new UploadException("Pipeline root must be configured before uploading assay files", HttpServletResponse.SC_NOT_FOUND);
@@ -623,7 +623,7 @@ public class LaboratoryController extends SpringActionController
             try
             {
                 FileLike targetDirectory = AssayFileWriter.ensureUploadDirectory(getContainer());
-                return FileUtil.findUniqueFileName(filename, targetDirectory).toNioPathForWrite().toFile();
+                return FileUtil.findUniqueFileName(filename, targetDirectory);
             }
             catch (ExperimentException e)
             {
@@ -632,14 +632,14 @@ public class LaboratoryController extends SpringActionController
         }
 
         @Override
-        public String getResponse(ProcessAssayForm form, Map<String, Pair<File, String>> files) throws UploadException
+        public String getResponse(ProcessAssayForm form, Map<String, Pair<FileLike, String>> files) throws UploadException
         {
             JSONObject resp = new JSONObject();
             try
             {
-                for (Map.Entry<String, Pair<File, String>> entry : files.entrySet())
+                for (Map.Entry<String, Pair<FileLike, String>> entry : files.entrySet())
                 {
-                    File file = entry.getValue().getKey();
+                    File file = entry.getValue().getKey().toNioPathForRead().toFile();
                     String originalName = entry.getValue().getValue();
 
                     if (form.getLabkeyAssayId() == null)
