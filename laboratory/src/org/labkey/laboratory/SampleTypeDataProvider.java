@@ -79,7 +79,7 @@ public class SampleTypeDataProvider extends AbstractDataProvider
         //also append all sample types in this container
         List<NavItem> navItems = new ArrayList<>();
 
-        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, true))
         {
             navItems.add(new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, st));
         }
@@ -115,7 +115,7 @@ public class SampleTypeDataProvider extends AbstractDataProvider
     public List<SummaryNavItem> getSummary(Container c, User u)
     {
         List<SummaryNavItem> items = new ArrayList<>();
-        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, true))
         {
             SampleTypeNavItem nav = new SampleTypeNavItem(this, LaboratoryService.NavItemCategory.samples, st);
             if (nav.isVisible(c, u))
@@ -131,7 +131,7 @@ public class SampleTypeDataProvider extends AbstractDataProvider
     public List<NavItem> getSubjectIdSummary(Container c, User u, String subjectId)
     {
         List<NavItem> items = new ArrayList<>();
-        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, u, true))
+        for (ExpSampleType st : SampleTypeService.get().getSampleTypes(c, true))
         {
             UserSchema us = QueryService.get().getUserSchema(u, c, "Samples");
             if (us != null)
