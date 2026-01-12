@@ -240,6 +240,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         urlGenerationTest();
         peptideTableTest();
         searchPanelTest();
+
+        testButtonPermissions();
     }
 
     protected void setUpTest() throws Exception
@@ -1876,5 +1878,26 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     {
         //the module contains an R report tied to a specific assay name, so view check fails when an assay of that name isnt present
         //when module-based assays can supply reports this should be corrected
+    }
+
+    protected void testButtonPermissions() throws Exception
+    {
+        goToProjectHome();
+        _helper.clickNavPanelItem("Samples:", "Browse All");
+
+        DataRegionTable dr = new DataRegionTable("query", this);
+        dr.checkAllOnPage();
+
+        dr.clickHeaderButton("More Actions");
+        assertElementPresent(Locator.tagWithText("a", "Bulk Edit"));
+
+        impersonateRole("Editor");
+        refresh();
+
+        dr = new DataRegionTable("query", this);
+        dr.checkAllOnPage();
+
+        dr.clickHeaderButton("More Actions");
+        assertElementNotPresent(Locator.tagWithText("a", "Bulk Edit"));
     }
 }
