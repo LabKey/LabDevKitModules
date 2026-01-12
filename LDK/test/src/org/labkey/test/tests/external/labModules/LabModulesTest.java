@@ -1899,5 +1899,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
 
         dr.clickHeaderButton("More Actions");
         assertElementNotPresent(Locator.tagWithText("a", "Bulk Edit"));
+
+        stopImpersonating();
     }
 }
