@@ -19,6 +19,7 @@ import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.Permission;
 
 /**
  * User: bimber
@@ -32,7 +33,12 @@ public class ShowBulkEditButton extends SimpleButtonConfigFactory
 
     public ShowBulkEditButton(Module owner, String schemaName, String queryName)
     {
+        this(owner, schemaName, queryName, AdminPermission.class);
+    }
+
+    public ShowBulkEditButton(Module owner, String schemaName, String queryName, Class<? extends Permission> permission)
+    {
         super(owner, "Bulk Edit", DetailsURL.fromString("/ldk/apiBulkEdit.view?schemaName=" + schemaName + "&queryName=" + queryName));
-        setPermission(AdminPermission.class);
+        setPermission(permission);
     }
 }
