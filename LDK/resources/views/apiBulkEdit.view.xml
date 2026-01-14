@@ -1,6 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Bulk Edit Using Client API">
     <requiresPermissions>
-        <permissionClass name="org.labkey.api.security.permissions.AdminPermission"/>
+        <permissionClass name="org.labkey.api.ldk.security.DataAdminPermission"/>
     </requiresPermissions>
     <dependencies>
         <dependency path="ldk.context"/>

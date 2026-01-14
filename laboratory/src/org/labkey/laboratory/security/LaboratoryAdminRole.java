@@ -1,6 +1,7 @@
 package org.labkey.laboratory.security;
 
 import org.labkey.api.laboratory.security.LaboratoryAdminPermission;
+import org.labkey.api.ldk.security.DataAdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
@@ -21,6 +22,7 @@ public class LaboratoryAdminRole extends AbstractModuleScopedRole
                 InsertPermission.class,
                 UpdatePermission.class,
                 DeletePermission.class,
+                DataAdminPermission.class,
                 LaboratoryAdminPermission.class
         );
     }
