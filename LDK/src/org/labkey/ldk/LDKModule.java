@@ -31,9 +31,9 @@ import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.view.DeveloperMenu;
 import org.labkey.api.view.DeveloperMenuNavTrees;
 import org.labkey.api.view.NavTree;
-import org.labkey.api.view.PopupDeveloperView;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ldk.notification.NotificationServiceImpl;
 import org.labkey.ldk.notification.SiteSummaryNotification;
@@ -87,7 +87,7 @@ public class LDKModule extends ExtendedSimpleModule
     protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Management, "notification service admin", DetailsURL.fromString("/ldk/notificationSiteAdmin.view").getActionURL(), AdminOperationsPermission.class);
-        PopupDeveloperView.registerMenuProvider((c, user, trees) -> {
+        DeveloperMenu.registerMenuProvider((c, user, trees) -> {
             if (c.isRoot() & user.hasSiteAdminPermission())
             {
                 trees.add(DeveloperMenuNavTrees.Section.tools, new NavTree("Notification Service Admin", DetailsURL.fromString("ldk/notificationSiteAdmin.view", c).getActionURL()));
