@@ -908,7 +908,7 @@ public class LDKController extends SpringActionController
                         if (path.startsWith(AppProps.getInstance().getParsedContextPath()))
                             path = path.subpath(1, path.size());
 
-                        throw new RedirectException(AppProps.getInstance().getParsedContextPath() + path.toString(null, null));
+                        throw new RedirectException(new URLHelper(AppProps.getInstance().getParsedContextPath() + path.toString(null, null)));
                     }
                     catch (URISyntaxException e)
                     {
