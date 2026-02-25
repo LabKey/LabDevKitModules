@@ -320,7 +320,7 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
             ColumnInfo pkCol = getColumn(FieldKey.fromString(_pseudoPk));
             try
             {
-                key = ConvertHelper.convert(key, pkCol.getJavaClass());
+                key = pkCol.convert(key);
             }
             catch (ConversionException e)
             {
