@@ -258,7 +258,7 @@ public class DefaultAssayParser implements AssayParser
 
                     try
                     {
-                        ConvertHelper.convert(row.get(name), pd.getJavaClass());
+                        pd.convert(row.get(name));
                     }
                     catch (ConversionException e)
                     {
