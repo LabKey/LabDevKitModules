@@ -8,6 +8,11 @@ var console = require("console");
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
+// Opt out of manage columns feature for all EHR triggers
+function managedColumns() {
+    return false;
+}
+
 function beforeInsert(row, errors) {
     beforeBoth(row, errors);
 
