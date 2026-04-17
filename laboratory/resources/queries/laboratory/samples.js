@@ -14,6 +14,11 @@ var freezerHelper = org.labkey.laboratory.query.FreezerTriggerHelper.create(LABK
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
+// Opt out of manage columns feature for all EHR triggers
+function managedColumns() {
+    return false;
+}
+
 function beforeInsert(row, errors){
     beforeUpsert(row, errors);
 }
