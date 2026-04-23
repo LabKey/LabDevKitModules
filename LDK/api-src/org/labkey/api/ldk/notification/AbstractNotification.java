@@ -45,10 +45,6 @@ abstract public class AbstractNotification implements Notification
     public AbstractNotification(Module owner)
     {
         _owner = owner;
-
-        // AbstractNotifications must be constructed after QueryUrls has been registered, typically in startup() or
-        // doStartupAfterSpringConfig()
-        assert _queryUrls != null;
     }
 
     @Override
