@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ import org.labkey.api.view.ActionURL;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.mvc.Controller;
 
-/**
- * User: bimber
- * Date: 2/6/13
- * Time: 6:26 PM
- */
 public class ExtendedSimpleModule extends SimpleModule
 {
     @Override

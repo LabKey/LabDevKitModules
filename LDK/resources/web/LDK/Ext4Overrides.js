@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This was added to allow configs for typeahead to be case-insensitive, and/or permit contains vs. startswith
  * These are controlled using the combo config properties anyMatch or caseSensitive

@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * @class Ext.calendar.dd.StatusProxy
  * A specialized drag proxy that supports a drop status icon, {@link Ext.Layer} styles and auto-repair. It also
  * contains a calendar-specific drag status message containing details about the dragged event's target drop date range.  

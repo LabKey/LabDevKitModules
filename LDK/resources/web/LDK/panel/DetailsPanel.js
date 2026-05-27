@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is an extension of the LABKEY DetailsPanel which renders using border designed to match a webpart
  * @param detailsConfig A config object that will be applied to the LABKEY.ext.DetailsPanel

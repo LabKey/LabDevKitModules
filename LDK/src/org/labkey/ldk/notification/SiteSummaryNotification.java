@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,10 +76,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * User: bbimber
- * Date: 8/4/12
- */
 public class SiteSummaryNotification implements Notification
 {
     protected final static Logger log = LogManager.getLogger(SiteSummaryNotification.class);

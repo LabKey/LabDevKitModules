@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 12/9/12
- * Time: 7:51 AM
- */
 public class PivotingAssayParser extends DefaultAssayParser
 {
     PivotingImportMethod _pivotMethod;

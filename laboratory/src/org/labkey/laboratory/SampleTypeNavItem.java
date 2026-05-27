@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,6 @@ import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 8:51 AM
- */
 public class SampleTypeNavItem extends AbstractImportingNavItem
 {
     private final ExpSampleType _sampleType;

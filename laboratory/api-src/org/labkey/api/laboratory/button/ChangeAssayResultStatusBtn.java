@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,6 @@ import org.labkey.api.view.template.ClientDependency;
 
 import java.util.Arrays;
 
-/**
- * User: bimber
- * Date: 9/8/13
- * Time: 10:18 AM
- */
 public class ChangeAssayResultStatusBtn extends SimpleButtonConfigFactory
 {
     public ChangeAssayResultStatusBtn(Module owner)

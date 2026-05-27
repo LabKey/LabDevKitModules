@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --DB FKs are too restrictive
 ALTER TABLE laboratory.samples DROP CONSTRAINT fk_samples_samplespecies;
 ALTER TABLE laboratory.samples DROP CONSTRAINT fk_samples_additive;

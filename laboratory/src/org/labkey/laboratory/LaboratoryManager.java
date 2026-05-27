@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,11 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 9/26/12
- * Time: 7:59 AM
- */
 public class LaboratoryManager
 {
     private static final LaboratoryManager _instance = new LaboratoryManager();

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --used to provide a natural sort of data
 --adapted from:
 --http://2kan.tumblr.com/post/361326656/postgres-natural-ordering

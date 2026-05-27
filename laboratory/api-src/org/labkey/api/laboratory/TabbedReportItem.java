@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,6 @@ import org.labkey.api.security.User;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 1/13/13
- * Time: 12:51 PM
- */
 public class TabbedReportItem extends AbstractNavItem
 {
     protected String _name;

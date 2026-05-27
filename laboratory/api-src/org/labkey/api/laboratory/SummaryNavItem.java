@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2016 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,6 @@ package org.labkey.api.laboratory;
 import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
 
-/**
- * User: bimber
- * Date: 11/8/13
- * Time: 7:02 AM
- */
 public interface SummaryNavItem extends NavItem
 {
     Long getRowCount(Container c, User u);

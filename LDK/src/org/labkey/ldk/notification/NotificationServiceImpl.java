@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,11 +73,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bbimber
- * Date: 7/14/12
- * Time: 2:49 PM
- */
 public class NotificationServiceImpl extends NotificationService
 {
     private final static Logger _log = LogManager.getLogger(NotificationServiceImpl.class);

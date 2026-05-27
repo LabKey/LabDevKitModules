@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This panel is designed to provide DetailsView of records in situations where there may be more than 1 record.  When this occurs, it can either
  * render a series of LDK.panel.DetailsPanels (one per record in the store), or render the results in a single QWP

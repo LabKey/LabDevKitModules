@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER table laboratory.antibodies ADD source varchar(500);
 ALTER table laboratory.antibodies ADD catalog varchar(500);
 ALTER table laboratory.antibodies ADD location varchar(500);

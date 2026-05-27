@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * EXPERIMENTAL.  This is designed to be a higher lever interface for the LK charting API, and simplify rendering a chart inside Ext4 panels.
  * You should be able to provide either selectRow results, or a queryConfig, in addition to chart-specific configuration.  It will generate

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,6 @@ import org.labkey.api.security.User;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 11/4/12
- * Time: 3:48 PM
- */
 abstract public class LDKService
 {
     static LDKService instance;

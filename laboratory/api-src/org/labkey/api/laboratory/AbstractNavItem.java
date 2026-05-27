@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2018 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,6 @@ import org.labkey.api.view.ActionURL;
 
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 9:33 AM
- */
 abstract public class AbstractNavItem implements NavItem
 {
     protected static final Logger _log = LogManager.getLogger(AbstractNavItem.class);

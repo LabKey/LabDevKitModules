@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ import org.labkey.api.view.template.ClientDependency;
 import java.util.List;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 10/3/12
- * Time: 1:46 PM
- */
 public interface DataProvider
 {
     /**

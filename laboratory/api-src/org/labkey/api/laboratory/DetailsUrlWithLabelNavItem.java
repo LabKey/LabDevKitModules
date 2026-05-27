@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,6 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.view.ActionURL;
 
-/**
- * User: bimber
- * Date: 11/21/12
- * Time: 5:52 PM
- */
 public class DetailsUrlWithLabelNavItem extends AbstractUrlNavItem
 {
     public DetailsUrlWithLabelNavItem(DataProvider provider, String labelText, String itemText, DetailsURL detailsURL, LaboratoryService.NavItemCategory itemType, String reportCategory)

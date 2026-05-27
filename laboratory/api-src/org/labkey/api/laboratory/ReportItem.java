@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,6 @@ import org.labkey.api.data.Container;
 import org.labkey.api.ldk.table.QueryCache;
 import org.labkey.api.security.User;
 
-/**
- * User: bimber
- * Date: 5/5/13
- * Time: 9:41 AM
- */
 public class ReportItem extends AbstractQueryNavItem
 {
     private String _subjectFieldKey;

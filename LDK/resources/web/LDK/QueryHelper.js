@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * EXPERIMENTAL.  The goal of this class is to encapsulate the tricky parts of dealing with query parameters and
  * to expose a more consistent API.  It could be used directly, and will also be used internally within

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /* @private
  * This is an internal helper class for the calendar views and should not be overridden.
  * It is responsible for the base event rendering logic underlying all views based on a 

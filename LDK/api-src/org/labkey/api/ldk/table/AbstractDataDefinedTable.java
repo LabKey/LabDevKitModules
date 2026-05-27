@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +52,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-/**
- * User: bimber
- * Date: 4/2/13
- * Time: 2:54 PM
- */
 abstract public class AbstractDataDefinedTable<SchemaType extends UserSchema> extends CustomPermissionsTable<SchemaType>
 {
     protected String _pk;

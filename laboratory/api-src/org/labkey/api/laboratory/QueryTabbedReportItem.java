@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,6 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.table.QueryCache;
 import org.labkey.api.security.User;
 
-/**
- * User: bimber
- * Date: 4/14/13
- * Time: 9:33 AM
- */
 public class QueryTabbedReportItem extends TabbedReportItem
 {
     private String _schemaName;

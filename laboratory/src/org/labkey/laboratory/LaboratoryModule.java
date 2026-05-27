@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,11 +57,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 9/1/12
- * Time: 8:14 PM
- */
 public class LaboratoryModule extends ExtendedSimpleModule
 {
     public static final String NAME = "Laboratory";

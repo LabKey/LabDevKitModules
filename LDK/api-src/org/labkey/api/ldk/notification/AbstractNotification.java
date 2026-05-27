@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,6 @@ import org.labkey.api.view.ActionURL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-/**
- * User: bimber
- * Date: 1/7/14
- * Time: 5:30 PM
- */
 abstract public class AbstractNotification implements Notification
 {
     private final Module _owner;
