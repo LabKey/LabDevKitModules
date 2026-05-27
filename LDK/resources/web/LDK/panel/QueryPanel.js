@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is designed to simplify the process of rendering a QWP in an Ext4 panel, since the panel will not normally
  * resize itself to accommodate the QWP.  It also defers loading the QWP until after the panel is rendered, which can be convenient since

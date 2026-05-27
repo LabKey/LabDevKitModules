@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 12/19/12
- * Time: 3:19 PM
- */
 abstract public class NotificationService
 {
     static NotificationService _instance;

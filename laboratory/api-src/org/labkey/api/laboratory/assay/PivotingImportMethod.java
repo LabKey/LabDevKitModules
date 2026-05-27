@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * User: bimber
- * Date: 12/9/12
- * Time: 8:44 PM
- */
 abstract public class PivotingImportMethod extends DefaultAssayImportMethod
 {
     protected AssayImportMethod _importMethod;

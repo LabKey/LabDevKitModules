@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,6 @@ import org.labkey.api.view.ViewContext;
 import java.io.File;
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 1/9/13
- * Time: 5:12 PM
- */
 public class ImportContext
 {
     private final JSONObject _json;

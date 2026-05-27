@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is designed to help with the problem of rendering dynamic content into Ext4 panels.  It's a little ugly, but this
  * component provides a div into which you render the webpart or report.  On load, it will use a mutation observer to listen for

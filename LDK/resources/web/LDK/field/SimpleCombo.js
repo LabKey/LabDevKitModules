@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2015-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * An extension of the Ext4 combo that can be instantiated using a simple list of allowable values.
  * Example: Ext4.widget({xtype: 'ldk-simplecombo', storeValues: 'foo;bar', fieldLabel: 'Test'});

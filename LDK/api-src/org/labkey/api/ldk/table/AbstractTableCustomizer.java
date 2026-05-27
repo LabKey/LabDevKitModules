@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2019 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,6 @@ import org.labkey.api.study.DatasetTable;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 1/8/14
- * Time: 11:06 AM
- */
 abstract public class AbstractTableCustomizer implements TableCustomizer
 {
     protected static final Logger _log = LogManager.getLogger(AbstractTableCustomizer.class);

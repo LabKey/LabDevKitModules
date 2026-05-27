@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,11 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 1:52 PM
- */
 abstract public class AbstractAssayDataProvider extends AbstractDataProvider implements AssayDataProvider
 {
     public static final String PROPERTY_CATEGORY = "laboratory.importMethodDefaults";

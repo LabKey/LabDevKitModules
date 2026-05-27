@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is designed to be used similar to asserts in java code.  Checks can be introduced
  * in your client-side code that will be performed when that code is executed.  If the assert fails,

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2018 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,11 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 9/15/12
- * Time: 6:26 AM
- */
 abstract public class LaboratoryService
 {
     static LaboratoryService instance;

@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
     Naturalize() is designed to provide a value to use for 'natural sorting' of data, which provides a
     more human-friendly sorting of mixed numeric/text values.  Adapted from code here:
 

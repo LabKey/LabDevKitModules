@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 LabKey Corporation
+ * Copyright (c) 2019-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,6 @@ import org.labkey.api.query.DetailsURL;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.Permission;
 
-/**
- * User: bimber
- * Date: 7/14/13
- * Time: 4:05 PM
- */
 public class ShowBulkEditButton extends SimpleButtonConfigFactory
 {
     protected String _schemaName;

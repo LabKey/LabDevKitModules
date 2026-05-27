@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,6 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
 
-/**
- * User: bimber
- * Date: 4/14/13
- * Time: 9:31 AM
- */
 public class JSTabbedReportItem extends TabbedReportItem
 {
     private final String _jsHandler;

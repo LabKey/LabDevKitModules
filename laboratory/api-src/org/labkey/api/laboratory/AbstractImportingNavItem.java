@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,6 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
 
-/**
- * User: bimber
- * Date: 11/21/12
- * Time: 5:08 PM
- */
 abstract public class AbstractImportingNavItem extends AbstractNavItem implements ImportingNavItem
 {
     private final String _name;

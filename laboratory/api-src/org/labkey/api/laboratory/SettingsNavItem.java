@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,6 @@
  */
 package org.labkey.api.laboratory;
 
-/**
- * User: bimber
- * Date: 10/7/12
- * Time: 10:14 AM
- */
 public interface SettingsNavItem extends ImportingNavItem
 {
 }

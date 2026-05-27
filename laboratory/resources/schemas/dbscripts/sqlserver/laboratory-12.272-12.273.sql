@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --there should not have been time user any users to add rows, but guard anyway
 DELETE FROM laboratory.reference_peptides WHERE rowid in
  (SELECT min(rowid) FROM laboratory.reference_peptides GROUP BY sequence HAVING COUNT(*) > 1);

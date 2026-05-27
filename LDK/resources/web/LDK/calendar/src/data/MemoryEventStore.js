@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * This is a simple in-memory store implementation that is ONLY intended for use with
  * calendar samples running locally in the browser with no external data source. Under
  * normal circumstances, stores that use a MemoryProxy are read-only and intended only

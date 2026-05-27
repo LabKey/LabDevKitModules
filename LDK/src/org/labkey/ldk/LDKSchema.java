@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,6 @@ import org.labkey.api.data.DbSchemaType;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.dialect.SqlDialect;
 
-/**
- * User: bbimber
- * Date: 7/14/12
- */
 public class LDKSchema
 {
     private static final LDKSchema _instance = new LDKSchema();

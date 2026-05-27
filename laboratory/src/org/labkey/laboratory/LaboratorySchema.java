@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,6 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.dialect.SqlDialect;
 
-/**
- * User: bimber
- * Date: 9/25/12
- * Time: 11:32 AM
- */
 public class LaboratorySchema
 {
     private static final LaboratorySchema _instance = new LaboratorySchema();

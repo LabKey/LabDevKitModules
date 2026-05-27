@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2015 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.ActionURL;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 12:27 PM
- */
 public class QueryImportNavItem extends AbstractImportingNavItem
 {
     private final String _schema;

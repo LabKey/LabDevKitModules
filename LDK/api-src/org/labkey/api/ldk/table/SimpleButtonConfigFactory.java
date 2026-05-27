@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2015 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * User: bimber
- * Date: 5/5/13
- */
 public class SimpleButtonConfigFactory implements ButtonConfigFactory
 {
     private final Module _owner;

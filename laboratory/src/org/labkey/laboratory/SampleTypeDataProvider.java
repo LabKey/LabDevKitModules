@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-/**
- * User: bimber
- * Date: 10/8/12
- * Time: 9:06 AM
- */
 public class SampleTypeDataProvider extends AbstractDataProvider
 {
     public static final String NAME = "SampleTypeDataProvider";

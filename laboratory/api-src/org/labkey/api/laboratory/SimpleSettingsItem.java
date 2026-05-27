@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,6 @@ import org.labkey.api.ldk.table.QueryCache;
 import org.labkey.api.security.User;
 import org.labkey.api.view.ActionURL;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 1:40 PM
- */
 public class SimpleSettingsItem extends QueryImportNavItem implements SettingsNavItem
 {
     public SimpleSettingsItem(DataProvider provider, String schema, String query, String reportCategory, String label)

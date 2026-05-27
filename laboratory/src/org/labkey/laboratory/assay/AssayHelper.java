@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,11 +71,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: bimber
- * Date: 9/26/12
- * Time: 12:56 PM
- */
 public class AssayHelper
 {
     private static final AssayHelper _instance = new AssayHelper();

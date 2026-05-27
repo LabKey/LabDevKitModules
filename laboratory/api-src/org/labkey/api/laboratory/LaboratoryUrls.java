@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,6 @@ import org.labkey.api.exp.api.ExpProtocol;
 import org.labkey.api.security.User;
 import org.labkey.api.view.ActionURL;
 
-/**
- * User: bimber
- * Date: 10/1/12
- * Time: 9:23 AM
- */
 public interface LaboratoryUrls extends UrlProvider
 {
     ActionURL getSearchUrl(Container c, String schemaName, String queryName);

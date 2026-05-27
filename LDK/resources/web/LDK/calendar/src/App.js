@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * This calendar application was forked from Ext Calendar Pro
  * and contributed to Ext JS as an advanced example of what can 
  * be built using and customizing Ext components and templates.

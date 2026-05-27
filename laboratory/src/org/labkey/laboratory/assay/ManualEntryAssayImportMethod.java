@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 LabKey Corporation
+ * Copyright (c) 2013-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,6 @@ package org.labkey.laboratory.assay;
 
 import org.labkey.api.laboratory.assay.DefaultAssayImportMethod;
 
-/**
- * User: bimber
- * Date: 9/17/12
- * Time: 7:01 AM
- */
 public class ManualEntryAssayImportMethod extends DefaultAssayImportMethod
 {
     public static final String NAME = "Manual Entry";

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2018 LabKey Corporation
+ * Copyright (c) 2023-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,6 @@ import org.labkey.api.view.ViewContext;
 
 import java.util.List;
 
-/**
- * User: bimber
- * Date: 9/15/12
- * Time: 2:18 PM
- */
 public interface AssayImportMethod
 {
     String getName();

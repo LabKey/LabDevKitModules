@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * A simple reusable store that loads static calendar field definitions into memory
  * and can be bound to the CalendarCombo widget and used for calendar color selection.
  */

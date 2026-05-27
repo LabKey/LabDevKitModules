@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,6 @@
  */
 package org.labkey.api.laboratory;
 
-/**
- * User: bimber
- * Date: 11/21/12
- * Time: 5:52 PM
- */
 public class StaticURLNavItem extends AbstractUrlNavItem
 {
     public StaticURLNavItem(DataProvider provider, String label, String itemText, String urlString, LaboratoryService.NavItemCategory itemType, String reportCategory)

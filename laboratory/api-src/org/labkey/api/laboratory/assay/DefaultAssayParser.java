@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 LabKey Corporation
+ * Copyright (c) 2015-2026 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,11 +74,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-/**
- * User: bimber
- * Date: 9/15/12
- * Time: 10:37 AM
- */
 public class DefaultAssayParser implements AssayParser
 {
     protected boolean _hasHeaders = true;

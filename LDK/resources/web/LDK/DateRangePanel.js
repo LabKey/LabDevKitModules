@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013-2026 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * A panel that will display a pair of datefields, either side by side or above one another.  These fields will automatically
  * set the min/max date on one another to ensure a valid date range.
