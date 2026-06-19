@@ -646,9 +646,7 @@ public class LaboratoryController extends SpringActionController
                         throw new UploadException("No Assay Id Provided", HttpServletResponse.SC_BAD_REQUEST);
                     }
 
-                    // getExpProtocol() is a global row-id lookup with no container scoping, so confirm the protocol is in
-                    // scope for this container before using it; otherwise the same generic message is returned whether the
-                    // row id is unknown or simply belongs to a container the user cannot read.
+                    // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before using it.
                     ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getLabkeyAssayId());
                     if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                     {
@@ -938,9 +936,7 @@ public class LaboratoryController extends SpringActionController
             {
                 JSONObject json = new JSONObject(form.getJson());
 
-                // getExpProtocol() is a global row-id lookup with no container scoping, so confirm the protocol is in
-                // scope for this container before saving a template against it. The same generic message is returned
-                // whether the row id is unknown or belongs to a container the user cannot read.
+                // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before saving a template against it.
                 ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getProtocolId());
                 if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                 {
@@ -1068,9 +1064,7 @@ public class LaboratoryController extends SpringActionController
                     return;
                 }
 
-                // getExpProtocol() is a global row-id lookup with no container scoping, so confirm the protocol is in
-                // scope for this container before generating a template against it. The same generic message is returned
-                // whether the row id is unknown or belongs to a container the user cannot read.
+                // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before generating a template against it.
                 ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getLabkeyAssayId());
                 if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                 {
@@ -1522,9 +1516,7 @@ public class LaboratoryController extends SpringActionController
                 return new ApiSimpleResponse(results);
             }
 
-            // getExpProtocol() is a global row-id lookup with no container scoping, so confirm the protocol is in scope
-            // for this container before returning its import columns. The same generic message is returned whether the
-            // row id is unknown or belongs to a container the user cannot read.
+            // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before returning its import columns.
             ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getProtocol());
             if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
             {
@@ -1890,11 +1882,8 @@ public class LaboratoryController extends SpringActionController
             if (form.getAssayId() != null)
             {
                 ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getAssayId());
-                // getExpProtocol() is a global row-id lookup with no container scoping. Verify the requested protocol is
-                // actually in scope for this container before using or echoing its metadata, otherwise a user with read
-                // access to any one folder could enumerate arbitrary row ids and harvest assay names and container paths
-                // from folders they cannot read. Use the same generic message whether or not the row id exists so the
-                // response is not an existence oracle for protocols in other containers.
+                // getExpProtocol() is unscoped, so verify the protocol is in scope before echoing its metadata; otherwise a user
+                // could enumerate arbitrary row ids and harvest assay names and container paths from folders they cannot read.
                 if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                 {
                     errors.reject(ERROR_MSG, "Unknown assay: " + form.getAssayId());
