@@ -80,6 +80,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ErrorRenderer;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.FileUtil;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
@@ -174,15 +175,17 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            StringBuilder msg = new StringBuilder();
-            msg.append("Certain assays can have performance improved by the addition of indexes, which can be suggested by modules.  The following indexes are recommended for the assays installed on this server:<p>");
+            HtmlStringBuilder sb = HtmlStringBuilder.of();
+            sb.append("Certain assays can have performance improved by the addition of indexes, which can be suggested by modules.  The following indexes are recommended for the assays installed on this server:<p>");
 
             List<String> msgs = LaboratoryManager.get().createIndexes(getUser(), false, false);
-            msg.append(StringUtils.join(msgs, "<br>"));
 
-            msg.append("<p>Do you want to continue?");
+            for (String msg : msgs)
+                sb.append(msg).unsafeAppend("<br>");
 
-            return new HtmlView(msg.toString());
+            sb.unsafeAppend("<p>Do you want to continue?</p>");
+
+            return new HtmlView(sb.getHtmlString());
         }
 
         @Override
