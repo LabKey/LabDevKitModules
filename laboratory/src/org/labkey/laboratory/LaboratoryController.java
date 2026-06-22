@@ -129,13 +129,13 @@ public class LaboratoryController extends SpringActionController
             Integer assayId = form.getAssayId();
             if (assayId == null)
             {
-                return new HtmlView("Error: must provide a rowId for the assay");
+                return new HtmlView(HtmlString.of("Error: must provide a rowId for the assay"));
             }
 
             AssayDataProvider ad = LaboratoryService.get().getDataProviderForAssay(assayId);
             if (ad == null || !ad.supportsRunTemplates())
             {
-                return new HtmlView("Error: this assay does not support requests");
+                return new HtmlView(HtmlString.of("Error: this assay does not support requests"));
             }
 
             Module labModule = ModuleLoader.getInstance().getModule(LaboratoryModule.NAME);
