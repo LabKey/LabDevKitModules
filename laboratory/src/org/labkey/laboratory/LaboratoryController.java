@@ -311,25 +311,25 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(SetTableIncrementForm form, BindException errors) throws Exception
         {
-            StringBuilder sb = new StringBuilder();
-            sb.append("This allows you to reset the current value for an auto-incrementing table<br><br>");
-            sb.append("<table style='border-collapse: collapse;'>");
+            HtmlStringBuilder sb = HtmlStringBuilder.of();
+            sb.unsafeAppend("This allows you to reset the current value for an auto-incrementing table<br><br>");
+            sb.unsafeAppend("<table style='border-collapse: collapse;'>");
 
             String schema = form.getSchemaName() == null ? "" : form.getSchemaName();
-            sb.append("<tr><td>Schema:</td><td><input name=\"schema\" value=\"" + schema + "\"></td></tr>");
+            sb.unsafeAppend("<tr><td>Schema:</td><td><input name=\"schema\" value=\"").append(schema).unsafeAppend("\"></td></tr>");
 
             String query = form.getQueryName() == null ? "" : form.getQueryName();
-            sb.append("<tr><td>Query:</td><td><input name=\"query\" value=\"" + query + "\"></td></tr>");
+            sb.unsafeAppend("<tr><td>Query:</td><td><input name=\"query\" value=\"").append(query).unsafeAppend("\"></td></tr>");
 
             ContainerIncrementingTable ti = getTable(schema, query, errors, false);
             Integer value = null;
             if (ti != null)
                 value = ti.getCurrentId(getContainer());
 
-            sb.append("<tr><td>Value:</td><td><input name=\"value\" value=\"" + (value == null ? "" :  value) + "\"></td></tr>");
-            sb.append("</table><br>Do you want to continue?");
+            sb.unsafeAppend("<tr><td>Value:</td><td><input name=\"value\" value=\"").append(value == null ? "" : value.toString()).unsafeAppend("\"></td></tr>");
+            sb.unsafeAppend("</table><br>Do you want to continue?");
 
-            return new HtmlView(sb.toString());
+            return new HtmlView(sb.getHtmlString());
         }
 
         @Override
