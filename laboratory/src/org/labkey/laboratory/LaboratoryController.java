@@ -474,7 +474,7 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will iterate all workbooks in the current folder and create laboratory experiments for them as needed");
+            return new HtmlView(HtmlString.of("This action will iterate all workbooks in the current folder and create laboratory experiments for them as needed"));
         }
 
         @Override
