@@ -80,6 +80,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ErrorRenderer;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.FileUtil;
+import org.labkey.api.util.HtmlStringBuilder;
 import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
@@ -232,17 +233,19 @@ public class LaboratoryController extends SpringActionController
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
-                sb.append("This action will iterate all protocols for the assay " + form.getProviderName() + " and append any columns present in the definition, but lacking from that instance of the assay.  The following changes will be made:<br><br>");
+                HtmlStringBuilder sb = HtmlStringBuilder.of();
+                sb.append("This action will iterate all protocols for the assay ")
+                  .append(form.getProviderName())
+                  .unsafeAppend(" and append any columns present in the definition, but lacking from that instance of the assay.  The following changes will be made:<br><br>");
                 List<String> messages = AssayHelper.ensureAssayFields(getUser(), form.getProviderName(), form.isRenameConflicts(), true);
                 for (String msg : messages)
                 {
-                    sb.append(msg).append("<br><br>");
+                    sb.append(msg).unsafeAppend("<br><br>");
                 }
 
-                sb.append("<br>Do you want to continue?");
+                sb.unsafeAppend("<br>Do you want to continue?");
 
-                return new HtmlView(sb.toString());
+                return new HtmlView(sb.getHtmlString());
             }
             catch (ChangePropertyDescriptorException e)
             {
