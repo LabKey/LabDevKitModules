@@ -79,6 +79,7 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.ErrorRenderer;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.URLHelper;
@@ -106,6 +107,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.labkey.api.util.DOM.BR;
+import static org.labkey.api.util.DOM.INPUT;
+import static org.labkey.api.util.DOM.P;
+import static org.labkey.api.util.DOM.TABLE;
+import static org.labkey.api.util.DOM.TD;
+import static org.labkey.api.util.DOM.TR;
+import static org.labkey.api.util.DOM.at;
+import static org.labkey.api.util.DOM.createHtmlFragment;
+import static org.labkey.api.util.DOM.Attribute.style;
+
 
 public class LaboratoryController extends SpringActionController
 {
@@ -126,13 +137,13 @@ public class LaboratoryController extends SpringActionController
             Integer assayId = form.getAssayId();
             if (assayId == null)
             {
-                return new HtmlView("Error: must provide a rowId for the assay");
+                return new HtmlView(HtmlString.of("Error: must provide a rowId for the assay"));
             }
 
             AssayDataProvider ad = LaboratoryService.get().getDataProviderForAssay(assayId);
             if (ad == null || !ad.supportsRunTemplates())
             {
-                return new HtmlView("Error: this assay does not support requests");
+                return new HtmlView(HtmlString.of("Error: this assay does not support requests"));
             }
 
             Module labModule = ModuleLoader.getInstance().getModule(LaboratoryModule.NAME);
@@ -172,15 +183,13 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            StringBuilder msg = new StringBuilder();
-            msg.append("Certain assays can have performance improved by the addition of indexes, which can be suggested by modules.  The following indexes are recommended for the assays installed on this server:<p>");
-
             List<String> msgs = LaboratoryManager.get().createIndexes(getUser(), false, false);
-            msg.append(StringUtils.join(msgs, "<br>"));
 
-            msg.append("<p>Do you want to continue?");
-
-            return new HtmlView(msg.toString());
+            return new HtmlView(createHtmlFragment(
+                "Certain assays can have performance improved by the addition of indexes, which can be suggested by modules.  The following indexes are recommended for the assays installed on this server:",
+                P(msgs.stream().map(msg -> createHtmlFragment(msg, BR()))),
+                P("Do you want to continue?")
+            ));
         }
 
         @Override
@@ -231,17 +240,12 @@ public class LaboratoryController extends SpringActionController
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
-                sb.append("This action will iterate all protocols for the assay " + form.getProviderName() + " and append any columns present in the definition, but lacking from that instance of the assay.  The following changes will be made:<br><br>");
                 List<String> messages = AssayHelper.ensureAssayFields(getUser(), form.getProviderName(), form.isRenameConflicts(), true);
-                for (String msg : messages)
-                {
-                    sb.append(msg).append("<br><br>");
-                }
-
-                sb.append("<br>Do you want to continue?");
-
-                return new HtmlView(sb.toString());
+                return new HtmlView(createHtmlFragment(
+                    "This action will iterate all protocols for the assay " + form.getProviderName() + " and append any columns present in the definition, but lacking from that instance of the assay.  The following changes will be made:", BR(), BR(),
+                    messages.stream().map(msg -> createHtmlFragment(msg, BR(), BR())),
+                    BR(), "Do you want to continue?"
+                ));
             }
             catch (ChangePropertyDescriptorException e)
             {
@@ -307,25 +311,23 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(SetTableIncrementForm form, BindException errors) throws Exception
         {
-            StringBuilder sb = new StringBuilder();
-            sb.append("This allows you to reset the current value for an auto-incrementing table<br><br>");
-            sb.append("<table style='border-collapse: collapse;'>");
-
             String schema = form.getSchemaName() == null ? "" : form.getSchemaName();
-            sb.append("<tr><td>Schema:</td><td><input name=\"schema\" value=\"" + schema + "\"></td></tr>");
-
             String query = form.getQueryName() == null ? "" : form.getQueryName();
-            sb.append("<tr><td>Query:</td><td><input name=\"query\" value=\"" + query + "\"></td></tr>");
 
             ContainerIncrementingTable ti = getTable(schema, query, errors, false);
-            Integer value = null;
+            Integer currentId = null;
             if (ti != null)
-                value = ti.getCurrentId(getContainer());
+                currentId = ti.getCurrentId(getContainer());
 
-            sb.append("<tr><td>Value:</td><td><input name=\"value\" value=\"" + (value == null ? "" :  value) + "\"></td></tr>");
-            sb.append("</table><br>Do you want to continue?");
-
-            return new HtmlView(sb.toString());
+            return new HtmlView(createHtmlFragment(
+                "This allows you to reset the current value for an auto-incrementing table", BR(), BR(),
+                TABLE(at(style, "border-collapse: collapse;"),
+                    TR(TD("Schema:"), TD(INPUT(at().name("schema").value(schema)))),
+                    TR(TD("Query:"), TD(INPUT(at().name("query").value(query)))),
+                    TR(TD("Value:"), TD(INPUT(at().name("value").value(currentId == null ? "" : currentId.toString()))))
+                ),
+                BR(), "Do you want to continue?"
+            ));
         }
 
         @Override
@@ -467,7 +469,7 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will iterate all workbooks in the current folder and create laboratory experiments for them as needed");
+            return new HtmlView(HtmlString.of("This action will iterate all workbooks in the current folder and create laboratory experiments for them as needed"));
         }
 
         @Override
@@ -506,20 +508,18 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(SetTableIncrementForm form, BindException errors) throws Exception
         {
-            StringBuilder sb = new StringBuilder();
-            sb.append("This allows you to initialize the autoincrementing column for the provided schema/query<br><br>");
-            sb.append("This is very rarely required and was created as a helper for admins with a good deal of knowledge about this module.  Under most cases these columns will be automatically populated and you will not need to worry about this.  If you are unsure about this page, please post on the LabKey help forums, which are read by the authors of this module.<br><br>");
-            sb.append("<table style='border-collapse: collapse;'>");
-
             String schema = form.getSchemaName() == null ? "" : form.getSchemaName();
-            sb.append("<tr><td>Schema:</td><td><input name=\"schema\" value=\"" + schema + "\"></td></tr>");
-
             String query = form.getQueryName() == null ? "" : form.getQueryName();
-            sb.append("<tr><td>Query:</td><td><input name=\"query\" value=\"" + query + "\"></td></tr>");
 
-            sb.append("</table><br>Do you want to continue?");
-
-            return new HtmlView(sb.toString());
+            return new HtmlView(createHtmlFragment(
+                "This allows you to initialize the autoincrementing column for the provided schema/query", BR(), BR(),
+                "This is very rarely required and was created as a helper for admins with a good deal of knowledge about this module.  Under most cases these columns will be automatically populated and you will not need to worry about this.  If you are unsure about this page, please post on the LabKey help forums, which are read by the authors of this module.", BR(), BR(),
+                TABLE(at(style, "border-collapse: collapse;"),
+                    TR(TD("Schema:"), TD(INPUT(at().name("schema").value(schema)))),
+                    TR(TD("Query:"), TD(INPUT(at().name("query").value(query))))
+                ),
+                BR(), "Do you want to continue?"
+            ));
         }
 
 
@@ -578,7 +578,8 @@ public class LaboratoryController extends SpringActionController
         @Override
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This action will reset webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
+            HtmlString message = HtmlString.of("This action will reset webparts and tabs for the current folder and all children to the default Laboratory FolderType, if these folders are either Laboratory Folders or Expt Workbooks");
+            return new HtmlView(message);
         }
 
         @Override
