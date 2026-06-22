@@ -646,8 +646,9 @@ public class LaboratoryController extends SpringActionController
                         throw new UploadException("No Assay Id Provided", HttpServletResponse.SC_BAD_REQUEST);
                     }
 
+                    // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before using it.
                     ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getLabkeyAssayId());
-                    if (protocol == null)
+                    if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                     {
                         throw new UploadException("Unable to find assay protocol with Id: " + form.getLabkeyAssayId(), HttpServletResponse.SC_BAD_REQUEST);
                     }
@@ -935,8 +936,9 @@ public class LaboratoryController extends SpringActionController
             {
                 JSONObject json = new JSONObject(form.getJson());
 
+                // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before saving a template against it.
                 ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getProtocolId());
-                if (protocol == null)
+                if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                 {
                     errors.reject(ERROR_MSG, "Unknown assay: " + form.getProtocolId());
                     return null;
@@ -1062,8 +1064,9 @@ public class LaboratoryController extends SpringActionController
                     return;
                 }
 
+                // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before generating a template against it.
                 ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getLabkeyAssayId());
-                if (protocol == null)
+                if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
                 {
                     throw new AbstractFileUploadAction.UploadException("Unable to find assay protocol with Id: " + form.getLabkeyAssayId(), HttpServletResponse.SC_BAD_REQUEST);
                 }
@@ -1513,8 +1516,9 @@ public class LaboratoryController extends SpringActionController
                 return new ApiSimpleResponse(results);
             }
 
+            // getExpProtocol() is unscoped, so verify the protocol is in scope for this container before returning its import columns.
             ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getProtocol());
-            if (protocol == null)
+            if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
             {
                 errors.reject(ERROR_MSG, "Protocol not found: " + form.getProtocol());
                 return new ApiSimpleResponse(results);
@@ -1877,8 +1881,16 @@ public class LaboratoryController extends SpringActionController
             List<ExpProtocol> protocols = new ArrayList<>();
             if (form.getAssayId() != null)
             {
-                protocols.add(ExperimentService.get().getExpProtocol(form.getAssayId()));
-                ap = AssayService.get().getProvider(protocols.get(0));
+                ExpProtocol protocol = ExperimentService.get().getExpProtocol(form.getAssayId());
+                // getExpProtocol() is unscoped, so verify the protocol is in scope before echoing its metadata; otherwise a user
+                // could enumerate arbitrary row ids and harvest assay names and container paths from folders they cannot read.
+                if (protocol == null || !AssayService.get().getAssayProtocols(getContainer()).contains(protocol))
+                {
+                    errors.reject(ERROR_MSG, "Unknown assay: " + form.getAssayId());
+                    return null;
+                }
+                protocols.add(protocol);
+                ap = AssayService.get().getProvider(protocol);
             }
             else if (form.getAssayType() != null)
             {
