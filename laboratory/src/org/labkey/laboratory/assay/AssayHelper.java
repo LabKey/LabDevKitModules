@@ -33,6 +33,7 @@ import org.labkey.api.collections.CollectionUtils;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TSVMapWriter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
@@ -51,6 +52,7 @@ import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.util.FileUtil;
@@ -139,6 +141,15 @@ public class AssayHelper
             }
             else
             {
+                // Table.update operates by global PK, so verify the existing template lives in this container before updating it
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
+                filter.addCondition(FieldKey.fromString("container"), c);
+                if (!new TableSelector(ti, filter, null).exists())
+                {
+                    errors.addRowError(new ValidationException("Unknown template: " + templateId));
+                    throw errors;
+                }
+
                 row.put("rowid", templateId);
                 row = Table.update(u, ti, row, templateId);
             }
