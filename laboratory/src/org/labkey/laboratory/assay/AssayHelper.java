@@ -32,9 +32,9 @@ import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CollectionUtils;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
-import org.labkey.api.data.RuntimeSQLException;
+import org.labkey.api.data.ContainerType;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TSVMapWriter;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
@@ -51,8 +51,12 @@ import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
 import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.FileUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ActionURL;
@@ -66,6 +70,7 @@ import java.beans.Introspector;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -125,27 +130,27 @@ public class AssayHelper
         {
             validateTemplate(u, c, protocol, templateId, title, importMethod, json);
 
-            TableInfo ti = LaboratorySchema.getInstance().getSchema().getTable(LaboratorySchema.TABLE_ASSAY_RUN_TEMPLATES);
+            UserSchema us = QueryService.get().getUserSchema(u, c, "laboratory");
+            TableInfo ti = us.getTable(LaboratorySchema.TABLE_ASSAY_RUN_TEMPLATES);
             Map<String, Object> row = new HashMap<>();
             row.put("assayId", protocol.getRowId());
             row.put("title", title);
             row.put("importMethod", importMethod);
             row.put("json", json.toString());
-            row.put("container", c.getId());
 
             if (templateId == null)
             {
-                row = Table.insert(u, ti, row);
+                ti.getUpdateService().insertRows(u, c, Arrays.asList(row), null, null, null);
             }
             else
             {
                 row.put("rowid", templateId);
-                row = Table.update(u, ti, row, templateId);
+                ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
             }
 
             return row;
         }
-        catch (RuntimeSQLException e)
+        catch (Exception e)
         {
             _log.error(e.getMessage(), e);
             errors.addRowError(new ValidationException(e.getMessage()));
@@ -153,7 +158,7 @@ public class AssayHelper
         }
     }
 
-    public void validateTemplate(User u, Container c, ExpProtocol protocol, Integer templateId, String title, String importMethod, JSONObject json) throws BatchValidationException
+    public void validateTemplate(User u, Container c, ExpProtocol protocol, @Nullable Integer templateId, String title, String importMethod, JSONObject json) throws BatchValidationException
     {
         BatchValidationException errors = new BatchValidationException();
 
@@ -176,6 +181,42 @@ public class AssayHelper
         {
             errors.addRowError(new ValidationException("Unable to find import method with name: " + method));
             throw errors;
+        }
+
+        // Verify if this template exists and permissions:
+        if (templateId != null)
+        {
+            UserSchema us = QueryService.get().getUserSchema(u, c.getContainerFor(ContainerType.DataType.tabParent), "laboratory");
+            TableInfo ti = us.getTable("assay_run_templates");
+            TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowId"), templateId), null);
+            if (ts.exists())
+            {
+                Container rowContainer = ContainerManager.getForId(ts.getObject(String.class));
+                if (rowContainer == null)
+                {
+                    errors.addRowError(new ValidationException("Unable to determine the container for template: " + templateId));
+                    throw errors;
+                }
+
+                if (!rowContainer.hasPermission("AssayHelper.validateTemplate()", u, UpdatePermission.class))
+                {
+                    errors.addRowError(new ValidationException("The current user does not have permission to edit template: " + templateId));
+                    throw errors;
+                }
+            }
+            else
+            {
+                errors.addRowError(new ValidationException("Unable to find template with ID: " + templateId));
+                throw errors;
+            }
+        }
+        else
+        {
+            if (!c.hasPermission("AssayHelper.validateTemplate()", u, UpdatePermission.class))
+            {
+                errors.addRowError(new ValidationException("The current user does not have permission to creates templates in folder: " + c.getName()));
+                throw errors;
+            }
         }
 
         method.validateTemplate(u, c, protocol, templateId, title, json, errors);
