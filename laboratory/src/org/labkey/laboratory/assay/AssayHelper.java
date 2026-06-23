@@ -30,6 +30,7 @@ import org.labkey.api.assay.AssayService;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CollectionUtils;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.RuntimeSQLException;
@@ -133,17 +134,23 @@ public class AssayHelper
             row.put("title", title);
             row.put("importMethod", importMethod);
             row.put("json", json.toString());
-            row.put("container", c.getId());
 
             if (templateId == null)
             {
+                row.put("container", c.getId());
                 row = Table.insert(u, ti, row);
             }
             else
             {
-                // Table.update operates by global PK, so verify the existing template lives in this container before updating it
+                // Table.update operates by global PK; verify the template is reachable from this container
+                // (here, or the parent when in a workbook) before updating, and leave its container unchanged.
+                List<String> templateContainers = new ArrayList<>();
+                templateContainers.add(c.getId());
+                if (c.isWorkbook())
+                    templateContainers.add(c.getParent().getId());
+
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-                filter.addCondition(FieldKey.fromString("container"), c);
+                filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
                 if (!new TableSelector(ti, filter, null).exists())
                 {
                     errors.addRowError(new ValidationException("Unknown template: " + templateId));
@@ -151,7 +158,7 @@ public class AssayHelper
                 }
 
                 row.put("rowid", templateId);
-                row = Table.update(u, ti, row, templateId);
+                row = Table.update(u, ti, row, templateId);  // "container" intentionally absent -> not moved
             }
 
             return row;

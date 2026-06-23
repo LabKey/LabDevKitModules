@@ -26,6 +26,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
@@ -466,10 +467,17 @@ public class DefaultAssayParser implements AssayParser
     {
         try
         {
-            //validate the template exists in this container
+            // The template may live in this container, or its parent when importing from a workbook
+            // (the picker sources templates from getQueryContainerPath). Scope to that set, never beyond it.
+            List<String> templateContainers = new ArrayList<>();
+            templateContainers.add(_container.getId());
+            if (_container.isWorkbook())
+                templateContainers.add(_container.getParent().getId());
+
+            //validate the template exists in (or above) this container
             TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-            filter.addCondition(FieldKey.fromString("container"), _container);
+            filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
             TableSelector ts = new TableSelector(ti, filter, null);
             if (ts.getRowCount() == 0)
             {
@@ -586,10 +594,15 @@ public class DefaultAssayParser implements AssayParser
         if (templateId == null)
             return ret;
 
+        List<String> templateContainers = new ArrayList<>();
+        templateContainers.add(_container.getId());
+        if (_container.isWorkbook())
+            templateContainers.add(_container.getParent().getId());
+
         TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-        filter.addCondition(FieldKey.fromString("container"), _container);
+        filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
         TableSelector ts = new TableSelector(ti, filter, null);
         Map<String, Object>[] maps = ts.getMapArray();
         if (maps.length == 0)
