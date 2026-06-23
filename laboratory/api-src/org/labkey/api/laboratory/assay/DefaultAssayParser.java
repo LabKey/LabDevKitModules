@@ -26,6 +26,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
@@ -462,13 +463,30 @@ public class DefaultAssayParser implements AssayParser
         errors.confirmNoErrors();
     }
 
+    /**
+     * Returns the set of container ids in which an assay run template for a request in the given container may
+     * legitimately live: the container itself, plus its parent when the request runs in a workbook (mirroring the
+     * run-template picker, which sources templates from Laboratory.Utils.getQueryContainerPath). Used to scope
+     * assay_run_templates lookups to the request's folder tree without reaching an unrelated container.
+     */
+    public static List<String> getTemplateContainerIds(Container c)
+    {
+        List<String> ids = new ArrayList<>();
+        ids.add(c.getId());
+        if (c.isWorkbook())
+            ids.add(c.getParent().getId());
+        return ids;
+    }
+
     protected void saveTemplate(ViewContext ctx, int templateId, int runId) throws BatchValidationException
     {
         try
         {
-            //validate the template exists
+            //validate the template exists in (or above) this container
             TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
-            TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
+            filter.addCondition(FieldKey.fromString("container"), getTemplateContainerIds(_container), CompareType.IN);
+            TableSelector ts = new TableSelector(ti, filter, null);
             if (ts.getRowCount() == 0)
             {
                 throw new BatchValidationException(Collections.singletonList(new ValidationException("Unknown template: " + templateId)), null);
@@ -586,7 +604,9 @@ public class DefaultAssayParser implements AssayParser
 
         TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
 
-        TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
+        filter.addCondition(FieldKey.fromString("container"), getTemplateContainerIds(_container), CompareType.IN);
+        TableSelector ts = new TableSelector(ti, filter, null);
         Map<String, Object>[] maps = ts.getMapArray();
         if (maps.length == 0)
         {
