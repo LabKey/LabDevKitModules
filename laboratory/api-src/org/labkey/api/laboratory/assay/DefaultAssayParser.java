@@ -463,21 +463,29 @@ public class DefaultAssayParser implements AssayParser
         errors.confirmNoErrors();
     }
 
+    /**
+     * Returns the set of container ids in which an assay run template for a request in the given container may
+     * legitimately live: the container itself, plus its parent when the request runs in a workbook (mirroring the
+     * run-template picker, which sources templates from Laboratory.Utils.getQueryContainerPath). Used to scope
+     * assay_run_templates lookups to the request's folder tree without reaching an unrelated container.
+     */
+    public static List<String> getTemplateContainerIds(Container c)
+    {
+        List<String> ids = new ArrayList<>();
+        ids.add(c.getId());
+        if (c.isWorkbook())
+            ids.add(c.getParent().getId());
+        return ids;
+    }
+
     protected void saveTemplate(ViewContext ctx, int templateId, int runId) throws BatchValidationException
     {
         try
         {
-            // The template may live in this container, or its parent when importing from a workbook
-            // (the picker sources templates from getQueryContainerPath). Scope to that set, never beyond it.
-            List<String> templateContainers = new ArrayList<>();
-            templateContainers.add(_container.getId());
-            if (_container.isWorkbook())
-                templateContainers.add(_container.getParent().getId());
-
             //validate the template exists in (or above) this container
             TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-            filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
+            filter.addCondition(FieldKey.fromString("container"), getTemplateContainerIds(_container), CompareType.IN);
             TableSelector ts = new TableSelector(ti, filter, null);
             if (ts.getRowCount() == 0)
             {
@@ -594,15 +602,10 @@ public class DefaultAssayParser implements AssayParser
         if (templateId == null)
             return ret;
 
-        List<String> templateContainers = new ArrayList<>();
-        templateContainers.add(_container.getId());
-        if (_container.isWorkbook())
-            templateContainers.add(_container.getParent().getId());
-
         TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-        filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
+        filter.addCondition(FieldKey.fromString("container"), getTemplateContainerIds(_container), CompareType.IN);
         TableSelector ts = new TableSelector(ti, filter, null);
         Map<String, Object>[] maps = ts.getMapArray();
         if (maps.length == 0)

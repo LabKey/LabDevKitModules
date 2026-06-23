@@ -52,6 +52,7 @@ import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.laboratory.assay.AssayDataProvider;
 import org.labkey.api.laboratory.assay.AssayImportMethod;
+import org.labkey.api.laboratory.assay.DefaultAssayParser;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.ValidationException;
@@ -144,13 +145,8 @@ public class AssayHelper
             {
                 // Table.update operates by global PK; verify the template is reachable from this container
                 // (here, or the parent when in a workbook) before updating, and leave its container unchanged.
-                List<String> templateContainers = new ArrayList<>();
-                templateContainers.add(c.getId());
-                if (c.isWorkbook())
-                    templateContainers.add(c.getParent().getId());
-
                 SimpleFilter filter = new SimpleFilter(FieldKey.fromString("rowid"), templateId);
-                filter.addCondition(FieldKey.fromString("container"), templateContainers, CompareType.IN);
+                filter.addCondition(FieldKey.fromString("container"), DefaultAssayParser.getTemplateContainerIds(c), CompareType.IN);
                 if (!new TableSelector(ti, filter, null).exists())
                 {
                     errors.addRowError(new ValidationException("Unknown template: " + templateId));
