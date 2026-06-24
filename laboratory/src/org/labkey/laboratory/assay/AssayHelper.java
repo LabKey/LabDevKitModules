@@ -58,6 +58,7 @@ import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.util.FileUtil;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.ViewContext;
@@ -131,6 +132,11 @@ public class AssayHelper
             validateTemplate(u, c, protocol, templateId, title, importMethod, json);
 
             UserSchema us = QueryService.get().getUserSchema(u, c, "laboratory");
+            if (us == null)
+            {
+                throw new IllegalStateException("Could not find the laboratory schema in container: " + c.getPath());
+            }
+
             TableInfo ti = us.getTable(LaboratorySchema.TABLE_ASSAY_RUN_TEMPLATES);
             Map<String, Object> row = new HashMap<>();
             row.put("assayId", protocol.getRowId());
@@ -140,15 +146,21 @@ public class AssayHelper
 
             if (templateId == null)
             {
-                ti.getUpdateService().insertRows(u, c, Arrays.asList(row), null, null, null);
+                BatchValidationException bve = new BatchValidationException();
+                List<Map<String, Object>> rows = ti.getUpdateService().insertRows(u, c, Arrays.asList(row), bve, null, null);
+                if (bve.hasErrors())
+                {
+                    throw bve;
+                }
+
+                return rows.getFirst();
             }
             else
             {
                 row.put("rowid", templateId);
-                ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
+                List<Map<String, Object>> rows = ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
+                return rows.getFirst();
             }
-
-            return row;
         }
         catch (Exception e)
         {
@@ -188,7 +200,7 @@ public class AssayHelper
         {
             UserSchema us = QueryService.get().getUserSchema(u, c.getContainerFor(ContainerType.DataType.tabParent), "laboratory");
             TableInfo ti = us.getTable("assay_run_templates");
-            TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowId"), templateId), null);
+            TableSelector ts = new TableSelector(ti, PageFlowUtil.set("container"), new SimpleFilter(FieldKey.fromString("rowId"), templateId), null);
             if (ts.exists())
             {
                 Container rowContainer = ContainerManager.getForId(ts.getObject(String.class));

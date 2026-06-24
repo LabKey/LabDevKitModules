@@ -466,8 +466,13 @@ public class DefaultAssayParser implements AssayParser
     {
         try
         {
-            //validate the template exists
-            UserSchema us = QueryService.get().getUserSchema(ctx.getUser(), ctx.getContainer().getContainerFor(ContainerType.DataType.tabParent), "laboratory");
+            //validate the template exists. Note: this should always act against the current container, even if the container is a workbook (e.g., it should not allow cross-workbook actions)
+            UserSchema us = QueryService.get().getUserSchema(ctx.getUser(), ctx.getContainer(), "laboratory");
+            if (us == null)
+            {
+                throw new IllegalStateException("The laboratory schema is not available in container: " + ctx.getContainer().getPath());
+            }
+
             TableInfo ti = us.getTable("assay_run_templates");
             TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
             if (!ts.exists())
@@ -586,6 +591,10 @@ public class DefaultAssayParser implements AssayParser
             return ret;
 
         UserSchema us = QueryService.get().getUserSchema(context.getViewContext().getUser(), context.getViewContext().getContainer().getContainerFor(ContainerType.DataType.tabParent), "laboratory");
+        if (us == null)
+        {
+            throw new IllegalStateException("Could not find the laboratory schema in container: " + context.getViewContext().getContainer().getContainerFor(ContainerType.DataType.tabParent).getPath());
+        }
         TableInfo ti = us.getTable("assay_run_templates");
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
         Map<String, Object>[] maps = ts.getMapArray();
