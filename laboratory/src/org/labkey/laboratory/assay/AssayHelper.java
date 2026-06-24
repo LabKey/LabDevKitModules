@@ -153,13 +153,13 @@ public class AssayHelper
                     throw bve;
                 }
 
-                return rows.getFirst();
+                return rows.get(0);
             }
             else
             {
                 row.put("rowid", templateId);
                 List<Map<String, Object>> rows = ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
-                return rows.getFirst();
+                return rows.get(0);
             }
         }
         catch (Exception e)
