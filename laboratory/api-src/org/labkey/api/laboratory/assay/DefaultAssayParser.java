@@ -29,6 +29,7 @@ import org.labkey.api.assay.AssayProvider;
 import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.ContainerType;
 import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.SimpleFilter;
@@ -605,6 +606,18 @@ public class DefaultAssayParser implements AssayParser
 
         Map<String, Object> map = maps[0];
         JSONObject templateJson = new JSONObject((String)map.get("json"));
+
+        // This enforces that the request and existing record are from the same container, including for workbook/parents:
+        Container rowContainer = ContainerManager.getForId(String.valueOf(map.get("container")));
+        if (rowContainer == null)
+        {
+            throw new IllegalStateException("Unable to determine the container for template: " + templateId);
+        }
+        else if (!rowContainer.equals(context.getViewContext().getContainer()))
+        {
+            throw new IllegalStateException("Template is from the wrong container: " + templateId);
+        }
+
         JSONArray rows = templateJson.getJSONArray("ResultRows");
         for (JSONObject row : JsonUtil.toJSONObjectList(rows))
         {

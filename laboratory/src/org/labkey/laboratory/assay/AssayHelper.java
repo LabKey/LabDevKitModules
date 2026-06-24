@@ -195,9 +195,10 @@ public class AssayHelper
             throw errors;
         }
 
-        // Verify if this template exists and permissions:
+        // Verify if this template exists and permissions. This expects any existing row to be present in the current container:
         if (templateId != null)
         {
+            // This queries the current container+workbooks to identify the existence of rows in other reasonable containers:
             UserSchema us = QueryService.get().getUserSchema(u, c.getContainerFor(ContainerType.DataType.tabParent), "laboratory");
             TableInfo ti = us.getTable("assay_run_templates");
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set("container"), new SimpleFilter(FieldKey.fromString("rowId"), templateId), null);
@@ -213,6 +214,12 @@ public class AssayHelper
                 if (!rowContainer.hasPermission("AssayHelper.validateTemplate()", u, UpdatePermission.class))
                 {
                     errors.addRowError(new ValidationException("The current user does not have permission to edit template: " + templateId));
+                    throw errors;
+                }
+
+                if (!c.equals(rowContainer))
+                {
+                    errors.addRowError(new ValidationException("Template " + templateId + " is not from this folder"));
                     throw errors;
                 }
             }
