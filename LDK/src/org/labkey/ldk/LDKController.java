@@ -92,6 +92,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class LDKController extends SpringActionController
 {
@@ -439,9 +440,9 @@ public class LDKController extends SpringActionController
             List<String> messages = service.validateContainerScopedTables(false);
 
             String sb = "This page is designed to inspect all registered container scoped tables and report any tables with duplicate keys in the same container.  This should be enforced by the user schema; however, direct DB inserts will bypass this check.<p>" +
-                    StringUtils.join(messages, "<br>");
+                    messages.stream().map(PageFlowUtil::filter).collect(Collectors.joining("<br>"));
 
-            return new HtmlView(HtmlString.of(sb));
+            return new HtmlView(HtmlString.unsafe(sb));
         }
 
         @Override
@@ -912,7 +913,7 @@ public class LDKController extends SpringActionController
                     }
                     catch (URISyntaxException e)
                     {
-                        return new HtmlView(HtmlString.unsafe("Invalid redirect URL set: " + urlString));
+                        return new HtmlView(HtmlString.of("Invalid redirect URL set: " + urlString));
                     }
                 }
             }
