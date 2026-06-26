@@ -485,7 +485,11 @@ public class DefaultAssayParser implements AssayParser
             row.put("runid", runId);
             row.put("status", "Complete");
 
-            ti.getUpdateService().updateRows(ctx.getUser(), ctx.getContainer(), Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
+            ti.getUpdateService().updateRows(ctx.getUser(), ctx.getContainer(), Arrays.asList(row), Arrays.asList(Map.of("rowid", templateId)), null, null);
+        }
+        catch (BatchValidationException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {

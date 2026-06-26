@@ -158,9 +158,15 @@ public class AssayHelper
             else
             {
                 row.put("rowid", templateId);
-                List<Map<String, Object>> rows = ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowId", templateId)), null, null);
+                List<Map<String, Object>> rows = ti.getUpdateService().updateRows(u, c, Arrays.asList(row), Arrays.asList(Map.of("rowid", templateId)), null, null);
                 return rows.get(0);
             }
+        }
+        catch (BatchValidationException e)
+        {
+            // Expected validation failures (e.g. from validateTemplate() or insertRows()) should propagate to the
+            // client as-is, not be logged as server errors.
+            throw e;
         }
         catch (Exception e)
         {
