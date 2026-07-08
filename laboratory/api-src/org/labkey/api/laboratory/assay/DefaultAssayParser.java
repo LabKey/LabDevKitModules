@@ -20,18 +20,19 @@ import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.labkey.api.assay.AssayProvider;
+import org.labkey.api.assay.AssayService;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.ContainerType;
 import org.labkey.api.data.ConvertHelper;
-import org.labkey.api.data.DbSchema;
-import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.PropertyDescriptor;
@@ -44,14 +45,14 @@ import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.reader.ColumnDescriptor;
 import org.labkey.api.reader.ExcelFactory;
 import org.labkey.api.reader.Readers;
 import org.labkey.api.reader.TabLoader;
 import org.labkey.api.security.User;
-import org.labkey.api.assay.AssayProvider;
-import org.labkey.api.assay.AssayService;
 import org.labkey.api.util.FileType;
 import org.labkey.api.util.JsonUtil;
 import org.labkey.api.util.Pair;
@@ -461,10 +462,16 @@ public class DefaultAssayParser implements AssayParser
     {
         try
         {
-            //validate the template exists
-            TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
+            //validate the template exists. Note: this should always act against the current container, even if the container is a workbook (e.g., it should not allow cross-workbook actions)
+            UserSchema us = QueryService.get().getUserSchema(ctx.getUser(), ctx.getContainer(), "laboratory");
+            if (us == null)
+            {
+                throw new IllegalStateException("The laboratory schema is not available in container: " + ctx.getContainer().getPath());
+            }
+
+            TableInfo ti = us.getTable("assay_run_templates");
             TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
-            if (ts.getRowCount() == 0)
+            if (!ts.exists())
             {
                 throw new BatchValidationException(Collections.singletonList(new ValidationException("Unknown template: " + templateId)), null);
             }
@@ -473,11 +480,15 @@ public class DefaultAssayParser implements AssayParser
             row.put("runid", runId);
             row.put("status", "Complete");
 
-            Table.update(ctx.getUser(), ti, row, templateId);
+            ti.getUpdateService().updateRows(ctx.getUser(), ctx.getContainer(), Arrays.asList(row), Arrays.asList(Map.of("rowid", templateId)), null, null);
         }
-        catch (RuntimeSQLException e)
+        catch (BatchValidationException e)
         {
-            throw new BatchValidationException(Collections.singletonList(new ValidationException(e.getSQLException().getMessage())), null);
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new BatchValidationException(Collections.singletonList(new ValidationException(e.getMessage())), null);
         }
     }
 
@@ -579,8 +590,12 @@ public class DefaultAssayParser implements AssayParser
         if (templateId == null)
             return ret;
 
-        TableInfo ti = DbSchema.get("laboratory").getTable("assay_run_templates");
-
+        UserSchema us = QueryService.get().getUserSchema(context.getViewContext().getUser(), context.getViewContext().getContainer().getContainerFor(ContainerType.DataType.tabParent), "laboratory");
+        if (us == null)
+        {
+            throw new IllegalStateException("Could not find the laboratory schema in container: " + context.getViewContext().getContainer().getContainerFor(ContainerType.DataType.tabParent).getPath());
+        }
+        TableInfo ti = us.getTable("assay_run_templates");
         TableSelector ts = new TableSelector(ti, new SimpleFilter(FieldKey.fromString("rowid"), templateId), null);
         Map<String, Object>[] maps = ts.getMapArray();
         if (maps.length == 0)
@@ -590,6 +605,18 @@ public class DefaultAssayParser implements AssayParser
 
         Map<String, Object> map = maps[0];
         JSONObject templateJson = new JSONObject((String)map.get("json"));
+
+        // This enforces that the request and existing record are from the same container, including for workbook/parents:
+        Container rowContainer = ContainerManager.getForId(String.valueOf(map.get("container")));
+        if (rowContainer == null)
+        {
+            throw new IllegalStateException("Unable to determine the container for template: " + templateId);
+        }
+        else if (!rowContainer.equals(context.getViewContext().getContainer()))
+        {
+            throw new IllegalStateException("Template is from the wrong container: " + templateId);
+        }
+
         JSONArray rows = templateJson.getJSONArray("ResultRows");
         for (JSONObject row : JsonUtil.toJSONObjectList(rows))
         {
