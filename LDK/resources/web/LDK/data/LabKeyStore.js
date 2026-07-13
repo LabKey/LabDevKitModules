@@ -53,7 +53,7 @@ Ext4.define('LDK.data.proxy.ExtendedJsonReader', {
         if (data.metaData){
             Ext4.each(data.metaData.fields, function(field){
                 if (!field.name){
-                    var fk = new LABKEY.FieldKey.fromParts(field.fieldKey);
+                    var fk = LABKEY.FieldKey.fromParts(field.fieldKey);
                     field.name = fk.toString();
                 }
             }, this);
