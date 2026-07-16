@@ -80,15 +80,25 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
     {
         super.init();
 
+        boolean realPkIsPseudoKey = false;
         for (String col : getRealTable().getPkColumnNames())
         {
             var existing = getMutableColumn(col);
             if (existing != null)
             {
-                existing.setKeyField(false);
-                existing.setUserEditable(false);
-                existing.setHidden(true);
                 _realPKs.add(col);
+                if (col.equalsIgnoreCase(_pseudoPk))
+                {
+                    // The pseudo-key is also the real PK (a natural key, like ehr_lookups.project_types.type),
+                    // so it must remain visible and editable for inserts to be possible
+                    realPkIsPseudoKey = true;
+                }
+                else
+                {
+                    existing.setKeyField(false);
+                    existing.setUserEditable(false);
+                    existing.setHidden(true);
+                }
             }
         }
 
@@ -96,6 +106,11 @@ public class ContainerScopedTable<SchemaType extends UserSchema> extends CustomP
         assert newKey != null;
 
         newKey.setKeyField(true);
+        if (realPkIsPseudoKey)
+        {
+            // Enterable on insert, but hidden from the update form
+            newKey.setShownInUpdateView(false);
+        }
         return this;
     }
 
