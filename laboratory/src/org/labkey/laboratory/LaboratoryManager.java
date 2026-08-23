@@ -561,12 +561,20 @@ public class LaboratoryManager
             boolean missingCols = false;
 
             List<String> cols = new ArrayList<>();
+            String[] includedCols = null;
 
             for (String name : indexCols)
             {
                 String[] tokens = name.split(":");
-                if (!tokens[0].equalsIgnoreCase("include"))
+                if (tokens[0].equalsIgnoreCase("include"))
+                {
+                    if (tokens.length > 1)
+                        includedCols = tokens[1].split(",");
+                }
+                else
+                {
                     cols.add(tokens[0]);
+                }
             }
 
             for (String col : cols)
@@ -583,6 +591,11 @@ public class LaboratoryManager
 
             String idxPrefix = "LABORATORY_IDX_";
             String indexName = idxPrefix + realTable.getName() + "_" + StringUtils.join(cols, "_");
+            // The index itself no longer covers the included columns, but the suffix stays in the name so existing indexes are still recognized
+            if (includedCols != null)
+            {
+                indexName += "_include_" + StringUtils.join(includedCols, "_");
+            }
 
             if (distinctIndexes.contains(indexName))
                 throw new RuntimeException("An index has already been created with the name: " + indexName);
