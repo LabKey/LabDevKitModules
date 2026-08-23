@@ -561,25 +561,12 @@ public class LaboratoryManager
             boolean missingCols = false;
 
             List<String> cols = new ArrayList<>();
-            String[] includedCols = null;
-            Map<String, String> directionMap = new HashMap<>();
 
             for (String name : indexCols)
             {
                 String[] tokens = name.split(":");
-                if (tokens[0].equalsIgnoreCase("include"))
-                {
-                    if (tokens.length > 1)
-                    {
-                        includedCols = tokens[1].split(",");
-                    }
-                }
-                else
-                {
+                if (!tokens[0].equalsIgnoreCase("include"))
                     cols.add(tokens[0]);
-                    if (tokens.length > 1)
-                        directionMap.put(tokens[0], tokens[1]);
-                }
             }
 
             for (String col : cols)
@@ -596,10 +583,6 @@ public class LaboratoryManager
 
             String idxPrefix = "LABORATORY_IDX_";
             String indexName = idxPrefix + realTable.getName() + "_" + StringUtils.join(cols, "_");
-            if (includedCols != null)
-            {
-                indexName += "_include_" + StringUtils.join(includedCols, "_");
-            }
 
             if (distinctIndexes.contains(indexName))
                 throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -621,7 +604,7 @@ public class LaboratoryManager
             {
                 if (commitChanges)
                 {
-                    dropIndex(schema, realTable, indexName, cols, realTable.getName(), messages);
+                    dropIndex(schema, indexName, cols, realTable.getName(), messages);
                 }
                 else
                 {
@@ -634,46 +617,28 @@ public class LaboratoryManager
             {
                 if (commitChanges)
                 {
-                    List<String> columns = new ArrayList<>();
-                    for (String name : cols)
-                    {
-                        if (schema.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
-                            name += " " + directionMap.get(name);
-
-                        columns.add(name);
-                    }
-
-                    createIndex(schema, realTable, realTable.getName(), indexName, columns, includedCols, messages);
+                    createIndex(schema, realTable, realTable.getName(), indexName, cols, messages);
                 }
                 else
                 {
-                    messages.add("Missing index on column(s): " + StringUtils.join(indexCols, ", ") + (includedCols != null ? " include: " + StringUtils.join(includedCols, ",") : "") + " for table: " + schema.getName() + "." + realTable.getName());
+                    messages.add("Missing index on column(s): " + StringUtils.join(indexCols, ", ") + " for table: " + schema.getName() + "." + realTable.getName());
                 }
             }
         }
     }
 
-    private void createIndex(DbSchema schema, TableInfo realTable, String tableName, String indexName, List<String> columns, String[] includedCols, List<String> messages)
+    private void createIndex(DbSchema schema, TableInfo realTable, String tableName, String indexName, List<String> columns, List<String> messages)
     {
         messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for table: " + schema.getName() + "." + tableName);
-        String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
-        if (schema.getSqlDialect().isSqlServer())
-        {
-            if (includedCols != null)
-                sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
-
-            sqlString += " WITH (DATA_COMPRESSION = ROW)";
-        }
-        SQLFragment sql = new SQLFragment(sqlString);
+        SQLFragment sql = new SQLFragment("CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")");
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
     }
 
-    private void dropIndex(DbSchema schema, TableInfo realTable, String indexName, List<String> cols, String tableName, List<String> messages)
+    private void dropIndex(DbSchema schema, String indexName, List<String> cols, String tableName, List<String> messages)
     {
         messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for table: " + schema.getName() + "." + tableName);
-        String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
-        SQLFragment sql = new SQLFragment(sqlString);
+        SQLFragment sql = new SQLFragment("DROP INDEX " + schema.getName() + "." + indexName);
         SqlExecutor se = new SqlExecutor(schema);
         se.execute(sql);
     }

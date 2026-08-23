@@ -235,7 +235,6 @@ public class SiteSummaryNotification implements Notification
 
         DbSchema auditSchema = DbSchema.get("audit");
         String sql = "SELECT\n" +
-            (auditSchema.getSqlDialect().isSqlServer() ? "TOP 7\n" : "") +
             "cast(a.created as date) as date,\n" +
             "count(*) AS Logins,\n" +
             "count(distinct a.createdby) AS DistinctUsers\n" +
@@ -475,56 +474,45 @@ public class SiteSummaryNotification implements Notification
 
     private void getTableSizeStats(Container c, User u, final StringBuilder msg, final StringBuilder alerts, final Map<String, String> saved, Map<String, String> toSave)
     {
-        SQLFragment sql = null;
-        if (DbScope.getLabKeyScope().getSqlDialect().isPostgreSQL())
+        SQLFragment sql = new SQLFragment("SELECT nspname as schemaName, relname as tableName, reltuples as rowcnt FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND relkind='r' ORDER BY reltuples DESC limit 20");
+
+        msg.append("<br>The following items are designed to give an overview of the amount of data stored in this site:<br><br>");
+        String tableSizes = "tableSizes";
+
+        msg.append("<br><b>The top 20 largest tables, by row count:</b><br><br>");
+        msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Schema</td><td>Table</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
+
+        SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), sql);
+
+        final Map<String, String> newValueMap = new HashMap<>();
+        final JSONObject oldValueMap = saved.containsKey(tableSizes) ? new JSONObject(saved.get(tableSizes)) : null;
+
+        ss.forEach(new Selector.ForEachBlock<>()
         {
-            sql = new SQLFragment("SELECT nspname as schemaName, relname as tableName, reltuples as rowcnt FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND relkind='r' ORDER BY reltuples DESC limit 20");
-        }
-        else if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
-        {
-            sql = new SQLFragment("SELECT top 20 OBJECT_SCHEMA_NAME(o.id) as schemaName, o.name as tableName, i.rowcnt FROM sysindexes AS i INNER JOIN sysobjects AS o ON i.id = o.id WHERE i.indid < 2  AND OBJECTPROPERTY(o.id, 'IsMSShipped') = 0 ORDER BY i.rowcnt desc");
-        }
-
-        if (sql != null)
-        {
-            msg.append("<br>The following items are designed to give an overview of the amount of data stored in this site:<br><br>");
-            String tableSizes = "tableSizes";
-
-            msg.append("<br><b>The top 20 largest tables, by row count:</b><br><br>");
-            msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Schema</td><td>Table</td><td># of Rows</td><td>Previous Value</td><td>% Change</td></tr>");
-
-            SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), sql);
-
-            final Map<String, String> newValueMap = new HashMap<>();
-            final JSONObject oldValueMap = saved.containsKey(tableSizes) ? new JSONObject(saved.get(tableSizes)) : null;
-
-            ss.forEach(new Selector.ForEachBlock<>()
+            @Override
+            public void exec(ResultSet object) throws SQLException
             {
-                @Override
-                public void exec(ResultSet object) throws SQLException
+                Long total = object.getLong("rowcnt");
+                String schema = object.getString("schemaName");
+                String table = object.getString("tableName");
+                String key = schema + "." + table;
+
+                newValueMap.put(key, total.toString());
+                Long previousValue = null;
+                if (oldValueMap != null && oldValueMap.has(key))
                 {
-                    Long total = object.getLong("rowcnt");
-                    String schema = object.getString("schemaName");
-                    String table = object.getString("tableName");
-                    String key = schema + "." + table;
-
-                    newValueMap.put(key, total.toString());
-                    Long previousValue = null;
-                    if (oldValueMap != null && oldValueMap.has(key))
-                    {
-                        previousValue = oldValueMap.getLong(key);
-                    }
-
-                    String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " + key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
-                    msg.append("<tr><td>" + (schema == null ? "" : schema) + "</td><td>" + (table == null ? "" : table) + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
+                    previousValue = oldValueMap.getLong(key);
                 }
-            });
 
-            msg.append("</table><br>");
+                String pctChange = getPctChange(previousValue, total, 0.05, "The number of rows in the table " + key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
+                msg.append("<tr><td>" + (schema == null ? "" : schema) + "</td><td>" + (table == null ? "" : table) + "</td><td>" + (total == null ? "" : NumberFormat.getInstance().format(total)) + "</td><td>" + (previousValue == null ? "" : NumberFormat.getInstance().format(previousValue)) + "</td>" + pctChange + "</tr>");
+            }
+        });
 
-            if (!newValueMap.isEmpty())
-                toSave.put(tableSizes, new JSONObject(newValueMap).toString());
-        }
+        msg.append("</table><br>");
+
+        if (!newValueMap.isEmpty())
+            toSave.put(tableSizes, new JSONObject(newValueMap).toString());
 
         getDBSize(c, u, msg, alerts, saved, toSave);
         getStudySizeSummary(c, u, msg, alerts, saved, toSave);
@@ -536,54 +524,12 @@ public class SiteSummaryNotification implements Notification
 
     private void getDBSize(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
     {
-        SqlSelector ss;
-
-        String dbSizes = "dbSizes";
-        final Map<String, String> newValueMap = new HashMap<>();
-        final JSONObject oldValueMap = saved.containsKey(dbSizes) ? new JSONObject(saved.get(dbSizes)) : null;
-
-        if (DbScope.getLabKeyScope().getSqlDialect().isSqlServer())
+        SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT pg_database_size(?) As size", DbScope.getLabKeyScope().getDatabaseName()));
+        Map<String, Object>[] maps = ss.getMapArray();
+        if (maps.length > 0)
         {
-            ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT " +
-                "DB_NAME(database_id) AS DatabaseName, Name AS LogicalName, (size*8) as size\n" +  //this column holds size as 8KB pages
-                "FROM sys.master_files\n" +
-                "ORDER BY size desc"));
-
-            Map<String, Object>[] maps = ss.getMapArray();
-            if (maps.length > 0)
-            {
-                msg.append("<b>Database sizes:</b><br><br>");
-                msg.append("<table border=1 style='border-collapse: collapse;'><tr style='font-weight:bold;'><td>Database</td><td>Logical Name</td><td>Size (MB)</td><td>Previous Size</td><td>% Change</td></tr>");
-                for (Map<String, Object> row : maps)
-                {
-                    long size = Long.parseLong(row.get("size").toString());
-                    String key = row.get("LogicalName").toString();
-
-                    newValueMap.put(key, Long.toString(size));
-                    Long previousValue = null;
-                    if (oldValueMap != null && oldValueMap.has(key))
-                    {
-                        previousValue = oldValueMap.getLong(key);
-                    }
-
-                    String pctChange = getPctChange(previousValue, size, 0.05, "The size of the database " +  key + " has changed signficiantly since the last run on " + getLastSaveString(c, saved), alerts);
-                    msg.append("<tr><td>" + row.get("DatabaseName").toString() + "</td><td>" + row.get("LogicalName").toString() + "</td><td>" + FileUtils.byteCountToDisplaySize(size * 1000) + "</td><td>" + (previousValue == null ? "" : FileUtils.byteCountToDisplaySize(previousValue * 1000))+ "</td>" + pctChange + "</tr>");
-                }
-                msg.append("</table>");
-
-                if (!newValueMap.isEmpty())
-                    toSave.put(dbSizes, new JSONObject(newValueMap).toString());
-            }
-        }
-        else
-        {
-            ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT pg_database_size(?) As size", DbScope.getLabKeyScope().getDatabaseName()));
-            Map<String, Object>[] maps = ss.getMapArray();
-            if (maps.length > 0)
-            {
-                Long size = Long.parseLong(maps[0].get("size").toString());
-                msg.append("Size of LabKey DB: " + FileUtils.byteCountToDisplaySize(size) + "<br>");
-            }
+            Long size = Long.parseLong(maps[0].get("size").toString());
+            msg.append("Size of LabKey DB: " + FileUtils.byteCountToDisplaySize(size) + "<br>");
         }
     }
 

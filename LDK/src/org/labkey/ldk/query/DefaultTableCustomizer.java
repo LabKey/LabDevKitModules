@@ -253,9 +253,9 @@ public class DefaultTableCustomizer implements TableCustomizer
             ti.removeColumn(sortCol);
         }
 
-        if (!ti.getSqlDialect().isPostgreSQL() && !ti.getSqlDialect().isSqlServer())
+        if (!ti.getSqlDialect().isPostgreSQL())
         {
-            throw new UnsupportedOperationException("naturalize() is only supported on Postgres and SqlServer");
+            throw new UnsupportedOperationException("naturalize() is only supported on Postgres");
         }
 
         SQLFragment sql = new SQLFragment("ldk.naturalize(").append(col.getValueSql(ExprColumn.STR_TABLE_ALIAS)).append(")");
