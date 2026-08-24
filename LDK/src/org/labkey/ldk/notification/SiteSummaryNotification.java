@@ -114,11 +114,6 @@ public class SiteSummaryNotification implements Notification
         return "Daily Admin Alerts: " + getDateTimeFormat(c).format(new Date());
     }
 
-    public DateFormat getDateFormat(Container c)
-    {
-        return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateFormat());
-    }
-
     public DateFormat getDateTimeFormat(Container c)
     {
         return new SimpleDateFormat(LookAndFeelProperties.getInstance(c).getDefaultDateTimeFormat());
@@ -150,7 +145,7 @@ public class SiteSummaryNotification implements Notification
             return getDateTimeFormat(c).format(new Date(lastSaveMills));
     }
 
-    private void saveValues(Container c, Map<String, String> saved, Map<String, String> newValues)
+    private void saveValues(Container c, Map<String, String> newValues)
     {
         WritablePropertyMap map = PropertyManager.getWritableProperties(c, PROP_CATEGORY, true);
 
@@ -190,13 +185,13 @@ public class SiteSummaryNotification implements Notification
         StringBuilder msg = new StringBuilder();
         StringBuilder alerts = new StringBuilder();
 
-        getSiteUsageStats(c, u, msg, alerts, saved, newValues);
+        getSiteUsageStats(c, u, msg);
 
         getTableSizeStats(c, u, msg, alerts, saved, newValues);
 
         getFileRootSizes(c, u, msg, alerts, saved, newValues);
 
-        validateContainerScopedTables(c, u, msg, alerts);
+        validateContainerScopedTables(c, msg, alerts);
 
         //allow registering of additional sections
         Set<NotificationSection> sections = ((LDKServiceImpl)LDKServiceImpl.get()).getSiteSummaryNotificationSections();
@@ -219,7 +214,7 @@ public class SiteSummaryNotification implements Notification
 
         msg.insert(0, "This email contains a series of alerts designed for site admins.  It was run on: " + getDateTimeFormat(c).format(new Date()) + ".  Runtime: " + DurationFormatUtils.formatDurationWords((new Date()).getTime() - start.getTime(), true, true) + "<p>");
 
-        saveValues(c, saved, newValues);
+        saveValues(c, newValues);
 
         return msg.toString();
     }
@@ -227,7 +222,7 @@ public class SiteSummaryNotification implements Notification
     /**
      * summarize site usage in the past 7 days
      */
-    private void siteUsage(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
+    private void siteUsage(final StringBuilder msg)
     {
         //different behavior depending on whether audit data has migrated
         AuditTypeProvider ap = AuditLogService.get().getAuditProvider("UserAuditEvent");
@@ -272,35 +267,6 @@ public class SiteSummaryNotification implements Notification
 
             msg.append("</table><p>\n");
         }
-    }
-
-    /**
-     * we print some stats on data entry
-     */
-    private void dataEntryStatus(Container c, User u, final StringBuilder msg)
-    {
-        msg.append("<b>Data Entry Stats:</b><p>");
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DATE, -1);
-        SQLFragment sql = new SQLFragment("SELECT t.formtype, count(*) as total FROM ehr.tasks t WHERE cast(t.created as date) = ").appendValue(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime())).append(" GROUP BY t.formtype ORDER BY t.formtype");
-
-        UserSchema us = QueryService.get().getUserSchema(u, c, "core");
-        SqlSelector ss = new SqlSelector(us.getDbSchema(), sql);
-
-        msg.append("Number of Forms Created Yesterday: <br>\n");
-
-        ss.forEach(new Selector.ForEachBlock<>()
-        {
-            @Override
-            public void exec(ResultSet rs) throws SQLException
-            {
-                msg.append(rs.getString("formtype") + ": " + rs.getInt("total") + "<br>\n");
-            }
-        });
-
-        msg.append("<p>\n");
     }
 
     private void getStudySizeSummary(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
@@ -362,7 +328,7 @@ public class SiteSummaryNotification implements Notification
 
     }
 
-    private void getPipelineJobCount(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
+    private void getPipelineJobCount(Container c, User u, final StringBuilder msg)
     {
         TableInfo jobs = PipelineService.get().getJobsTable(u, c);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("modified"), "-1d", CompareType.DATE_GTE);
@@ -372,7 +338,7 @@ public class SiteSummaryNotification implements Notification
         msg.append("Pipeline jobs created/modified in the past 24 hours: " + count + "<br>");
     }
 
-    private void validateContainerScopedTables(Container c, User u, final StringBuilder msg, final StringBuilder alerts)
+    private void validateContainerScopedTables(Container c, final StringBuilder msg, final StringBuilder alerts)
     {
         LDKServiceImpl service = (LDKServiceImpl)LDKServiceImpl.get();
         List<String> errors = service.validateContainerScopedTables(true);
@@ -459,15 +425,15 @@ public class SiteSummaryNotification implements Notification
             toSave.put(fileRootCounts, new JSONObject(newValueMapCounts).toString());
     }
 
-    private void getSiteUsageStats(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
+    private void getSiteUsageStats(Container c, User u, final StringBuilder msg)
     {
         msg.append("<br>The following items are designed to give a summary of recent site usage:<br><br>");
 
-        siteUsage(c, u, msg, alerts, saved, toSave);
+        siteUsage(msg);
 
         msg.append("<b>Other Misc Statistics:</b><br><br>");
 
-        getPipelineJobCount(c, u, msg, alerts, saved, toSave);
+        getPipelineJobCount(c, u, msg);
 
         msg.append("<hr>");
     }
@@ -514,7 +480,7 @@ public class SiteSummaryNotification implements Notification
         if (!newValueMap.isEmpty())
             toSave.put(tableSizes, new JSONObject(newValueMap).toString());
 
-        getDBSize(c, u, msg, alerts, saved, toSave);
+        getDBSize(msg);
         getStudySizeSummary(c, u, msg, alerts, saved, toSave);
         getAssayRunSummary(c, u, msg, alerts, saved, toSave);
         getListSummary(c, u, msg, alerts, saved, toSave);
@@ -522,7 +488,7 @@ public class SiteSummaryNotification implements Notification
         msg.append("<hr>");
     }
 
-    private void getDBSize(Container c, User u, final StringBuilder msg, final StringBuilder alerts, Map<String, String> saved, Map<String, String> toSave)
+    private void getDBSize(final StringBuilder msg)
     {
         SqlSelector ss = new SqlSelector(DbScope.getLabKeyScope(), new SQLFragment("SELECT pg_database_size(?) As size", DbScope.getLabKeyScope().getDatabaseName()));
         Map<String, Object>[] maps = ss.getMapArray();

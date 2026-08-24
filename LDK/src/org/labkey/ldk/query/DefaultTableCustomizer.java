@@ -24,9 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-import org.labkey.api.assay.AssayResultTable;
 import org.labkey.api.data.AbstractTableInfo;
-import org.labkey.api.data.BuiltInButtonConfig;
 import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ButtonConfig;
 import org.labkey.api.data.ColumnInfo;
@@ -149,7 +147,7 @@ public class DefaultTableCustomizer implements TableCustomizer
             return;
         }
 
-        String keyField = keyFields.get(0);
+        String keyField = keyFields.getFirst();
         StringExpression se = ti.getDetailsURL(null, ti.getUserSchema().getContainer());
         // Handle a null source string, which you get when the URL is a AbstractTableInfo.LINK_DISABLER. See issue 39403
         if (se == null || se.toString() == null || se.toString().contains("detailsQueryRow"))
@@ -214,7 +212,7 @@ public class DefaultTableCustomizer implements TableCustomizer
 
             if (schemaName != null && queryName != null)
             {
-                String keyField = keyFields.get(0);
+                String keyField = keyFields.getFirst();
                 if (!AbstractTableInfo.LINK_DISABLER_ACTION_URL.equals(ti.getImportDataURL(ti.getUserSchema().getContainer())))
                     ti.setImportURL(DetailsURL.fromString("/query/importData.view?schemaName=" + schemaName + "&query.queryName=" + queryName + "&keyField=" + keyField + "&bulkImport=true"));
 
@@ -371,47 +369,6 @@ public class DefaultTableCustomizer implements TableCustomizer
         ti.setButtonBarConfig(cfg);
     }
 
-    private static String getExpectedImportBtnName(TableInfo ti)
-    {
-        if (ti instanceof AssayResultTable)
-        {
-            return "Import Data";
-        }
-        else if (ti.getInsertURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL && ti.getImportDataURL(ti.getUserSchema().getContainer()) != AbstractTableInfo.LINK_DISABLER_ACTION_URL)
-        {
-            return "Insert";
-        }
-
-        return "Import Bulk Data";
-    }
-
-    private static boolean hasImportDataBtn(ButtonBarConfig cfg, TableInfo ti)
-    {
-        if (cfg.getItems() == null)
-            return false;
-
-        String expectedName = getExpectedImportBtnName(ti);
-        for (ButtonConfig bc : cfg.getItems())
-        {
-            if (bc instanceof BuiltInButtonConfig)
-            {
-                if (((BuiltInButtonConfig)bc).getOriginalCaption().equals(expectedName))
-                {
-                    return true;
-                }
-            }
-            else if (bc instanceof UserDefinedButtonConfig)
-            {
-                if (((UserDefinedButtonConfig)bc).getText().equals(expectedName))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     private static boolean configureMoreActionsBtn(TableInfo ti, List<ButtonConfigFactory> buttons, ButtonBarConfig cfg, Set<String> scripts)
     {
         if (buttons == null || buttons.isEmpty())
@@ -499,16 +456,16 @@ public class DefaultTableCustomizer implements TableCustomizer
             overrideDetailsUrl(Boolean.class, true),
             primaryKeyField(String.class, null);
 
-            private final Class _clazz;
+            private final Class<?> _clazz;
             private final Object _defaultVal;
 
-            PROPERIES(Class clazz, Object defaultVal)
+            PROPERIES(Class<?> clazz, Object defaultVal)
             {
                 _clazz = clazz;
                 _defaultVal = defaultVal;
             }
 
-            public Class getConvertClass()
+            public Class<?> getConvertClass()
             {
                 return _clazz;
             }
