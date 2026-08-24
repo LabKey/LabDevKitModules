@@ -17,7 +17,6 @@
 package org.labkey.ldk;
 
 import jakarta.mail.Address;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
-import org.labkey.api.action.ExportAction;
 import org.labkey.api.action.HasAllowBindParameter;
 import org.labkey.api.action.MutatingApiAction;
 import org.labkey.api.action.ReadOnlyApiAction;
@@ -35,12 +33,10 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.PropertyManager.WritablePropertyMap;
-import org.labkey.api.data.SqlScriptRunner;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.notification.Notification;
 import org.labkey.api.ldk.notification.NotificationService;
-import org.labkey.api.module.AllowedDuringUpgrade;
 import org.labkey.api.module.ModuleHtmlView;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
@@ -67,7 +63,6 @@ import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.HtmlString;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.Path;
-import org.labkey.api.util.StringUtilsLabKey;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -78,7 +73,6 @@ import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
 import org.labkey.ldk.notification.NotificationServiceImpl;
-import org.labkey.ldk.sql.LDKNaturalizeInstallationManager;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -971,19 +965,6 @@ public class LDKController extends SpringActionController
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
             return new ApiSimpleResponse("url", PropertyManager.getProperties(getContainer(), REDIRECT_URL_DOMAIN).get(REDIRECT_URL_PROP));
-        }
-    }
-
-    @RequiresPermission(AdminOperationsPermission.class)
-    @AllowedDuringUpgrade
-    public static class DownloadNaturalizeInstallScriptAction extends ExportAction<Object>
-    {
-        @Override
-        public void export(Object o, HttpServletResponse response, BindException errors) throws Exception
-        {
-            SqlScriptRunner.SqlScript installScript = LDKNaturalizeInstallationManager.get().getInstallScript();
-            response.setCharacterEncoding(StringUtilsLabKey.DEFAULT_CHARSET.name());
-            PageFlowUtil.streamFileBytes(response, "naturalizeInstall.sql", installScript.getContents().getBytes(StringUtilsLabKey.DEFAULT_CHARSET), true);
         }
     }
 }
