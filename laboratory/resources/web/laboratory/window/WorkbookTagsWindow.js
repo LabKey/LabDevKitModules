@@ -10,7 +10,7 @@
  */
 Ext4.define('Laboratory.window.WorkbookTagsWindow', {
     extend: 'Ext.window.Window',
-
+    modal: true,
     initComponent: function(){
         if (this.dataRegionName){
             var dr = LABKEY.DataRegions[this.dataRegionName];
@@ -24,6 +24,24 @@ Ext4.define('Laboratory.window.WorkbookTagsWindow', {
             Ext4.Msg.alert('Error', 'No workbooks selected');
             return;
         }
+
+        const theStore = Ext4.create('Ext.data.Store', {
+            fields: ['tag']
+        })
+
+        LABKEY.Query.selectDistinctRows({
+            containerPath: Laboratory.Utils.getQueryContainerPath(),
+            schemaName: 'laboratory',
+            queryName: 'workbook_tags',
+            column: 'tag',
+            scope: this,
+            success: function (results) {
+                theStore.add(results.values.map(val => {
+                    return({tag: val})
+                }))
+            },
+            error: LDK.Utils.getErrorCallback()
+        })
 
         Ext4.apply(this, {
             border: false,
@@ -41,13 +59,9 @@ Ext4.define('Laboratory.window.WorkbookTagsWindow', {
                     fieldLabel: 'Choose Existing Tag',
                     emptyText: 'Choose a pre-defined tag',
                     itemId: 'existingTag',
-                    store: {
-                        type: 'labkey-store',
-                        containerPath: Laboratory.Utils.getQueryContainerPath(),
-                        schemaName: 'laboratory',
-                        sql: 'SELECT DISTINCT tag FROM laboratory.workbook_tags',
-                        autoLoad: true
-                    },
+                    store: theStore,
+                    queryMode: 'local',
+                    triggerAction: 'all',
                     valueField: 'tag',
                     displayField: 'tag',
                     listeners: {
