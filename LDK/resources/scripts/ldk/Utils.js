@@ -73,6 +73,25 @@ LDK.Server.Utils = new function(){
             //normalize to a javascript date object
             date = new Date(date.getTime());
             return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        },
+
+        /**
+         * Replaces each named field's value with the case-normalized value from its lookup target, adding an error for any value the target does not contain.
+         * The helper must be created at script scope: it caches each target's allowable values per instance, so creating one per call would re-read the target table for every row.
+         */
+        normalizeLookupFields: function(helper, row, errors, lookupFields){
+            for (var i=0;i<lookupFields.length;i++){
+                var f = lookupFields[i];
+                var val = row[f];
+                if (!LABKEY.ExtAdapter.isEmpty(val)){
+                    var normalizedVal = helper.getLookupValue(val, f);
+
+                    if (LABKEY.ExtAdapter.isEmpty(normalizedVal))
+                        errors[f] = 'Unknown value for field: ' + f + '. Value was: ' + val;
+                    else
+                        row[f] = normalizedVal;
+                }
+            }
         }
     }
 }
