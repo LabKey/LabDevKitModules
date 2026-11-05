@@ -857,7 +857,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClickAndWait(_helper.toolIcon("Settings"));
         waitAndClickAndWait(Locator.linkContainingText("Manage Data and Demographics Sources"));
         waitForText("Below are the extra data and sample sources registered for this folder");  //proxy for data loading
-        waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), WAIT_FOR_JAVASCRIPT);
+        waitForElementToDisappear(LabModuleHelper.LOADING, WAIT_FOR_JAVASCRIPT);
 
         //precaution mainly important to resuming a test in the middle
         cleanupDataSources();
@@ -1796,7 +1796,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     {
         _helper.goToLabHome();
         _helper.clickNavPanelItem("DNA_Oligos:", "Search");
-        waitForTextToDisappear("Loading...");
+        waitForElementToDisappear(LabModuleHelper.LOADING);
         waitForElement(Locator.name("name"));
         sleep(50);
         _helper.setFormField("name", "TestPrimer");
