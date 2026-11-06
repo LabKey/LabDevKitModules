@@ -1014,7 +1014,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         click(Ext4Helper.Locators.ext4Button("OK"));
 
         waitForText("Loading...");
-        waitForElementToDisappear(Locator.xpath("//div[" + Locator.NOT_HIDDEN + " and contains(text(), 'Loading...')]"), WAIT_FOR_JAVASCRIPT);
+        waitForElementToDisappear(LabModuleHelper.LOADING.notHidden(), WAIT_FOR_JAVASCRIPT);
     }
 
     private void settingsTest()
