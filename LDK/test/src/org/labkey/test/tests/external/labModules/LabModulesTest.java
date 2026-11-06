@@ -857,7 +857,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClickAndWait(_helper.toolIcon("Settings"));
         waitAndClickAndWait(Locator.linkContainingText("Manage Data and Demographics Sources"));
         waitForText("Below are the extra data and sample sources registered for this folder");  //proxy for data loading
-        waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), WAIT_FOR_JAVASCRIPT);
+        waitForElementToDisappear(LabModuleHelper.LOADING, WAIT_FOR_JAVASCRIPT);
 
         //precaution mainly important to resuming a test in the middle
         cleanupDataSources();
@@ -868,15 +868,14 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClick(Ext4Helper.Locators.menuItem(DATA_SOURCE + " (\"/home\".core.Users)"));
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
+        waitForRemoveBtnCount(manageDataSources, 1);
 
         addDataSourceBtn = _ext4Helper.queryOne("#" + manageDataSources + " button[text='Add Default Sources']", Ext4CmpRef.class);
         waitAndClick(Locator.id(addDataSourceBtn.getId()));
         waitAndClick(Ext4Helper.Locators.menuItem(GROUP_SOURCE + " (core.Groups)"));
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
-
-        waitForText("Item Type");
-        assertEquals("Incorrect number of remove buttons", 2, getRemoveBtns(manageDataSources).size());
+        waitForRemoveBtnCount(manageDataSources, 2);
 
         //add demographics source
         Ext4CmpRef addDemographicsSourceBtn = _ext4Helper.queryOne("#" + manageDemographicsSources + " button[text='Add Default Sources']", Ext4CmpRef.class);
@@ -884,10 +883,8 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitAndClick(Ext4Helper.Locators.menuItem(SUBJECT_LIST + " (laboratory.subjects)"));
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
-
-        waitForText("Table Name");
+        waitForRemoveBtnCount(manageDemographicsSources, 1);
         waitForText("New Data Sources");
-        assertEquals("Incorrect number of remove buttons", 1, getRemoveBtns(manageDemographicsSources).size());
 
         //query to make sure columns added:
         Connection cn = WebTestHelper.getRemoteApiConnection();
@@ -987,6 +984,15 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         return _ext4Helper.componentQuery("#" + parentItemId + " button[text='Remove']", Ext4CmpRef.class);
     }
 
+    // Saving a source reloads the panel asynchronously, which also rebuilds its 'Add Default Sources' menu
+    private void waitForRemoveBtnCount(String parentItemId, int expectedCount)
+    {
+        waitForEquals("Incorrect number of remove buttons", () -> expectedCount, () -> {
+            List<Ext4CmpRef> btns = getRemoveBtns(parentItemId);
+            return btns == null ? 0 : btns.size();
+        }, WAIT_FOR_JAVASCRIPT);
+    }
+
     private String replaceNonVisibleChars(String value)
     {
         //the DB might not store unicode chars correctly, so we just eliminate them here
@@ -1008,7 +1014,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         click(Ext4Helper.Locators.ext4Button("OK"));
 
         waitForText("Loading...");
-        waitForElementToDisappear(Locator.xpath("//div[" + Locator.NOT_HIDDEN + " and contains(text(), 'Loading...')]"), WAIT_FOR_JAVASCRIPT);
+        waitForElementToDisappear(LabModuleHelper.LOADING.notHidden(), WAIT_FOR_JAVASCRIPT);
     }
 
     private void settingsTest()
@@ -1790,7 +1796,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     {
         _helper.goToLabHome();
         _helper.clickNavPanelItem("DNA_Oligos:", "Search");
-        waitForTextToDisappear("Loading...");
+        waitForElementToDisappear(LabModuleHelper.LOADING);
         waitForElement(Locator.name("name"));
         sleep(50);
         _helper.setFormField("name", "TestPrimer");
