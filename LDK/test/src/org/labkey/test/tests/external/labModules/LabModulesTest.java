@@ -863,24 +863,18 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         cleanupDataSources();
 
         //add data source
-        Ext4CmpRef addDataSourceBtn = _ext4Helper.queryOne("#" + manageDataSources + " button[text='Add Default Sources']", Ext4CmpRef.class);
-        waitAndClick(Locator.id(addDataSourceBtn.getId()));
-        waitAndClick(Ext4Helper.Locators.menuItem(DATA_SOURCE + " (\"/home\".core.Users)"));
+        selectDefaultSource(manageDataSources, DATA_SOURCE + " (\"/home\".core.Users)");
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
         waitForRemoveBtnCount(manageDataSources, 1);
 
-        addDataSourceBtn = _ext4Helper.queryOne("#" + manageDataSources + " button[text='Add Default Sources']", Ext4CmpRef.class);
-        waitAndClick(Locator.id(addDataSourceBtn.getId()));
-        waitAndClick(Ext4Helper.Locators.menuItem(GROUP_SOURCE + " (core.Groups)"));
+        selectDefaultSource(manageDataSources, GROUP_SOURCE + " (core.Groups)");
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
         waitForRemoveBtnCount(manageDataSources, 2);
 
         //add demographics source
-        Ext4CmpRef addDemographicsSourceBtn = _ext4Helper.queryOne("#" + manageDemographicsSources + " button[text='Add Default Sources']", Ext4CmpRef.class);
-        waitAndClick(Locator.id(addDemographicsSourceBtn.getId()));
-        waitAndClick(Ext4Helper.Locators.menuItem(SUBJECT_LIST + " (laboratory.subjects)"));
+        selectDefaultSource(manageDemographicsSources, SUBJECT_LIST + " (laboratory.subjects)");
         new Window.WindowFinder(getDriver()).withTitle("Success").waitFor();
         click(Ext4Helper.Locators.ext4Button("OK"));
         waitForRemoveBtnCount(manageDemographicsSources, 1);
@@ -982,6 +976,18 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
     private List<Ext4CmpRef> getRemoveBtns(String parentItemId)
     {
         return _ext4Helper.componentQuery("#" + parentItemId + " button[text='Remove']", Ext4CmpRef.class);
+    }
+
+    private void selectDefaultSource(String panelItemId, String sourceText)
+    {
+        Locator menuItem = Ext4Helper.Locators.menuItem(sourceText);
+        // A click on the menu button can be lost while the panel finishes reloading after the previous save
+        waitFor(() -> {
+            Ext4CmpRef addSourceBtn = _ext4Helper.queryOne("#" + panelItemId + " button[text='Add Default Sources']", Ext4CmpRef.class);
+            click(Locator.id(addSourceBtn.getId()));
+            return waitFor(() -> isElementVisible(menuItem), 2_000);
+        }, "'Add Default Sources' menu did not show " + sourceText, WAIT_FOR_JAVASCRIPT);
+        click(menuItem);
     }
 
     // Saving a source reloads the panel asynchronously, which also rebuilds its 'Add Default Sources' menu
