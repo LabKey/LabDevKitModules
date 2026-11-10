@@ -52,6 +52,7 @@ import org.labkey.test.util.ext4cmp.Ext4CmpRef;
 import org.labkey.test.util.ext4cmp.Ext4ComboRef;
 import org.labkey.test.util.ext4cmp.Ext4FieldRef;
 import org.labkey.test.util.external.labModules.LabModuleHelper;
+import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -985,7 +986,7 @@ public class LabModulesTest extends BaseWebDriverTest implements AdvancedSqlTest
         waitFor(() -> {
             Ext4CmpRef addSourceBtn = _ext4Helper.queryOne("#" + panelItemId + " button[text='Add Default Sources']", Ext4CmpRef.class);
             click(Locator.id(addSourceBtn.getId()));
-            return waitFor(() -> isElementVisible(menuItem), 2_000);
+            return waitFor(() -> menuItem.findOptionalElement(getDriver()).filter(WebElement::isDisplayed).isPresent(), 2_000);
         }, "'Add Default Sources' menu did not show " + sourceText, WAIT_FOR_JAVASCRIPT);
         click(menuItem);
     }
