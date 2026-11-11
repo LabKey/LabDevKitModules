@@ -48,6 +48,8 @@ public class LabModuleHelper
     public static final String IMPORT_DATA_TEXT = "Import Data";
     public static final String UPLOAD_RESULTS_TEXT = "Upload Results";
     public static final String LAB_HOME_TEXT = "Types of Data:";
+    // The header product menu's collapsed dropdown always holds a "Loading..." placeholder
+    public static final Locator.XPathLocator LOADING = Locator.xpath("//div[contains(text(), 'Loading...')][not(ancestor::*[@id='headerProductDropdown'])]");
 
     public static final String POS_COLOR = "rgb(255, 192, 203)";
     public static final String UNKNOWN_COLOR = "rgb(0, 0, 255)";
@@ -324,7 +326,7 @@ public class LabModuleHelper
         _test.waitAndClick(Locator.id(addBtn.getId()));
         _test.waitForElement(Ext4Helper.Locators.window("Add Data Source"));
 
-        _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
         waitForField("Item Type");
         Ext4FieldRef.getForLabel(_test, "Item Type").setValue(type);
         Ext4FieldRef.getForLabel(_test, "Label").setValue(label);
@@ -333,13 +335,13 @@ public class LabModuleHelper
         {
             Ext4ComboRef combo = new Ext4ComboRef(Ext4FieldRef.getForLabel(_test, "Container (optional)"), _test);
             combo.setComboByDisplayValue(containerPath);
-            _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+            _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
         }
 
         Ext4FieldRef schemaField = Ext4FieldRef.getForLabel(_test, "Schema");
         schemaField.waitForEnabled();
         schemaField.setValue(schema);
-        _test.waitForElementToDisappear(Locator.tagWithText("div", "Loading..."), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 3);
+        _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 3);
 
         Ext4FieldRef queryField = Ext4FieldRef.getForLabel(_test, "Query");
         queryField.waitForEnabled();
@@ -361,7 +363,7 @@ public class LabModuleHelper
         _test.waitAndClick(Locator.id(addBtn.getId()));
         _test.waitForElement(Ext4Helper.Locators.window("Add Demographics Source"));
 
-        _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
         waitForField("Label");
         Ext4FieldRef.getForLabel(_test, "Label").setValue(label);
 
@@ -369,14 +371,14 @@ public class LabModuleHelper
         {
             Ext4ComboRef combo = new Ext4ComboRef(Ext4FieldRef.getForLabel(_test, "Container (optional)"), _test);
             combo.setComboByDisplayValue(containerPath);
-            _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+            _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
         }
 
         Ext4FieldRef.getForLabel(_test, "Schema").setValue(schema);
-        _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 3);
+        _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT * 3);
 
         Ext4FieldRef.getForLabel(_test, "Query").setValue(query);
-        _test.waitForElementToDisappear(Locator.xpath("//div[contains(text(), 'Loading...')]"), BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
+        _test.waitForElementToDisappear(LOADING, BaseWebDriverTest.WAIT_FOR_JAVASCRIPT);
 
         if (targetColumn != null)
             Ext4FieldRef.getForLabel(_test, "Target Column").setValue(targetColumn);
