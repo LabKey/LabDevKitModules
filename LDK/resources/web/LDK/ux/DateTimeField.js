@@ -262,11 +262,11 @@ Ext4.define('Ext.ux.form.field.DateTime', {
                 }
             }
         }
-        this.suspendCheckChange++;
-        this.dateField.setValue(value);
-        this.timeField.setValue(value);
-        this.suspendCheckChange--;
-        this.checkChange();
+        var me = this;
+        me.batchChanges(function(){
+            me.dateField.setValue(value);
+            me.timeField.setValue(value);
+        });
     },
 
     getFormat: function(){
