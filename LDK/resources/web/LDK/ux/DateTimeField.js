@@ -79,7 +79,6 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
         me.dateField = Ext4.create('Ext.form.field.Date', Ext4.apply({
             format:me.dateFormat,
-            bubbleEvents: ['change'],
             flex:1,
             isFormField:false, //exclude from field query's
             submitValue:false,
@@ -114,6 +113,8 @@ Ext4.define('Ext.ux.form.field.DateTime', {
                             this.timeField.setValue(val);
                         }
                     }
+
+                    this.checkChange();
                 }
             },
             getErrors: function(value){
@@ -132,7 +133,6 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
         me.timeField = Ext4.create('Ext.form.field.Time', Ext4.apply({
             format:me.timeFormat,
-            bubbleEvents: ['change'],
             flex:1,
             isFormField:false, //exclude from field query's
             submitValue:false,
@@ -153,6 +153,8 @@ Ext4.define('Ext.ux.form.field.DateTime', {
                     if (date && !this.dateField.getValue()){
                         this.dateField.setValue(date);
                     }
+
+                    this.checkChange();
                 }
             },
             getErrors: function(value){
@@ -191,6 +193,8 @@ Ext4.define('Ext.ux.form.field.DateTime', {
 
         me.callParent();
         me.initField();
+        // Compare later changes against the parsed Date, not a configured string
+        me.originalValue = me.lastValue = me.getValue();
     },
 
     getDefaultDate: function(){
@@ -258,8 +262,11 @@ Ext4.define('Ext.ux.form.field.DateTime', {
                 }
             }
         }
-        this.dateField.setValue(value);
-        this.timeField.setValue(value);
+        var me = this;
+        me.batchChanges(function(){
+            me.dateField.setValue(value);
+            me.timeField.setValue(value);
+        });
     },
 
     getFormat: function(){
