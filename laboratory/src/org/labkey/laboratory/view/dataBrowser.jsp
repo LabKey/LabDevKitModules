@@ -15,6 +15,7 @@
 * limitations under the License.
 */
 %>
+<%@ page import="org.json.JSONArray" %>
 <%@ page import="org.json.JSONObject" %>
 <%@ page import="org.labkey.api.laboratory.query.TabbedReportFilterProvider" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
@@ -34,26 +35,23 @@
         dependencies.add("LDK/panel/NoFiltersFilterType.js");
     }
 
-    private String getFilterConfig()
+    private JSONArray getFilterConfig()
     {
-        StringBuilder ret = new StringBuilder();
+        JSONArray ret = new JSONArray();
 
         for (TabbedReportFilterProvider p : LaboratoryServiceImpl.get().getTabbedReportFilterProviderProviders(getContainer(), getUser()))
         {
-            if (!p.isVisible(getContainer(), getUser()))
+            if (p.isVisible(getContainer(), getUser()))
             {
-                continue;
+                ret.put(new JSONObject()
+                    .put("xtype", p.getXType())
+                    .put("inputValue", p.getInputValue())
+                    .put("label", p.getLabel())
+                );
             }
-
-            JSONObject config = new JSONObject();
-            config.put("xtype", h(p.getXType()));
-            config.put("inputValue", h(p.getInputValue()));
-            config.put("label", h(p.getLabel()));
-
-            ret.append(config).append(",");
         }
 
-        return ret.toString();
+        return ret;
     }
 %>
 <%
@@ -79,11 +77,11 @@
                 xtype: 'ldk-multisubjectfiltertype',
                 inputValue: LDK.panel.MultiSubjectFilterType.filterName,
                 label: LDK.panel.MultiSubjectFilterType.label
-            },<%=unsafe(getFilterConfig())%>{
+            }].concat(<%=json(getFilterConfig(), 0)%>, [{
                 xtype: 'ldk-nofiltersfiltertype',
                 inputValue: LDK.panel.NoFiltersFilterType.filterName,
                 label: LDK.panel.NoFiltersFilterType.label
-            }]
+            }])
         }).render(<%=q(wpId)%>);
     });
 </script>
